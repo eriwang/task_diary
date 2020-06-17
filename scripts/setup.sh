@@ -36,7 +36,7 @@ fi
 # Not sure if any other versions need to be checked. Not checking for now.
 
 npm ci
-virtualenv --python=python venv
+virtualenv --python=$PYTHON_BIN venv
 
 scripts/update.sh
 
