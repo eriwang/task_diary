@@ -7,5 +7,6 @@ module.exports = {
         filename: 'main.js',
         path: path.resolve(__dirname, 'backend_src/static_gen')
     },
+    devtool: 'inline-source-map',
     watch: true
-}
+};
