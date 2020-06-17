@@ -40,6 +40,8 @@ fi
 
 # Install hooks
 
+ln -s $(pwd)/scripts/hooks/pre-commit.sh .git/hooks/pre-commit  # WSL seems to need full path for Windows for some reason?
+
 # Not sure if any other versions need to be checked. Not checking for now.
 
 npm ci
