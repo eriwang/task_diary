@@ -1,6 +1,6 @@
 function logMessage()
 {
-    console.log('hello world')
+    console.log('hello world');
 }
 
-export { logMessage }
+export { logMessage };
