@@ -38,6 +38,8 @@ if [[ $PYTHON_VERSION < $REQ_MIN_PYTHON_VERSION ]]; then
     exit 1   
 fi
 
+# Install hooks
+
 # Not sure if any other versions need to be checked. Not checking for now.
 
 npm ci
