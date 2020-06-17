@@ -15,6 +15,11 @@ if [[ ($1 == "-h") || ($1 == "--help") ]]; then
     exit 0
 fi
 
+# Sanity check folders
+if [[ -d venv/ || -d node_modules ]]; then
+    echo "Found at least one of venv/ node_modules, did you mean to run update.sh instead?"
+fi
+
 # Validate Python version
 
 PYTHON_BIN=${1:-python3}
