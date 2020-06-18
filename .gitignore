@@ -1,4 +1,7 @@
+*.db
+
 backend_src/static_gen/
 node_modules/
 __pycache__/
 venv/
+.idea/
