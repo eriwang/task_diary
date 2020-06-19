@@ -10,22 +10,13 @@ module.exports = {
         'sourceType': 'module'
     },
     'rules': {
-        'indent': [
-            'error',
-            4
-        ],
-        'linebreak-style': [
-            'error',
-            'unix'
-        ],
-        'quotes': [
-            'error',
-            'single'
-        ],
-        'semi': [
-            'error',
-            'always'
-        ]
+        'indent': ['error', 4],
+        'linebreak-style': ['error', 'unix'],
+        'quotes': ['error', 'single'],
+        'semi': ['error', 'always'],
+        'max-len': ['error', 120],
+        'no-var': ['error'],
+        'no-prototype-builtins': ['off']
     },
     'ignorePatterns': ['backend_src/**', 'venv/**']
 };
