@@ -1,3 +1,8 @@
-[MESSAGES CONTROL]
+[FORMAT]
+max-line-length=120
 
-disable=missing-module-docstring, missing-function-docstring
+[MESSAGES CONTROL]
+disable=missing-class-docstring,missing-module-docstring,missing-function-docstring,invalid-name,too-many-arguments
+
+[MISCELLANOUS]
+notes=
