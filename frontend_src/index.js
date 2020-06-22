@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import './style.css';
+
 $(document).ajaxError((event, jqXHR, settings, exception) => {
     const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
                         `with status ${jqXHR.status}, "${exception}"`;
