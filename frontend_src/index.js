@@ -20,16 +20,16 @@ $(document).ajaxError((event, jqXHR, settings, exception) => {
 });
 
 $(document).ready(() => {
-    $('#entry-submit').click(submitAccomplishmentForm);
+    $('#entry-submit').click(submitTaskForm);
 
-    $.get('/all_accomplishments').done(populateAccomplishments);
+    $.get('/all_tasks').done(populateTasks);
 });
 
-function populateAccomplishments(data)
+function populateTasks(data)
 {
     console.log(data);
     $('#tasks').html('');
-    for (let a of data['accomplishments'])
+    for (let a of data['tasks'])
     {
         let htmlStr =   `<p data-id="${a['id']}">
                             ${a['date']}: ${a['description']}, is_planned=${a['is_planned']}, status=${a['status']}
@@ -39,7 +39,7 @@ function populateAccomplishments(data)
 }
 
 // TODO: validation
-function submitAccomplishmentForm()
+function submitTaskForm()
 {
     console.log('submitting');
     let data = {
@@ -51,13 +51,13 @@ function submitAccomplishmentForm()
     };
 
     console.log(data);
-    $.ajax('/accomplishment', {  // TODO: abstract this out. this is ridiculous to get right
+    $.ajax('/task', {  // TODO: abstract this out. this is ridiculous to get right
         'contentType': 'application/json',
         'data': JSON.stringify(data),
         'method': 'POST',
         'processData': false
     }).done(() => {
         console.log('done');
-        $.get('/all_accomplishments').done(populateAccomplishments);
+        $.get('/all_tasks').done(populateTasks);
     });
 }

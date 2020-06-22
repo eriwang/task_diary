@@ -11,9 +11,9 @@ class Status(IntEnum):
     DROPPED = 3
 
 
-class Accomplishment:
-    def __init__(self, accomplishment_id, date, description, is_planned, status, notes):
-        self.id = accomplishment_id
+class Task:
+    def __init__(self, task_id, date, description, is_planned, status, notes):
+        self.id = task_id
         self.date = date
         self.description = description
         self.is_planned = is_planned
@@ -21,8 +21,8 @@ class Accomplishment:
         self.notes = notes
 
     @classmethod
-    def query_all_accomplishments(cls, cursor):
-        cursor.execute('SELECT rowid, * FROM accomplishments')
+    def query_all_tasks(cls, cursor):
+        cursor.execute('SELECT rowid, * FROM tasks')
         # result[1] gets returned as text in ISO8601 format
         # TODO: ideally the date should be a pydate. Ends up being a double conversion but imo it's clearer
         return [cls(result[0], result[1][:len('2020-06-18')], result[2], bool(result[3]), Status(result[4]), result[5])
@@ -43,9 +43,9 @@ class Accomplishment:
 
 
 # date: midnight UTC seconds since epoch
-def create_accomplishment_table(cursor):
+def create_task_table(cursor):
     query_string = '''
-    CREATE TABLE accomplishments (
+    CREATE TABLE tasks (
         date INTEGER,
         description TEXT,
         is_planned INT2,
@@ -56,7 +56,7 @@ def create_accomplishment_table(cursor):
     cursor.execute(query_string)
 
 
-def insert_accomplishment(cursor, date, description, is_planned, status, notes):
+def insert_task(cursor, date, description, is_planned, status, notes):
     seconds_since_epoch = datetime.datetime.combine(date, datetime.time(0, 0, 0), tzinfo=pytz.utc)
-    cursor.execute('INSERT INTO accomplishments VALUES (?, ?, ?, ?, ?)',
+    cursor.execute('INSERT INTO tasks VALUES (?, ?, ?, ?, ?)',
                    (seconds_since_epoch, description, is_planned, status, notes))
