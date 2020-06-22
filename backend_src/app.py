@@ -25,15 +25,17 @@ def add_accomplishment():
 
     accomplishment = request.get_json()
     received_keys = sorted(accomplishment.keys())
-    _EXPECTED_KEYS = ['date', 'description', 'is_planned', 'status']
+    _EXPECTED_KEYS = sorted(['date', 'description', 'is_planned', 'status', 'notes'])
     if received_keys != _EXPECTED_KEYS:
         return jsonify({'error': f'Expected keys {_EXPECTED_KEYS}, received {received_keys} instead'}), 400
 
     if not isinstance(accomplishment['date'], str) or \
             not isinstance(accomplishment['description'], str) or \
             not isinstance(accomplishment['is_planned'], bool) or \
-            not isinstance(accomplishment['status'], int):
-        return jsonify({'error': 'Type mismatch, expected date:str, description:str, is_planned:bool, status:int'}), 400
+            not isinstance(accomplishment['status'], int) or \
+            not isinstance(accomplishment['notes'], str):
+        return jsonify({'error': 'Type mismatch, expected date:str, description:str,'
+                                 ' is_planned:bool, status:int, notes:str'}), 400
 
     try:
         date = datetime.datetime.strptime(accomplishment['date'], '%Y-%m-%d')
@@ -47,7 +49,8 @@ def add_accomplishment():
 
     connection = sqlite3.connect(DB_FILEPATH)
     cursor = connection.cursor()
-    insert_accomplishment(cursor, date, accomplishment['description'], accomplishment['is_planned'], status)
+    insert_accomplishment(cursor, date, accomplishment['description'], accomplishment['is_planned'], status,
+                          accomplishment['notes'])
 
     connection.commit()
 

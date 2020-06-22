@@ -30,7 +30,7 @@ def main():
     create_accomplishment_table(cursor)
 
     if args.add_dummy_data:
-        insert_accomplishment(cursor, datetime.date.today(), 'some text', True, Status.NOT_STARTED)
+        insert_accomplishment(cursor, datetime.date.today(), 'some text', True, Status.NOT_STARTED, 'some notes')
 
     connection.commit()
 
