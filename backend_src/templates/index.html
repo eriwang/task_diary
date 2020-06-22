@@ -4,35 +4,31 @@
         <script src="{{url_for('static', filename='main.js')}}"></script>
     </head>
     <body>
-        <h1>Accomplishment Diary</h1>
+        <h1>Task Diary</h1>
         <div id="content">
-            <div id="accomplishments">
+            <div id="center-view">
+                <div id="task-view">
+                    <h3>Tasks</h3>
+                    <div id="tasks">
+                    </div>
+                </div>
+                <div id="task-entry">
+                    <h3>Task Entry</h3>
+                    <div class="entry-text-field">
+                        <label for="entry-name">Name</label>
+                        <input type="text" id="entry-name">
+                    </div>
+                    <div class="entry-text-field">
+                        <label for="entry-notes">Notes</label>
+                        <textarea id="entry-notes"></textarea>
+                    </div>
+                    <div class="entry-checkbox-field">
+                        <label for="entry-is-planned">Is Planned</label>
+                        <input type="checkbox" id="entry-is-planned">
+                    </div>
+                    <button id="entry-submit">Submit</button>
+                </div>
             </div>
-            <form id="add-accomplishment">
-                <div>
-                    <label for="input-date">Date:</label>
-                    <input type="date" name="date" id="input-date">
-                </div>
-                <div>
-                    <label for="input-desc">Description:</label>
-                    <input type="text" name="description" id="input-desc">
-                </div>
-                <div>
-                    <label for="input-is-planned-yes">Is Planned</label>
-                    <input type="radio" name="is_planned" id="input-is-planned-yes" value="true" checked>
-                    <label for="input-is-planned-no">Not Planned</label>
-                    <input type="radio" name="is_planned" id="input-is-planned-no" value="false">
-                </div>
-                <div>
-                    <label for="input-status">Status</label>
-                    <input type="number" name="status" id="input-status">
-                </div>
-                <div>
-                    <label for="input-notes">Notes</label>
-                    <input type="text" name="notes" id="input-notes">
-                </div>
-                <button id="submit-button" type="button">Submit</button>
-            </form>
         </div>
     </body>
 </html>

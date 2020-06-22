@@ -24,6 +24,7 @@ class Accomplishment:
     def query_all_accomplishments(cls, cursor):
         cursor.execute('SELECT rowid, * FROM accomplishments')
         # result[1] gets returned as text in ISO8601 format
+        # TODO: ideally the date should be a pydate. Ends up being a double conversion but imo it's clearer
         return [cls(result[0], result[1][:len('2020-06-18')], result[2], bool(result[3]), Status(result[4]), result[5])
                 for result in cursor.fetchall()]
 
