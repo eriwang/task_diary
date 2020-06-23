@@ -1,6 +1,6 @@
-# Accomplishment Diary
+# Task Diary
 
-An app to record daily planned/ completed tasks (i.e. "accomplishments") to help with evaluating personal performance.
+An app to record daily planned/ completed tasks to help with evaluating personal performance.
 
 ## First Time Setup
 

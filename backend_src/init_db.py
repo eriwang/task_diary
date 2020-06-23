@@ -3,7 +3,7 @@ import datetime
 import os
 import sqlite3
 
-from model.accomplishment import Status, create_accomplishment_table, insert_accomplishment
+from model.task import Status, create_task_table, insert_task
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Init a db file with a proper schema.')
@@ -27,10 +27,10 @@ def main():
     connection = sqlite3.connect(db_filepath)
     cursor = connection.cursor()
 
-    create_accomplishment_table(cursor)
+    create_task_table(cursor)
 
     if args.add_dummy_data:
-        insert_accomplishment(cursor, datetime.date.today(), 'some text', True, Status.NOT_STARTED)
+        insert_task(cursor, datetime.date.today(), 'some text', True, Status.NOT_STARTED, 'some notes')
 
     connection.commit()
 

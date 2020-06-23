@@ -1,4 +1,11 @@
 import $ from 'jquery';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import './style.css';
+
+import TaskEntryForm from './task_entry_form.js';
+import TaskView from './task_view.js';
 
 $(document).ajaxError((event, jqXHR, settings, exception) => {
     const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
@@ -10,42 +17,41 @@ $(document).ajaxError((event, jqXHR, settings, exception) => {
     }
 });
 
-$(document).ready(() => {
-    $('#submit-button').click(submitAccomplishmentForm);
-    $.get('/all_accomplishments').done(populateAccomplishments);
-});
-
-function populateAccomplishments(data)
+class App extends React.Component
 {
-    console.log(data);
-    for (let a of data['accomplishments'])
+    constructor(props)
     {
-        let htmlStr =   `<p data-id="${a['id']}">
-                            ${a['date']}: ${a['description']}, is_planned=${a['is_planned']}, status=${a['status']}
-                        </p>`;
-        $('#accomplishments').append(htmlStr);
+        super(props);
+        this.state = {'tasks': []};
+
+        this.refreshTasks = this.refreshTasks.bind(this);
+        this.populateTasks = this.populateTasks.bind(this);
+    }
+
+    componentDidMount()
+    {
+        this.refreshTasks();
+    }
+
+    refreshTasks()
+    {
+        $.get('/all_tasks').done(this.populateTasks);   
+    }
+
+    populateTasks(data)
+    {
+        this.setState({'tasks': data['tasks']});
+    }
+
+    render()
+    {
+        return (
+            <div id="center-view">
+                <TaskView tasks={this.state.tasks} />
+                <TaskEntryForm onTaskEntrySuccessful={this.refreshTasks}/>
+            </div>
+        );
     }
 }
 
-function submitAccomplishmentForm()
-{
-    console.log('submitting');
-    let data = {};
-    for (let name_and_value of $('#add-accomplishment').serializeArray())
-    {
-        data[name_and_value['name']] = name_and_value['value'];
-    }
-
-    data['is_planned'] = (data['is_planned'] === 'true');
-    data['status'] = parseInt(data['status']);
-    console.log(data);
-    $.ajax('/accomplishment', {  // TODO: abstract this out. this is ridiculous to get right
-        'contentType': 'application/json',
-        'data': JSON.stringify(data),
-        'method': 'POST',
-        'processData': false
-    }).done(() => {
-        console.log('done');
-        $.get('/all_accomplishments').done(populateAccomplishments);
-    });
-}
+ReactDOM.render(<App/>, document.getElementById('app'));
