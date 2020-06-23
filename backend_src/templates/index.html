@@ -1,33 +1,12 @@
 <html>
     <head>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="{{url_for('static', filename='main.js')}}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" defer></script>
+        <script src="{{url_for('static', filename='main.js')}}" defer></script>
     </head>
     <body>
         <h1>Task Diary</h1>
         <div id="content">
-            <div id="center-view">
-                <div id="task-view">
-                    <h3>Tasks</h3>
-                    <div id="tasks">
-                    </div>
-                </div>
-                <div id="task-entry">
-                    <h3>Task Entry</h3>
-                    <div class="entry-text-field">
-                        <label for="entry-name">Name</label>
-                        <input type="text" id="entry-name">
-                    </div>
-                    <div class="entry-text-field">
-                        <label for="entry-notes">Notes</label>
-                        <textarea id="entry-notes"></textarea>
-                    </div>
-                    <div class="entry-checkbox-field">
-                        <label for="entry-is-planned">Is Planned</label>
-                        <input type="checkbox" id="entry-is-planned">
-                    </div>
-                    <button id="entry-submit">Submit</button>
-                </div>
+            <div id="app">
             </div>
         </div>
     </body>

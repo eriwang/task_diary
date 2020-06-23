@@ -6,7 +6,7 @@ module.exports = {
     mode: 'development',
     entry: './frontend_src/index.js',
     output: {
-        filename: 'main.js',
+        'filename': 'main.js',
         path: path.resolve(__dirname, 'backend_src/static_gen')
     },
     externals: {
@@ -17,6 +17,11 @@ module.exports = {
 
     module: {
         rules: [
+            {
+                test: /\.js$/,
+                exclude: [/node_modules/, /venv/],
+                loader: 'babel-loader'
+            },
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']

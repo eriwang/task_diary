@@ -1,13 +1,11 @@
 import $ from 'jquery';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import './style.css';
 
-const Status = Object.freeze({
-    'NOT_STARTED': 0,
-    'IN_PROGRESS': 1,
-    'COMPLETE': 2,
-    'DROPPED': 3
-});
+import TaskEntryForm from './task_entry_form.js';
+import TaskView from './task_view.js';
 
 $(document).ajaxError((event, jqXHR, settings, exception) => {
     const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
@@ -19,45 +17,41 @@ $(document).ajaxError((event, jqXHR, settings, exception) => {
     }
 });
 
-$(document).ready(() => {
-    $('#entry-submit').click(submitTaskForm);
-
-    $.get('/all_tasks').done(populateTasks);
-});
-
-function populateTasks(data)
+class App extends React.Component
 {
-    console.log(data);
-    $('#tasks').html('');
-    for (let a of data['tasks'])
+    constructor(props)
     {
-        let htmlStr =   `<p data-id="${a['id']}">
-                            ${a['date']}: ${a['description']}, is_planned=${a['is_planned']}, status=${a['status']}
-                        </p>`;
-        $('#tasks').append(htmlStr);
+        super(props);
+        this.state = {'tasks': []};
+
+        this.refreshTasks = this.refreshTasks.bind(this);
+        this.populateTasks = this.populateTasks.bind(this);
+    }
+
+    componentDidMount()
+    {
+        this.refreshTasks();
+    }
+
+    refreshTasks()
+    {
+        $.get('/all_tasks').done(this.populateTasks);   
+    }
+
+    populateTasks(data)
+    {
+        this.setState({'tasks': data['tasks']});
+    }
+
+    render()
+    {
+        return (
+            <div id="center-view">
+                <TaskView tasks={this.state.tasks} />
+                <TaskEntryForm onTaskEntrySuccessful={this.refreshTasks}/>
+            </div>
+        );
     }
 }
 
-// TODO: validation
-function submitTaskForm()
-{
-    console.log('submitting');
-    let data = {
-        'date': (new Date()).toISOString().slice(0, '2020-06-22'.length),
-        'description': $('#entry-notes').val(),
-        'is_planned': $('#entry-is-planned').is(':checked'),
-        'status': Status.NOT_STARTED,
-        'notes': $('#entry-notes').val()
-    };
-
-    console.log(data);
-    $.ajax('/task', {  // TODO: abstract this out. this is ridiculous to get right
-        'contentType': 'application/json',
-        'data': JSON.stringify(data),
-        'method': 'POST',
-        'processData': false
-    }).done(() => {
-        console.log('done');
-        $.get('/all_tasks').done(populateTasks);
-    });
-}
+ReactDOM.render(<App/>, document.getElementById('app'));
