@@ -21,11 +21,6 @@ class Task:
         self.notes = notes
 
     @classmethod
-    def query_all_tasks(cls, cursor):
-        cursor.execute('SELECT rowid, * FROM tasks')
-        return [cls._create_from_fetch_result(result) for result in cursor.fetchall()]
-
-    @classmethod
     def query_tasks_for_date(cls, cursor, date):
         cursor.execute('SELECT rowid, * FROM tasks WHERE date=?', (_date_to_seconds_since_epoch(date),))
         return [cls._create_from_fetch_result(result) for result in cursor.fetchall()]

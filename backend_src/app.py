@@ -9,15 +9,6 @@ DB_FILEPATH = 'test.db'
 app = Flask(__name__, static_folder='static_gen')
 
 
-# TODO: don't think I'll need this route long term
-@app.route('/all_tasks', methods=['GET'])
-def get_all_tasks():
-    connection = sqlite3.connect(DB_FILEPATH)
-    cursor = connection.cursor()
-    tasks = Task.query_all_tasks(cursor)
-    return jsonify({'tasks': [a.to_json_dict() for a in tasks]})
-
-
 # TODO: extract out validation/ general api logic somehow
 @app.route('/date_tasks', methods=['GET'])
 def get_tasks_for_date():
