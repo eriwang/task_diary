@@ -1,70 +1,46 @@
-import datetime
 import sqlite3
 
 from flask import Flask, jsonify, render_template, request
 
-from model.task import Task, Status, insert_task
+from api_utils import BadRequestException, api_jsonify_errors, validate_and_load_params
+from model.task import Task, insert_task
 
 DB_FILEPATH = 'test.db'
 app = Flask(__name__, static_folder='static_gen')
 
 
-# TODO: extract out validation/ general api logic somehow
 @app.route('/date_tasks', methods=['GET'])
+@api_jsonify_errors
 def get_tasks_for_date():
-    task = request.args
-    received_keys = sorted(task.keys())
-    _EXPECTED_KEYS = sorted(['date'])
-    if received_keys != _EXPECTED_KEYS:
-        return jsonify({'error': f'Expected keys {_EXPECTED_KEYS}, received {received_keys} instead'}), 400
+    _PARAM_KEY_TO_VALUE_TYPES = {
+        'date': 'yyyy-mm-dd'
+    }
 
-    if not isinstance(task['date'], str):
-        return jsonify({'error': 'Type mismatch, expected date:str'}), 400
-
-    try:
-        date = datetime.datetime.strptime(task['date'], '%Y-%m-%d')
-    except ValueError:
-        return jsonify({'error': f'Expected date in YYYY-mm-dd format, received {task["date"]}'}), 400
-
+    date = validate_and_load_params(request.args, _PARAM_KEY_TO_VALUE_TYPES)['date']
     connection = sqlite3.connect(DB_FILEPATH)
     cursor = connection.cursor()
     return jsonify({'tasks': [a.to_json_dict() for a in Task.query_tasks_for_date(cursor, date)]}), 200
 
 
-# TODO: should this even take status?
 @app.route('/task', methods=['POST'])
+@api_jsonify_errors
 def add_task():
+    _PARAM_KEY_TO_VALUE_TYPES = {
+        'date': 'yyyy-mm-dd',
+        'name': str,
+        'is_planned': bool,
+        'status': 'Status',
+        'notes': str
+    }
+
     if not request.is_json:
-        return jsonify({'error': 'Expected JSON mimetype'}), 400
+        raise BadRequestException('Expected JSON mimetype')
 
-    task = request.get_json()
-    received_keys = sorted(task.keys())
-    _EXPECTED_KEYS = sorted(['date', 'name', 'is_planned', 'status', 'notes'])
-    if received_keys != _EXPECTED_KEYS:
-        return jsonify({'error': f'Expected keys {_EXPECTED_KEYS}, received {received_keys} instead'}), 400
-
-    if not isinstance(task['date'], str) or \
-            not isinstance(task['name'], str) or \
-            not isinstance(task['is_planned'], bool) or \
-            not isinstance(task['status'], int) or \
-            not isinstance(task['notes'], str):
-        return jsonify({'error': 'Type mismatch, expected date:str, name:str,'
-                                 ' is_planned:bool, status:int, notes:str'}), 400
-
-    try:
-        date = datetime.datetime.strptime(task['date'], '%Y-%m-%d')
-    except ValueError:
-        return jsonify({'error': f'Expected date in YYYY-mm-dd format, received {task["date"]}'}), 400
-
-    try:
-        status = Status(task['status'])
-    except ValueError:
-        return jsonify({'error': f'Received invalid status {task["status"]}'}), 400
+    task = validate_and_load_params(request.get_json(), _PARAM_KEY_TO_VALUE_TYPES)
 
     connection = sqlite3.connect(DB_FILEPATH)
     cursor = connection.cursor()
-    insert_task(cursor, date, task['name'], task['is_planned'], status,
-                task['notes'])
+    insert_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'])
 
     connection.commit()
 
