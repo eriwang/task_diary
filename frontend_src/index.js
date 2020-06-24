@@ -1,28 +1,17 @@
-import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './style.css';
 
+import {ajaxGet} from './ajax.js';
 import TaskEntryForm from './task_entry_form.js';
 import TaskView from './task_view.js';
-
-$(document).ajaxError((event, jqXHR, settings, exception) => {
-    const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
-                        `with status ${jqXHR.status}, "${exception}"`;
-    console.error(errorText);
-    if (jqXHR.hasOwnProperty('responseJSON'))
-    {
-        console.error(jqXHR.responseJSON['error']);
-    }
-});
 
 class App extends React.Component
 {
     constructor(props)
     {
         super(props);
-        // TODO: duplicated
         const YYYY_MM_DD_LENGTH = 10; // 2020-06-22
         this.state = {
             'dateStr': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
@@ -40,12 +29,8 @@ class App extends React.Component
 
     refreshTasks(dateStr)
     {
-        // TODO: abstract the AJAX out
-        $.ajax('/date_tasks', {
-            data: {'date': dateStr},
-            method: 'GET',
-            processData: true
-        }).done((data) => this.setState({'tasks': data['tasks']}));
+        ajaxGet('/date_tasks', {'date': dateStr})
+            .done((data) => this.setState({'tasks': data['tasks']}));
     }
 
     handleDateChange(event)
