@@ -20,7 +20,7 @@ textarea
     flex-grow: 2;
 }
 
-#task-entry
+#sidebar
 {
     flex-grow: 1;
 }
@@ -29,12 +29,17 @@ textarea
 {
     display: flex;
     flex-direction: column;
-    margin: 25px 0px;
+    margin: 1em 0em;
 }
 
 .entry-checkbox-field
 {
     display: flex;
     flex-direction: row;
-    margin: 25px 0px;
+    margin: 1em 0em;
+}
+
+.task
+{
+    margin-bottom: 2em;
 }

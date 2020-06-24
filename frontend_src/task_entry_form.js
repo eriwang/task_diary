@@ -1,6 +1,6 @@
-import $ from 'jquery';
 import React from 'react';
 
+import {ajaxPost} from './ajax.js';
 import Status from './status.js';
 
 class TaskEntryForm extends React.Component
@@ -27,24 +27,20 @@ class TaskEntryForm extends React.Component
         this.setState({'is_planned': event.target.checked});
     }
     
-    // TODO: allow enter to submit when one of my fields is focused
-    // TODO: validation, both on submit and live
+    // TODO: allow enter to submit when name is focused. for notes I want to allow newlines
+    // TODO: validation for empty name on submit
     handleSubmit()
     {
-        let data = {
-            'date': (new Date()).toISOString().slice(0, '2020-06-22'.length),
-            'description': this.state.name,
+        ajaxPost('/task', {
+            'date': this.props.date,
+            'name': this.state.name,
             'is_planned': this.state.is_planned,
             'status': Status.NOT_STARTED,
             'notes': this.state.notes
-        };
-
-        $.ajax('/task', { // TODO: abstract this out. this is ridiculous to get right
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            method: 'POST',
-            processData: false
-        }).done(this.props.onTaskEntrySuccessful);
+        }).done(() => {
+            this.setState({'name': '', 'notes': ''});
+            this.props.onTaskEntrySuccessful();
+        });
     }
 
     render()
@@ -58,7 +54,8 @@ class TaskEntryForm extends React.Component
                     onChange={(e) => this.handleTextChange('notes', e)}/>
                 <div className="entry-checkbox-field">
                     <label htmlFor="entry-is-planned">Is Planned</label>
-                    <input type="checkbox" checked={this.state.is_planned} onChange={this.handleIsPlannedChange}/>
+                    <input type="checkbox" id="entry-is-planned" checked={this.state.is_planned} 
+                        onChange={this.handleIsPlannedChange}/>
                 </div>
                 <button onClick={this.handleSubmit}>Submit</button>
             </div>
@@ -79,8 +76,8 @@ class TextInput extends React.Component
         // TODO: I've got no clue if this ID will be unique. Could do a static incrementing id 
         let entryId = `entry-${this.props.label}`;
         let textInputElement = this.props.isSingleLine ?
-            <input type="text" id={entryId} onChange={this.props.onChange} /> : 
-            <textarea id={entryId} onChange={this.props.onChange} />;
+            <input type="text" id={entryId} onChange={this.props.onChange} value={this.props.value} /> : 
+            <textarea id={entryId} onChange={this.props.onChange} value={this.props.value} />;
         return (
             <div className="entry-text-field">
                 <label htmlFor={entryId}>{this.props.label}</label>

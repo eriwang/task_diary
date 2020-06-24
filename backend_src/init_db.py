@@ -30,7 +30,12 @@ def main():
     create_task_table(cursor)
 
     if args.add_dummy_data:
-        insert_task(cursor, datetime.date.today(), 'some text', True, Status.NOT_STARTED, 'some notes')
+        insert_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
+                    Status.NOT_STARTED, 't - 2 notes')
+        insert_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
+                    Status.NOT_STARTED, 'yesterday notes')
+        insert_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes')
+        insert_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2')
 
     connection.commit()
 
