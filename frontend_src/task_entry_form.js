@@ -28,13 +28,12 @@ class TaskEntryForm extends React.Component
     }
     
     // TODO: allow enter to submit name is focused. for notes I want to allow newlines
-    // TODO: validation, both on submit and live
+    // TODO: validation for empty name on submit and live
     handleSubmit()
     {
-        const YYYY_MM_DD_LENGTH = 10; // 2020-06-22
         let data = {
-            'date': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
-            'description': this.state.name,
+            'date': this.props.date,
+            'name': this.state.name,
             'is_planned': this.state.is_planned,
             'status': Status.NOT_STARTED,
             'notes': this.state.notes
@@ -59,7 +58,8 @@ class TaskEntryForm extends React.Component
                     onChange={(e) => this.handleTextChange('notes', e)}/>
                 <div className="entry-checkbox-field">
                     <label htmlFor="entry-is-planned">Is Planned</label>
-                    <input type="checkbox" checked={this.state.is_planned} onChange={this.handleIsPlannedChange}/>
+                    <input type="checkbox" id="entry-is-planned" checked={this.state.is_planned} 
+                        onChange={this.handleIsPlannedChange}/>
                 </div>
                 <button onClick={this.handleSubmit}>Submit</button>
             </div>

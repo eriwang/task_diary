@@ -18,6 +18,28 @@ def get_all_tasks():
     return jsonify({'tasks': [a.to_json_dict() for a in tasks]})
 
 
+# TODO: extract out validation/ general api logic somehow
+@app.route('/date_tasks', methods=['GET'])
+def get_tasks_for_date():
+    task = request.args
+    received_keys = sorted(task.keys())
+    _EXPECTED_KEYS = sorted(['date'])
+    if received_keys != _EXPECTED_KEYS:
+        return jsonify({'error': f'Expected keys {_EXPECTED_KEYS}, received {received_keys} instead'}), 400
+
+    if not isinstance(task['date'], str):
+        return jsonify({'error': 'Type mismatch, expected date:str'}), 400
+
+    try:
+        date = datetime.datetime.strptime(task['date'], '%Y-%m-%d')
+    except ValueError:
+        return jsonify({'error': f'Expected date in YYYY-mm-dd format, received {task["date"]}'}), 400
+
+    connection = sqlite3.connect(DB_FILEPATH)
+    cursor = connection.cursor()
+    return jsonify({'tasks': [a.to_json_dict() for a in Task.query_tasks_for_date(cursor, date)]}), 200
+
+
 # TODO: should this even take status?
 @app.route('/task', methods=['POST'])
 def add_task():

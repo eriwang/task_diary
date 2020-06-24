@@ -20,7 +20,7 @@ textarea
     flex-grow: 2;
 }
 
-#task-entry
+#sidebar
 {
     flex-grow: 1;
 }
