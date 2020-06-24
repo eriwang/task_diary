@@ -18,6 +18,7 @@ def get_all_tasks():
     return jsonify({'tasks': [a.to_json_dict() for a in tasks]})
 
 
+# TODO: should this even take status?
 @app.route('/task', methods=['POST'])
 def add_task():
     if not request.is_json:
@@ -25,16 +26,16 @@ def add_task():
 
     task = request.get_json()
     received_keys = sorted(task.keys())
-    _EXPECTED_KEYS = sorted(['date', 'description', 'is_planned', 'status', 'notes'])
+    _EXPECTED_KEYS = sorted(['date', 'name', 'is_planned', 'status', 'notes'])
     if received_keys != _EXPECTED_KEYS:
         return jsonify({'error': f'Expected keys {_EXPECTED_KEYS}, received {received_keys} instead'}), 400
 
     if not isinstance(task['date'], str) or \
-            not isinstance(task['description'], str) or \
+            not isinstance(task['name'], str) or \
             not isinstance(task['is_planned'], bool) or \
             not isinstance(task['status'], int) or \
             not isinstance(task['notes'], str):
-        return jsonify({'error': 'Type mismatch, expected date:str, description:str,'
+        return jsonify({'error': 'Type mismatch, expected date:str, name:str,'
                                  ' is_planned:bool, status:int, notes:str'}), 400
 
     try:
@@ -49,7 +50,7 @@ def add_task():
 
     connection = sqlite3.connect(DB_FILEPATH)
     cursor = connection.cursor()
-    insert_task(cursor, date, task['description'], task['is_planned'], status,
+    insert_task(cursor, date, task['name'], task['is_planned'], status,
                 task['notes'])
 
     connection.commit()

@@ -38,7 +38,7 @@ class Task extends React.Component
     render()
     {
         return (
-            <div>
+            <div className="task">
                 <p>{this.props.date}</p>
                 <p>{this.props.description}</p>
                 <p>is_planned={this.props.is_planned}, status={this.props.status}</p>

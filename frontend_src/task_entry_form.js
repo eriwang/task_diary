@@ -27,12 +27,13 @@ class TaskEntryForm extends React.Component
         this.setState({'is_planned': event.target.checked});
     }
     
-    // TODO: allow enter to submit when one of my fields is focused
+    // TODO: allow enter to submit name is focused. for notes I want to allow newlines
     // TODO: validation, both on submit and live
     handleSubmit()
     {
+        const YYYY_MM_DD_LENGTH = 10; // 2020-06-22
         let data = {
-            'date': (new Date()).toISOString().slice(0, '2020-06-22'.length),
+            'date': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
             'description': this.state.name,
             'is_planned': this.state.is_planned,
             'status': Status.NOT_STARTED,
