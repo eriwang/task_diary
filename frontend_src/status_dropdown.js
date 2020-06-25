@@ -2,7 +2,7 @@ import React from 'react';
 
 import Status from './status.js';
 
-class StatusDropdown extends React.Component
+export default class StatusDropdown extends React.Component
 {
     constructor(props)
     {
@@ -22,5 +22,3 @@ class StatusDropdown extends React.Component
         );
     }
 }
-
-export default StatusDropdown;

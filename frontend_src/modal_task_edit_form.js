@@ -1,6 +1,6 @@
 import React from 'react';
 
-class ModalTaskEditForm extends React.Component
+export default class ModalTaskEditForm extends React.Component
 {
     constructor(props)
     {
@@ -19,5 +19,3 @@ class ModalTaskEditForm extends React.Component
         );
     }
 }
-
-export default ModalTaskEditForm;

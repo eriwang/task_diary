@@ -3,7 +3,7 @@ import React from 'react';
 import {ajaxPut} from './ajax.js';
 import StatusDropdown from './status_dropdown.js';
 
-class TaskView extends React.Component
+export default class TaskView extends React.Component
 {
     constructor(props)
     {
@@ -109,5 +109,3 @@ class Task extends React.Component
         );
     }
 }
-
-export default TaskView;
