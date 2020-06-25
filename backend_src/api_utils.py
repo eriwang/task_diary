@@ -1,9 +1,12 @@
+from collections import namedtuple
 import datetime
 from functools import wraps
 
 from flask import jsonify
 
 from model.task import Status
+
+OptionalParamValueType = namedtuple('OptionalParamValueType', ['type'])
 
 
 class BadRequestException(Exception):
@@ -23,12 +26,34 @@ def api_jsonify_errors(fxn):
     return wrapper
 
 
-def validate_and_load_params(params, key_to_types):
+def validate_and_load_params(params, key_to_types, optional_key_to_types=None):
     received_keys = sorted(params.keys())
-    expected_keys = sorted(key_to_types.keys())
-    if received_keys != expected_keys:
-        raise BadRequestException(f'Expected keys {expected_keys}, received {received_keys} instead')
+    if optional_key_to_types is None:
+        expected_keys = sorted(key_to_types.keys())
+        if received_keys != expected_keys:
+            raise BadRequestException(f'Expected keys {expected_keys}, received {received_keys} instead')
+    else:
+        required_keys_set = set(key_to_types.keys())
+        optional_keys_set = set(optional_key_to_types.keys())
+        if len(required_keys_set & optional_keys_set) > 0:
+            raise ValueError('Keys in required/ optional key_to_types must be mutually exclusive')
 
+        received_keys_set = set(received_keys)
+        if len(required_keys_set - received_keys_set) > 0:
+            raise BadRequestException(f'Keys {sorted(required_keys_set)} are required, received {received_keys}')
+
+        supported_keys_set = required_keys_set.union(optional_keys_set)
+        if len(received_keys_set - supported_keys_set) > 0:
+            raise BadRequestException(f'Only keys {sorted(supported_keys_set)} are supported, received {received_keys}')
+
+        present_optional_key_types = {key: value_type for key, value_type in optional_key_to_types.items()
+                                      if key in params}
+        key_to_types = {**key_to_types, **present_optional_key_types}
+
+    return _validate_types_and_load_params(params, key_to_types)
+
+
+def _validate_types_and_load_params(params, key_to_types):
     type_errors = []
     loaded_params = {}
     for key, value_type in key_to_types.items():

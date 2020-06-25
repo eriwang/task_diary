@@ -3,7 +3,7 @@ import datetime
 import os
 import sqlite3
 
-from model.task import Status, create_task_table, insert_task
+from model.task import Status, create_task_table, add_task
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Init a db file with a proper schema.')
@@ -30,12 +30,12 @@ def main():
     create_task_table(cursor)
 
     if args.add_dummy_data:
-        insert_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
-                    Status.NOT_STARTED, 't - 2 notes')
-        insert_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
-                    Status.NOT_STARTED, 'yesterday notes')
-        insert_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes')
-        insert_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2')
+        add_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
+                 Status.NOT_STARTED, 't - 2 notes')
+        add_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
+                 Status.NOT_STARTED, 'yesterday notes')
+        add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes')
+        add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2')
 
     connection.commit()
 

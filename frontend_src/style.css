@@ -9,11 +9,17 @@ p
     margin: 0;
 }
 
-/* TODO: temporary styling */
+/* TODO: unsure if this is the way I'll end up going */
 button
 {
     height: 1.6em;
 }
+
+select
+{
+    height: 1.6em;
+}
+
 
 #content
 {
