@@ -12,6 +12,7 @@ class TaskEntryForm extends React.Component
         this.state = {'name': '', 'notes': '', 'status': Status.NOT_STARTED, 'is_planned': true};
 
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleIsPlannedChange = this.handleIsPlannedChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -22,9 +23,15 @@ class TaskEntryForm extends React.Component
         newState[fieldName] = event.target.value;
         this.setState(newState);
     }
-    handleIsPlannedChange(event)
+
+    handleStatusChange(status)
     {
-        this.setState({'is_planned': event.target.checked});
+        this.setState({'status': status});
+    }
+
+    handleIsPlannedChange(is_planned)
+    {
+        this.setState({'is_planned': is_planned});
     }
     
     // TODO: allow enter to submit when fields (besides notes) are focused.
@@ -43,27 +50,17 @@ class TaskEntryForm extends React.Component
         });
     }
 
-    // TODO: if I use this for modal, do the incrementing static ID for all children with labels
-    // TODO: select is duplicated with task_view.js, can I easily extract into component?
     render()
     {
         return (
             <div>
                 <h3>Task Entry</h3>
-                <TextInput label='Name' value={this.state.name} 
-                    onChange={(e) => this.handleTextChange('name', e)}/>
-                <TextInput label='Notes' isMultiLine value={this.state.notes}
-                    onChange={(e) => this.handleTextChange('notes', e)}/>
-                <div className="entry-single-row-field">
-                    <label htmlFor="entry-status">Status</label>
-                    <StatusDropdown id="entry-status" status={this.state.status} 
-                        onStatusChange={(status) => this.setState({'status': status})} />
-                </div>
-                <div className="entry-single-row-field">
-                    <label htmlFor="entry-is-planned">Is Planned</label>
-                    <input type="checkbox" id="entry-is-planned" checked={this.state.is_planned} 
-                        onChange={this.handleIsPlannedChange}/>
-                </div>
+                <TextInput label='Name' value={this.state.name} onChange={(e) => this.handleTextChange('name', e)}/>
+                <TextInput label='Notes' value={this.state.notes} onChange={(e) => this.handleTextChange('notes', e)}
+                    isMultiLine />
+                <StatusInput status={this.state.status} onStatusChange={this.handleStatusChange} />
+                <CheckboxInput label="Is Planned" checked={this.state.is_planned}
+                    onCheckedChange={this.handleIsPlannedChange} />
                 <button onClick={this.handleSubmit}>Submit</button>
             </div>
         );
@@ -75,23 +72,67 @@ class TextInput extends React.Component
     constructor(props)
     {
         super(props);
+        this.instanceId = TextInput.id++;
     }
 
     render()
     {
-        // TODO: I've got no clue if this ID will be unique. Could do a static incrementing id 
-        let entryId = `entry-${this.props.label}`;
+        const elementId = `entry-text-input-${this.instanceId}`;
         let textInputElement = (this.props.isMultiLine === undefined) ?
-            <input type="text" id={entryId} onChange={this.props.onChange} value={this.props.value} /> : 
-            <textarea id={entryId} onChange={this.props.onChange} value={this.props.value}
+            <input type="text" id={elementId} onChange={this.props.onChange} value={this.props.value} /> : 
+            <textarea id={elementId} onChange={this.props.onChange} value={this.props.value}
                 className="entry-textarea" />;
         return (
             <div className="entry-multi-row-field">
-                <label htmlFor={entryId}>{this.props.label}</label>
+                <label htmlFor={elementId}>{this.props.label}</label>
                 {textInputElement}
             </div>
         );
     }
 }
+TextInput.id = 0;  // static
+
+class StatusInput extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.instanceId = StatusInput.id++;
+    }
+
+    render()
+    {
+        const elementId = `entry-status-input-${this.instanceId}`;
+        return (
+            <div className="entry-single-row-field">
+                <label htmlFor={elementId}>Status</label>
+                <StatusDropdown id={elementId} status={this.props.status} onStatusChange={this.props.onStatusChange} />
+            </div>
+        );
+    }
+}
+StatusInput.id = 0; // static
+
+class CheckboxInput extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.instanceId = CheckboxInput.id++;
+    }
+
+    render()
+    {
+        const elementId = `entry-checkbox-input-${this.instanceId}`;
+        return (
+            <div className="entry-single-row-field">
+                <label htmlFor={elementId}>{this.props.label}</label>
+                <input type="checkbox" id={elementId} checked={this.props.checked} 
+                    onChange={(e) => this.props.onCheckedChange(e.target.checked)}/>
+            </div>
+        );
+    }
+}
+CheckboxInput.id = 0; // static
 
 export default TaskEntryForm;
