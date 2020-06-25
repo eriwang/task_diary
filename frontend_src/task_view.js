@@ -23,8 +23,9 @@ class TaskView extends React.Component
         {
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             taskArray.push(
-                <Task key={task['id']} id={task['id']} name={task['name']} status={task['status']} 
-                    notes={task['notes']} onEditTask={this.props.onEditTask}/>
+                <Task key={task['id']} id={task['id']} date={task['date']} name={task['name']}
+                    is_planned={task['is_planned']} status={task['status']} notes={task['notes']}
+                    onEditTask={this.props.onEditTask}/>
             );
         }
 
@@ -40,6 +41,10 @@ class TaskView extends React.Component
     }
 }
 
+/* TODO: Date/ planned are only on here because I want to pass all the task information back when editing.
+ *       The Task rendering component has no need to know about either of those.
+ *       Is the better design pattern to have a TaskStore that's the source of truth, that everything reads?
+ */
 class Task extends React.Component
 {
     constructor(props)
@@ -49,6 +54,7 @@ class Task extends React.Component
 
         this.handleToggleDetails = this.handleToggleDetails.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
+        this.handleEditTask = this.handleEditTask.bind(this);
     }
 
     handleToggleDetails()
@@ -64,13 +70,25 @@ class Task extends React.Component
             .done((data) => this.setState({'status': data['status']}));
     }
 
+    handleEditTask()
+    {
+        this.props.onEditTask({
+            'id': this.props.id,
+            'date': this.props.date,
+            'name': this.props.name,
+            'is_planned': this.props.is_planned,
+            'status': this.state.status,
+            'notes': this.props.notes
+        });
+    }
+
     render()
     {
         const taskHideable = this.state.are_details_hidden ? null : (
             <div className="task-hideable-container">
                 <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
                 <div className="task-modification-container">
-                    <button onClick={this.props.onEditTask}>Edit</button>
+                    <button onClick={this.handleEditTask}>Edit</button>
                     <button>Delete</button>
                 </div>
             </div>

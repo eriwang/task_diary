@@ -17,7 +17,7 @@ class App extends React.Component
         this.state = {
             'dateStr': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
             'tasks': [],
-            'is_modal_open': false
+            'currently_edited_task': null
         };
 
         this.refreshTasks = this.refreshTasks.bind(this);
@@ -36,9 +36,9 @@ class App extends React.Component
             .done((data) => this.setState({'tasks': data['tasks']}));
     }
 
-    handleEditTask()
+    handleEditTask(task)
     {
-        this.setState({'is_modal_open': true});
+        this.setState({'currently_edited_task': task});
     }
 
     handleDateChange(event)
@@ -50,7 +50,10 @@ class App extends React.Component
 
     render()
     {
-        const modalTaskEditForm = <ModalTaskEditForm onClose={() => this.setState({'is_modal_open': false})} />;
+        const modalTaskEditForm = (
+            <ModalTaskEditForm task={this.state['currently_edited_task']}
+                onClose={() => this.setState({'currently_edited_task': null})} />
+        );
 
         return (
             <div>
@@ -69,7 +72,7 @@ class App extends React.Component
                             onTaskEntrySuccessful={() => this.refreshTasks(this.state.dateStr)}/>
                     </div>
                 </div>
-                {(this.state.is_modal_open) ? modalTaskEditForm : null}
+                {(this.state.currently_edited_task !== null) ? modalTaskEditForm : null}
             </div>
             
         );
