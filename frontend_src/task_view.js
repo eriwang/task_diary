@@ -47,9 +47,17 @@ class Task extends React.Component
     {
         return (
             <div className="task">
-                <p>{this.props.name}</p>
-                <p>status={this.props.status}</p>
-                <p>notes={this.props.notes}</p>
+                <div className="task-always-shown">
+                    <p className="task-name">{this.props.name}</p>
+                    <div className="task-goal-status-container">
+                        <p>Goal=Something</p>
+                        <p>status={this.props.status}</p>
+                        <button>Toggle Details</button>
+                    </div>
+                </div>
+                <div className="task-hideable">
+                    <p className="task-notes">{this.props.notes}</p>
+                </div>
             </div>
         );
     }

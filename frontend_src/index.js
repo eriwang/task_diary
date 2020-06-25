@@ -12,7 +12,7 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
-        const YYYY_MM_DD_LENGTH = 10; // 2020-06-22
+        const YYYY_MM_DD_LENGTH = 10; // e.g. 2020-06-22
         this.state = {
             'dateStr': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
             'tasks': []

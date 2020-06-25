@@ -77,7 +77,8 @@ class TextInput extends React.Component
         let entryId = `entry-${this.props.label}`;
         let textInputElement = this.props.isSingleLine ?
             <input type="text" id={entryId} onChange={this.props.onChange} value={this.props.value} /> : 
-            <textarea id={entryId} onChange={this.props.onChange} value={this.props.value} />;
+            <textarea id={entryId} onChange={this.props.onChange} value={this.props.value}
+                className="entry-textarea" />;
         return (
             <div className="entry-text-field">
                 <label htmlFor={entryId}>{this.props.label}</label>
