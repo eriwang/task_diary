@@ -46,18 +46,23 @@ select
     width: 30%;
 }
 
-.entry-text-field
+.entry-multi-row-field
 {
     display: flex;
     flex-direction: column;
     margin: 1em 0em;
 }
 
-.entry-checkbox-field
+.entry-single-row-field
 {
     display: flex;
     flex-direction: row;
     margin: 1em 0em;
+}
+
+.entry-single-row-field > :first-child
+{
+    margin-right: 0.25em;
 }
 
 .entry-textarea
@@ -94,6 +99,7 @@ select
 .task-notes
 {
     max-width: 80%;
+    white-space: pre-line;
 }
 
 .task-hideable-container

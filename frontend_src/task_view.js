@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {ajaxPut} from './ajax.js';
+import StatusDropdown from './status_dropdown.js';
 
 class TaskView extends React.Component
 {
@@ -57,9 +58,9 @@ class Task extends React.Component
         });
     }
 
-    handleStatusChange(event)
+    handleStatusChange(status)
     {
-        ajaxPut('/task', {'id': this.props.id, 'status': parseInt(event.target.value)})
+        ajaxPut('/task', {'id': this.props.id, 'status': status})
             .done((data) => this.setState({'status': data['status']}));
     }
 
@@ -77,12 +78,7 @@ class Task extends React.Component
                     <p className="task-name">{this.props.name}</p>
                     <div className="task-flush-right-container">
                         <p>Goal=Something</p>
-                        <select value={this.state.status} onChange={this.handleStatusChange}>
-                            <option value="0">Not Started</option>
-                            <option value="1">In Progress</option>
-                            <option value="2">Complete</option>
-                            <option value="3">Dropped</option>
-                        </select>
+                        <StatusDropdown status={this.state.status} onStatusChange={this.handleStatusChange} />
                         <button onClick={this.handleToggleDetails}>Toggle Details</button>
                     </div>
                 </div>

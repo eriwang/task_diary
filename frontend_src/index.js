@@ -48,7 +48,7 @@ class App extends React.Component
                 <div id="sidebar">
                     <div>
                         <h3>Date Selection</h3>
-                        <div className="entry-text-field">
+                        <div className="entry-multi-row-field">
                             <label htmlFor="date-selector">Date</label>
                             <input type="date" id="date-selector" onChange={this.handleDateChange}
                                 value={this.state.dateStr}/>

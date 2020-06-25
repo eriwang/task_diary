@@ -2,13 +2,14 @@ import React from 'react';
 
 import {ajaxPost} from './ajax.js';
 import Status from './status.js';
+import StatusDropdown from './status_dropdown.js';
 
 class TaskEntryForm extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {'name': '', 'notes': '', 'is_planned': true};
+        this.state = {'name': '', 'notes': '', 'status': Status.NOT_STARTED, 'is_planned': true};
 
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleIsPlannedChange = this.handleIsPlannedChange.bind(this);
@@ -21,13 +22,12 @@ class TaskEntryForm extends React.Component
         newState[fieldName] = event.target.value;
         this.setState(newState);
     }
-
     handleIsPlannedChange(event)
     {
         this.setState({'is_planned': event.target.checked});
     }
     
-    // TODO: allow enter to submit when name is focused. for notes I want to allow newlines
+    // TODO: allow enter to submit when fields (besides notes) are focused.
     // TODO: validation for empty name on submit
     handleSubmit()
     {
@@ -35,7 +35,7 @@ class TaskEntryForm extends React.Component
             'date': this.props.date,
             'name': this.state.name,
             'is_planned': this.state.is_planned,
-            'status': Status.NOT_STARTED,
+            'status': this.state.status,
             'notes': this.state.notes
         }).done(() => {
             this.setState({'name': '', 'notes': ''});
@@ -43,16 +43,23 @@ class TaskEntryForm extends React.Component
         });
     }
 
+    // TODO: if I use this for modal, do the incrementing static ID for all children with labels
+    // TODO: select is duplicated with task_view.js, can I easily extract into component?
     render()
     {
         return (
-            <div id="task-entry">
+            <div>
                 <h3>Task Entry</h3>
-                <TextInput label='Name' isSingleLine={true} value={this.state.name} 
+                <TextInput label='Name' value={this.state.name} 
                     onChange={(e) => this.handleTextChange('name', e)}/>
-                <TextInput label='Notes' isSingleLine={false} value={this.state.notes}
+                <TextInput label='Notes' isMultiLine value={this.state.notes}
                     onChange={(e) => this.handleTextChange('notes', e)}/>
-                <div className="entry-checkbox-field">
+                <div className="entry-single-row-field">
+                    <label htmlFor="entry-status">Status</label>
+                    <StatusDropdown id="entry-status" status={this.state.status} 
+                        onStatusChange={(status) => this.setState({'status': status})} />
+                </div>
+                <div className="entry-single-row-field">
                     <label htmlFor="entry-is-planned">Is Planned</label>
                     <input type="checkbox" id="entry-is-planned" checked={this.state.is_planned} 
                         onChange={this.handleIsPlannedChange}/>
@@ -63,7 +70,6 @@ class TaskEntryForm extends React.Component
     }
 }
 
-// TODO: should be able to make this.props.isSingleLine this.props.isMultiLine instead and make it optional
 class TextInput extends React.Component
 {
     constructor(props)
@@ -75,12 +81,12 @@ class TextInput extends React.Component
     {
         // TODO: I've got no clue if this ID will be unique. Could do a static incrementing id 
         let entryId = `entry-${this.props.label}`;
-        let textInputElement = this.props.isSingleLine ?
+        let textInputElement = (this.props.isMultiLine === undefined) ?
             <input type="text" id={entryId} onChange={this.props.onChange} value={this.props.value} /> : 
             <textarea id={entryId} onChange={this.props.onChange} value={this.props.value}
                 className="entry-textarea" />;
         return (
-            <div className="entry-text-field">
+            <div className="entry-multi-row-field">
                 <label htmlFor={entryId}>{this.props.label}</label>
                 {textInputElement}
             </div>
