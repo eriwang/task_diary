@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {ajaxPut} from './ajax.js';
+
 class TaskView extends React.Component
 {
     constructor(props)
@@ -20,7 +22,8 @@ class TaskView extends React.Component
         {
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             taskArray.push(
-                <Task key={task['id']} name={task['name']} status={task['status']} notes={task['notes']} />
+                <Task key={task['id']} id={task['id']} name={task['name']} status={task['status']} 
+                    notes={task['notes']} />
             );
         }
 
@@ -56,7 +59,8 @@ class Task extends React.Component
 
     handleStatusChange(event)
     {
-        this.setState({'status': parseInt(event.target.value)});
+        ajaxPut('/task', {'id': this.props.id, 'status': parseInt(event.target.value)})
+            .done((data) => this.setState({'status': data['status']}));
     }
 
     render()

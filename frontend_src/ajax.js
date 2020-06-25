@@ -21,10 +21,20 @@ export function ajaxGet(url, data)
 
 export function ajaxPost(url, data)
 {
+    return ajaxJsonBody(url, data, 'POST');
+}
+
+export function ajaxPut(url, data)
+{
+    return ajaxJsonBody(url, data, 'PUT');
+}
+
+function ajaxJsonBody(url, data, method)
+{
     return $.ajax(url, {
         'contentType': 'application/json',
         'data': JSON.stringify(data),
-        'method': 'POST',
+        'method': method,
         'processData': false
     });
 }
