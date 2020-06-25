@@ -77,9 +77,9 @@ button
     width: 50%;
 }
 
-.task-goal-status-container
+.task-flush-right-container
 {
-    width: 40%;
+    width: 45%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -88,4 +88,9 @@ button
 .task-notes
 {
     max-width: 80%;
+}
+
+.task-hideable-container
+{
+    margin-top: 1em;
 }

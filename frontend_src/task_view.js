@@ -41,23 +41,37 @@ class Task extends React.Component
     constructor(props)
     {
         super(props);
+        this.state = {'are_details_hidden': true};
+
+        this.handleToggleDetails = this.handleToggleDetails.bind(this);
+    }
+
+    handleToggleDetails()
+    {
+        this.setState((state) => {
+            return {'are_details_hidden': !state.are_details_hidden};
+        });
     }
 
     render()
     {
+        const taskHideable = this.state.are_details_hidden ? null : (
+            <div className="task-hideable-container">
+                <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
+            </div>
+        );
+
         return (
             <div className="task">
                 <div className="task-always-shown">
                     <p className="task-name">{this.props.name}</p>
-                    <div className="task-goal-status-container">
+                    <div className="task-flush-right-container">
                         <p>Goal=Something</p>
                         <p>status={this.props.status}</p>
-                        <button>Toggle Details</button>
+                        <button onClick={this.handleToggleDetails}>Toggle Details</button>
                     </div>
                 </div>
-                <div className="task-hideable">
-                    <p className="task-notes">{this.props.notes}</p>
-                </div>
+                {taskHideable}
             </div>
         );
     }
