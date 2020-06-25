@@ -7,17 +7,30 @@ class TaskView extends React.Component
         super(props);
     }
 
+    renderTaskDiv(tasks)
+    {
+        return <div>{(tasks.length == 0) ? 'None' : tasks}</div>;
+    }
+
     render()
     {
-        let tasks = this.props.tasks.map(task => 
-            <Task key={task['id']} date={task['date']} name={task['name']} 
-                is_planned={task['is_planned']} status={task['status']} notes={task['notes']}/>
-        );
+        let plannedTasks = [];
+        let unplannedTasks = [];
+        for (const task of this.props.tasks)
+        {
+            let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
+            taskArray.push(
+                <Task key={task['id']} name={task['name']} status={task['status']} notes={task['notes']} />
+            );
+        }
 
         return (
             <div id="task-view">
                 <h3>Tasks</h3>
-                <div id="tasks">{(tasks.length == 0) ? 'No tasks' : tasks}</div>
+                <h4>Planned</h4>
+                {this.renderTaskDiv(plannedTasks)}
+                <h4>Unplanned</h4>
+                {this.renderTaskDiv(unplannedTasks)}
             </div>
         );
     }
@@ -34,9 +47,8 @@ class Task extends React.Component
     {
         return (
             <div className="task">
-                <p>{this.props.date}</p>
                 <p>{this.props.name}</p>
-                <p>is_planned={this.props.is_planned}, status={this.props.status}</p>
+                <p>status={this.props.status}</p>
                 <p>notes={this.props.notes}</p>
             </div>
         );

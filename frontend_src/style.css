@@ -18,11 +18,13 @@ textarea
 #task-view
 {
     flex-grow: 2;
+    max-width: 70%;
 }
 
 #sidebar
 {
     flex-grow: 1;
+    max-width: 30%;
 }
 
 .entry-text-field
