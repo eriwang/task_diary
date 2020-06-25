@@ -105,4 +105,45 @@ select
 .task-hideable-container
 {
     margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.task-modification-container
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.task-modification-container > :first-child
+{
+    margin-bottom: 0.5em;
+}
+
+.modal
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content
+{
+    width: 50%;
+    height: 75%;
+
+    border: 2px solid black;
+    padding: 1.5em;
+    background-color: white;
 }

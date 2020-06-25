@@ -24,7 +24,7 @@ class TaskView extends React.Component
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             taskArray.push(
                 <Task key={task['id']} id={task['id']} name={task['name']} status={task['status']} 
-                    notes={task['notes']} />
+                    notes={task['notes']} onEditTask={this.props.onEditTask}/>
             );
         }
 
@@ -69,6 +69,10 @@ class Task extends React.Component
         const taskHideable = this.state.are_details_hidden ? null : (
             <div className="task-hideable-container">
                 <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
+                <div className="task-modification-container">
+                    <button onClick={this.props.onEditTask}>Edit</button>
+                    <button>Delete</button>
+                </div>
             </div>
         );
 

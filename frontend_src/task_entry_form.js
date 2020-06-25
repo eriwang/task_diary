@@ -45,7 +45,7 @@ class TaskEntryForm extends React.Component
             'status': this.state.status,
             'notes': this.state.notes
         }).done(() => {
-            this.setState({'name': '', 'notes': ''});
+            this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
             this.props.onTaskEntrySuccessful();
         });
     }
