@@ -15,7 +15,7 @@ def api_get_tasks_for_date():
     date = au.validate_and_load_params(request.args, _PARAM_KEY_TO_VALUE_TYPES)['date']
 
     with open_db_cursor() as cursor:
-        tasks = Task.query_tasks_for_date(cursor, date)
+        tasks = Task.query_tasks_for_date_with_goals(cursor, date)
 
     return jsonify({'tasks': [t.to_json_dict() for t in tasks]}), 200
 
@@ -23,21 +23,24 @@ def api_get_tasks_for_date():
 @task_bp.route('/task', methods=['POST'])
 @au.api_jsonify_errors
 def api_add_task():
-    _PARAM_KEY_TO_VALUE_TYPES = {
+    _PARAM_KEY_TO_REQUIRED_VALUE_TYPES = {
         'date': 'yyyy-mm-dd',
         'name': str,
         'is_planned': bool,
         'status': 'Status',
         'notes': str
     }
+    _PARAM_KEY_TO_OPTIONAL_VALUE_TYPES = {'goal_id': int}
 
     if not request.is_json:
         raise au.BadRequestException('Expected JSON mimetype')
 
-    task = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_VALUE_TYPES)
+    task = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_REQUIRED_VALUE_TYPES,
+                                       _PARAM_KEY_TO_OPTIONAL_VALUE_TYPES)
 
     with open_db_cursor() as cursor:
-        add_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'])
+        add_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'],
+                 task['goal_id'] if 'goal_id' in task else None)
 
     return jsonify(success=True), 200
 
@@ -51,7 +54,8 @@ def api_modify_task():
         'name': str,
         'is_planned': bool,
         'status': 'Status',
-        'notes': str
+        'notes': str,
+        'goal_id': int
     }
 
     if not request.is_json:

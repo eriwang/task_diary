@@ -15,14 +15,20 @@ export default class TaskForm extends React.Component
 
     handleSubmit()
     {
-        this.props.onSubmitTask({
+        let data = {
             'id': this.props.id,
             'date': this.props.date,
             'name': this.props.name,
             'is_planned': this.props.is_planned,
             'status': this.props.status,
             'notes': this.props.notes
-        });
+        };
+        if (this.props.goal != -1)
+        {
+            data['goal_id'] = this.props.goal;
+        }
+
+        this.props.onSubmitTask(data);
     }
 
     render()

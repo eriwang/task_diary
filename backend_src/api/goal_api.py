@@ -50,6 +50,7 @@ def api_modify_goal():
     return jsonify(success=True), 200
 
 
+# TODO: option to do a (poorman's) cascade or not
 @goal_bp.route('/goal', methods=['DELETE'])
 @au.api_jsonify_errors
 def api_delete_goal():

@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import {ajaxGet} from './ajax.js';
+import GoalEntryForm from './goal_entry_form.js';
 import ModalTaskEditForm from './modal_task_edit_form.js';
 import GoalManager from './state_managers/goal_manager.js';
 import TaskEntryForm from './task_entry_form.js';
@@ -104,6 +105,7 @@ class App extends React.Component
                                     value={this.state.dateStr}/>
                             </div>
                         </div>
+                        <GoalEntryForm />
                         <TaskEntryForm date={this.state.dateStr}
                             goals={shownGoals}
                             onTaskEntrySuccessful={this.refreshTasksCurrentDate}/>

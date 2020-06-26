@@ -1,4 +1,4 @@
-import {ajaxGet} from '../ajax.js';
+import {ajaxGet, ajaxPost} from '../ajax.js';
 
 class GoalManagerClass
 {
@@ -16,6 +16,11 @@ class GoalManagerClass
     {
         ajaxGet('/all_goals', {})
             .done((data) => this.onChange(data['goals']));
+    }
+
+    addGoal(name)
+    {
+        return ajaxPost('/goal', {'name': name}).done(this.refreshGoals);
     }
 
     addListenerCallback(cb)

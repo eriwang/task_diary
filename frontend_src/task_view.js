@@ -24,7 +24,7 @@ export default class TaskView extends React.Component
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             taskArray.push(
                 <Task key={task['id']} id={task['id']} date={task['date']} name={task['name']}
-                    is_planned={task['is_planned']} status={task['status']} notes={task['notes']}
+                    is_planned={task['is_planned']} goal={task['goal']} status={task['status']} notes={task['notes']}
                     onEditTask={this.props.onEditTask} 
                     onStatusChangeSuccessful={this.props.onStatusChangeSuccessful}
                     onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
@@ -105,7 +105,7 @@ class Task extends React.Component
                 <div className="task-always-shown">
                     <p className="task-name">{this.props.name}</p>
                     <div className="task-flush-right-container">
-                        <p>Goal=Something</p>
+                        <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
                         <StatusInput value={this.props.status}
                             onChange={(value) => this.handleStatusChange(parseInt(value))} />
                         <button onClick={this.handleToggleDetails}>Toggle Details</button>

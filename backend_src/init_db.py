@@ -48,8 +48,8 @@ def main():
                  Status.NOT_STARTED, 't - 2 notes')
         add_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
                  Status.NOT_STARTED, 'yesterday notes')
-        add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes')
-        add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2')
+        add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes', 1)
+        add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2', 2)
         add_task(cursor, datetime.date.today(), 'lorem ipsum', False, Status.IN_PROGRESS, _LOREM_IPSUM)
 
     connection.commit()

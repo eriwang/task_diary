@@ -12,26 +12,28 @@ class Status(IntEnum):
 
 
 class Task:
-    def __init__(self, task_id, date, name, is_planned, status, notes):
+    def __init__(self, task_id, date, name, is_planned, status, notes, goal):
         self.id = task_id
         self.date = date
         self.name = name
         self.is_planned = is_planned
         self.status = status
         self.notes = notes
+        self.goal = goal
 
     @classmethod
-    def query_tasks_for_date(cls, cursor, date):
-        cursor.execute('SELECT * FROM tasks WHERE date=?', (_date_to_seconds_since_epoch(date),))
+    def query_tasks_for_date_with_goals(cls, cursor, date):
+        cursor.execute('SELECT * FROM tasks LEFT JOIN goals ON tasks.goal_id = goals.id WHERE tasks.date = ?',
+                       (_date_to_seconds_since_epoch(date),))
         return [cls._create_from_fetch_result(result) for result in cursor.fetchall()]
 
     @classmethod
     def _create_from_fetch_result(cls, result):
         return cls(result[0], datetime.datetime.utcfromtimestamp(result[1]).date(), result[2], bool(result[3]),
-                   Status(result[4]), result[5])
+                   Status(result[4]), result[5], result[8])  # result[6] and result[7] are the goal IDs
 
     def to_json_dict(self):
-        return {
+        fields = {
             'id': self.id,
             'date': self.date.strftime('%Y-%m-%d'),
             'name': self.name,
@@ -39,6 +41,9 @@ class Task:
             'status': self.status,
             'notes': self.notes
         }
+        if self.goal is not None:
+            fields['goal'] = self.goal
+        return fields
 
     def __str__(self):
         return f'{self.date}, {self.name}, {self.is_planned}, {self.status}, {self.notes}'
@@ -61,9 +66,21 @@ def create_task_table(cursor):
     cursor.execute(query_string)
 
 
-def add_task(cursor, date, name, is_planned, status, notes):
-    cursor.execute('INSERT INTO tasks (date, name, is_planned, status, notes) VALUES (?, ?, ?, ?, ?)',
-                   (_date_to_seconds_since_epoch(date), name, is_planned, status, notes))
+def add_task(cursor, date, name, is_planned, status, notes, goal_id=None):
+    query_string = '''
+    INSERT INTO tasks
+        (date, name, is_planned, status, notes{})
+        VALUES (?, ?, ?, ?, ?{})
+    '''
+    values = [_date_to_seconds_since_epoch(date), name, is_planned, status, notes]
+
+    if goal_id is not None:
+        query_string = query_string.format(', goal_id', ', ?')
+        values += [goal_id]
+    else:
+        query_string = query_string.format('', '')
+
+    cursor.execute(query_string, values)
 
 
 def modify_task(cursor, task_id, field_to_changes):

@@ -42,6 +42,7 @@ export default class ModalTaskEditForm extends React.Component
                     <h3>Edit Task</h3>
                     <TaskForm id={this.props.task.id} date={this.state.date} name={this.state.name} 
                         is_planned={this.state.is_planned} status={this.state.status} notes={this.state.notes}
+                        goal={this.state.goal}
                         goals={this.props.goals}
                         onFieldChange={this.handleFieldChange}
                         onSubmitTask={this.handleSubmit} />
