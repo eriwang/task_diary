@@ -77,7 +77,9 @@ class App extends React.Component
         return (
             <div>
                 <div id="center-view">
-                    <TaskView tasks={this.state.tasks} onEditTask={this.handleEditTask} 
+                    <TaskView tasks={this.state.tasks}
+                        onEditTask={this.handleEditTask} 
+                        onStatusChangeSuccessful={this.refreshTasksCurrentDate}
                         onTaskDeleteSuccessful={this.refreshTasksCurrentDate}/>
                     <div id="sidebar">
                         <div>

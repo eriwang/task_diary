@@ -25,7 +25,9 @@ export default class TaskView extends React.Component
             taskArray.push(
                 <Task key={task['id']} id={task['id']} date={task['date']} name={task['name']}
                     is_planned={task['is_planned']} status={task['status']} notes={task['notes']}
-                    onEditTask={this.props.onEditTask} onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
+                    onEditTask={this.props.onEditTask} 
+                    onStatusChangeSuccessful={this.props.onStatusChangeSuccessful}
+                    onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
             );
         }
 
@@ -43,14 +45,16 @@ export default class TaskView extends React.Component
 
 /* Date/ planned are only on here because I want to pass all the task information back when editing.
  * The Task rendering component has no need to know about either of those.
- * Is the better design pattern to have a TaskStore that's the source of truth, that everything reads?
+ * The better design pattern might be to have a TaskStore that's the source of truth that everything reads.
+ * Worth noting that there's a big stench (bad smell :) ) associated with this: right now the state controller is App,
+ * and everything has to pass its state back there through multiple levels, resulting in tons of confusing callbacks.
  */
 class Task extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {'are_details_hidden': true, 'status': props.status};
+        this.state = {'are_details_hidden': true};
 
         this.handleToggleDetails = this.handleToggleDetails.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
@@ -68,7 +72,7 @@ class Task extends React.Component
     handleStatusChange(status)
     {
         ajaxPut('/task', {'id': this.props.id, 'status': status})
-            .done((data) => this.setState({'status': data['status']}));
+            .done(this.props.onStatusChangeSuccessful);
     }
 
     handleEditTask()
@@ -78,7 +82,7 @@ class Task extends React.Component
             'date': this.props.date,
             'name': this.props.name,
             'is_planned': this.props.is_planned,
-            'status': this.state.status,
+            'status': this.props.status,
             'notes': this.props.notes
         });
     }
@@ -102,7 +106,7 @@ class Task extends React.Component
                     <p className="task-name">{this.props.name}</p>
                     <div className="task-flush-right-container">
                         <p>Goal=Something</p>
-                        <StatusDropdown status={this.state.status} onStatusChange={this.handleStatusChange} />
+                        <StatusDropdown status={this.props.status} onStatusChange={this.handleStatusChange} />
                         <button onClick={this.handleToggleDetails}>Toggle Details</button>
                     </div>
                 </div>
@@ -121,9 +125,10 @@ class TaskHideableSection extends React.Component
 
     render()
     {
+        const notes = (this.props.notes != '') ? this.props.notes : 'Task has no notes.';
         return (
             <div className="task-hideable-container">
-                <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
+                <p className="task-notes">{notes}</p>
                 <div className="task-modification-container">
                     <button onClick={this.props.onEditTask}>Edit</button>
                     <button onClick={this.props.onDeleteTask}>Delete</button>
