@@ -69,8 +69,6 @@ def api_modify_task():
     if len(task_changes) == len(_PARAM_KEY_TO_REQUIRED_VALUE_TYPES):
         raise au.BadRequestException('Sent modify task request but no fields passed to modify')
 
-    if 'date' in task_changes:
-        task_changes['date'] = task_changes['date'].strftime('%Y-%m-%d')
     if 'status' in task_changes:
         task_changes['status'] = int(task_changes['status'])
 

@@ -13,9 +13,8 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
-        const YYYY_MM_DD_LENGTH = 10; // e.g. 2020-06-22
         this.state = {
-            'dateStr': (new Date()).toISOString().slice(0, YYYY_MM_DD_LENGTH),
+            'dateStr': getCurrentDateStr(),
             'tasks': [],
             'currently_edited_task': null
         };
@@ -23,6 +22,8 @@ class App extends React.Component
         this.refreshTasks = this.refreshTasks.bind(this);
         this.handleEditTask = this.handleEditTask.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
+        this.handleModalEditSuccessful = this.handleModalEditSuccessful.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
     }
 
     componentDidMount()
@@ -48,11 +49,23 @@ class App extends React.Component
         this.refreshTasks(dateStr);
     }
 
+    handleModalEditSuccessful()
+    {
+        this.refreshTasks(this.state.dateStr);
+        this.handleModalClose();
+    }
+
+    handleModalClose()
+    {
+        this.setState({'currently_edited_task': null});
+    }
+
     render()
     {
         const modalTaskEditForm = (
             <ModalTaskEditForm task={this.state['currently_edited_task']}
-                onClose={() => this.setState({'currently_edited_task': null})} />
+                onTaskEntrySuccessful={this.handleModalEditSuccessful}
+                onClose={this.handleModalClose} />
         );
 
         return (
@@ -77,6 +90,14 @@ class App extends React.Component
             
         );
     }
+}
+
+function getCurrentDateStr()
+{
+    const today = new Date();
+    const monthStr = (today.getMonth() + 1).toString().padStart(2, '0');
+    const dayStr = (today.getDate()).toString().padStart(2, '0');
+    return `${today.getFullYear()}-${monthStr}-${dayStr}`;
 }
 
 ReactDOM.render(<App/>, document.getElementById('app'));

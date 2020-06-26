@@ -1,50 +1,41 @@
 import React from 'react';
 
 import {ajaxPost} from './ajax.js';
-import {TextInput, StatusInput, CheckboxInput} from './form_components.js';
 import Status from './status.js';
+import TaskForm from './task_form.js';
 
 export default class TaskEntryForm extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {'name': '', 'notes': '', 'status': Status.NOT_STARTED, 'is_planned': true};
+        this.state = {
+            'name': '',
+            'notes': '',
+            'is_planned': true,
+            'status': Status.NOT_STARTED
+        };
 
-        this.handleTextChange = this.handleTextChange.bind(this);
-        this.handleStatusChange = this.handleStatusChange.bind(this);
-        this.handleIsPlannedChange = this.handleIsPlannedChange.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleTextChange(fieldName, event)
+    handleFieldChange(fieldName, value)
     {
         const newState = {};
-        newState[fieldName] = event.target.value;
+        newState[fieldName] = value;
         this.setState(newState);
     }
 
-    handleStatusChange(status)
+    handleSubmit(task)
     {
-        this.setState({'status': status});
-    }
+        if (task['id'] !== null)
+        {
+            throw `Expected id to be null for new task entry, but is ${task['id']}`;
+        }
+        delete task.id;
 
-    handleIsPlannedChange(is_planned)
-    {
-        this.setState({'is_planned': is_planned});
-    }
-    
-    // TODO: allow enter to submit when fields (besides notes) are focused.
-    // TODO: validation for empty name on submit
-    handleSubmit()
-    {
-        ajaxPost('/task', {
-            'date': this.props.date,
-            'name': this.state.name,
-            'is_planned': this.state.is_planned,
-            'status': this.state.status,
-            'notes': this.state.notes
-        }).done(() => {
+        ajaxPost('/task', task).done(() => {
             this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
             this.props.onTaskEntrySuccessful();
         });
@@ -55,13 +46,10 @@ export default class TaskEntryForm extends React.Component
         return (
             <div>
                 <h3>Task Entry</h3>
-                <TextInput label='Name' value={this.state.name} onChange={(e) => this.handleTextChange('name', e)}/>
-                <TextInput label='Notes' value={this.state.notes} onChange={(e) => this.handleTextChange('notes', e)}
-                    isMultiLine />
-                <StatusInput status={this.state.status} onStatusChange={this.handleStatusChange} />
-                <CheckboxInput label="Is Planned" checked={this.state.is_planned}
-                    onCheckedChange={this.handleIsPlannedChange} />
-                <button onClick={this.handleSubmit}>Submit</button>
+                <TaskForm id={null} date={this.props.date} name={this.state.name} is_planned={this.state.is_planned}
+                    status={this.state.status} notes={this.state.notes} 
+                    onFieldChange={this.handleFieldChange}
+                    onSubmitTask={this.handleSubmit} />
             </div>
         );
     }

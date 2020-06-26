@@ -140,8 +140,7 @@ select
 
 .modal-content
 {
-    width: 50%;
-    height: 75%;
+    width: 30%;
 
     border: 2px solid black;
     padding: 1.5em;

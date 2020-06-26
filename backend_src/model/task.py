@@ -67,9 +67,15 @@ def modify_task(cursor, task_id, field_to_change):
     if len(field_to_change) == 0:
         raise ValueError('Did not expect empty field_to_change')
 
-    field_and_changes = list(field_to_change.items())
+    field_and_changes = []
+    for field, change in field_to_change.items():
+        if field == 'date':
+            change = _date_to_seconds_since_epoch(change)
+        field_and_changes.append((field, change))
+
     set_string = ', '.join([f'{fc[0]} = ?' for fc in field_and_changes])
     query_string = 'UPDATE tasks SET {} WHERE rowid = ?'.format(set_string)
+
     cursor.execute(query_string, [fc[1] for fc in field_and_changes] + [task_id])
 
 
