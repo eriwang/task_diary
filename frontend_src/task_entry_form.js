@@ -2,43 +2,41 @@ import React from 'react';
 
 import {ajaxPost} from './ajax.js';
 import Status from './status.js';
+import TaskForm from './task_form.js';
 
-class TaskEntryForm extends React.Component
+export default class TaskEntryForm extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {'name': '', 'notes': '', 'is_planned': true};
+        this.state = {
+            'name': '',
+            'notes': '',
+            'is_planned': true,
+            'status': Status.NOT_STARTED
+        };
 
-        this.handleTextChange = this.handleTextChange.bind(this);
-        this.handleIsPlannedChange = this.handleIsPlannedChange.bind(this);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleTextChange(fieldName, event)
+    handleFieldChange(fieldName, value)
     {
         const newState = {};
-        newState[fieldName] = event.target.value;
+        newState[fieldName] = value;
         this.setState(newState);
     }
 
-    handleIsPlannedChange(event)
+    handleSubmit(task)
     {
-        this.setState({'is_planned': event.target.checked});
-    }
-    
-    // TODO: allow enter to submit when name is focused. for notes I want to allow newlines
-    // TODO: validation for empty name on submit
-    handleSubmit()
-    {
-        ajaxPost('/task', {
-            'date': this.props.date,
-            'name': this.state.name,
-            'is_planned': this.state.is_planned,
-            'status': Status.NOT_STARTED,
-            'notes': this.state.notes
-        }).done(() => {
-            this.setState({'name': '', 'notes': ''});
+        if (task['id'] !== null)
+        {
+            throw `Expected id to be null for new task entry, but is ${task['id']}`;
+        }
+        delete task.id;
+
+        ajaxPost('/task', task).done(() => {
+            this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
             this.props.onTaskEntrySuccessful();
         });
     }
@@ -46,45 +44,13 @@ class TaskEntryForm extends React.Component
     render()
     {
         return (
-            <div id="task-entry">
+            <div>
                 <h3>Task Entry</h3>
-                <TextInput label='Name' isSingleLine={true} value={this.state.name} 
-                    onChange={(e) => this.handleTextChange('name', e)}/>
-                <TextInput label='Notes' isSingleLine={false} value={this.state.notes}
-                    onChange={(e) => this.handleTextChange('notes', e)}/>
-                <div className="entry-checkbox-field">
-                    <label htmlFor="entry-is-planned">Is Planned</label>
-                    <input type="checkbox" id="entry-is-planned" checked={this.state.is_planned} 
-                        onChange={this.handleIsPlannedChange}/>
-                </div>
-                <button onClick={this.handleSubmit}>Submit</button>
+                <TaskForm id={null} date={this.props.date} name={this.state.name} is_planned={this.state.is_planned}
+                    status={this.state.status} notes={this.state.notes} 
+                    onFieldChange={this.handleFieldChange}
+                    onSubmitTask={this.handleSubmit} />
             </div>
         );
     }
 }
-
-// TODO: should be able to make this.props.isSingleLine this.props.isMultiLine instead and make it optional
-class TextInput extends React.Component
-{
-    constructor(props)
-    {
-        super(props);
-    }
-
-    render()
-    {
-        // TODO: I've got no clue if this ID will be unique. Could do a static incrementing id 
-        let entryId = `entry-${this.props.label}`;
-        let textInputElement = this.props.isSingleLine ?
-            <input type="text" id={entryId} onChange={this.props.onChange} value={this.props.value} /> : 
-            <textarea id={entryId} onChange={this.props.onChange} value={this.props.value} />;
-        return (
-            <div className="entry-text-field">
-                <label htmlFor={entryId}>{this.props.label}</label>
-                {textInputElement}
-            </div>
-        );
-    }
-}
-
-export default TaskEntryForm;
