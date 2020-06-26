@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {ajaxPut, ajaxDelete} from './ajax.js';
-import StatusDropdown from './status_dropdown.js';
+import {StatusInput} from './form_components.js';
 
 export default class TaskView extends React.Component
 {
@@ -106,7 +106,8 @@ class Task extends React.Component
                     <p className="task-name">{this.props.name}</p>
                     <div className="task-flush-right-container">
                         <p>Goal=Something</p>
-                        <StatusDropdown status={this.props.status} onStatusChange={this.handleStatusChange} />
+                        <StatusInput value={this.props.status}
+                            onChange={(value) => this.handleStatusChange(parseInt(value))} />
                         <button onClick={this.handleToggleDetails}>Toggle Details</button>
                     </div>
                 </div>
