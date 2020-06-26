@@ -1,12 +1,9 @@
-from collections import namedtuple
 import datetime
 from functools import wraps
 
 from flask import jsonify
 
 from model.task import Status
-
-OptionalParamValueType = namedtuple('OptionalParamValueType', ['type'])
 
 
 class BadRequestException(Exception):
