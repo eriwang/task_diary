@@ -1,9 +1,7 @@
-import sqlite3
-
 from flask import Blueprint, jsonify, request
 
 import api.api_utils as au
-from model.db_utils import DB_FILEPATH
+from model.db_utils import open_db_cursor
 from model.task import Task, add_task, modify_task, delete_task
 
 task_bp = Blueprint('task', __name__)
@@ -17,9 +15,10 @@ def api_get_tasks_for_date():
     }
 
     date = au.validate_and_load_params(request.args, _PARAM_KEY_TO_VALUE_TYPES)['date']
-    connection = sqlite3.connect(DB_FILEPATH)
-    cursor = connection.cursor()
-    return jsonify({'tasks': [a.to_json_dict() for a in Task.query_tasks_for_date(cursor, date)]}), 200
+    with open_db_cursor() as cursor:
+        tasks = Task.query_tasks_for_date(cursor, date)
+
+    return jsonify({'tasks': [a.to_json_dict() for a in tasks]}), 200
 
 
 @task_bp.route('/task', methods=['POST'])
@@ -38,11 +37,8 @@ def api_add_task():
 
     task = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_VALUE_TYPES)
 
-    connection = sqlite3.connect(DB_FILEPATH)
-    cursor = connection.cursor()
-    add_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'])
-
-    connection.commit()
+    with open_db_cursor() as cursor:
+        add_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'])
 
     return jsonify(success=True), 200
 
@@ -76,11 +72,8 @@ def api_modify_task():
     task_changes_no_id = task_changes.copy()
     task_id = task_changes_no_id.pop('id')
 
-    connection = sqlite3.connect(DB_FILEPATH)
-    cursor = connection.cursor()
-    modify_task(cursor, task_id, task_changes_no_id)
-
-    connection.commit()
+    with open_db_cursor() as cursor:
+        modify_task(cursor, task_id, task_changes_no_id)
 
     return jsonify(task_changes), 200
 
@@ -95,10 +88,7 @@ def api_delete_task():
 
     task_id = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_VALUE_TYPES)['id']
 
-    connection = sqlite3.connect(DB_FILEPATH)
-    cursor = connection.cursor()
-    delete_task(cursor, task_id)
-
-    connection.commit()
+    with open_db_cursor() as cursor:
+        delete_task(cursor, task_id)
 
     return jsonify(success=True), 200
