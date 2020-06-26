@@ -63,12 +63,12 @@ def add_task(cursor, date, name, is_planned, status, notes):
                    (_date_to_seconds_since_epoch(date), name, is_planned, status, notes))
 
 
-def modify_task(cursor, task_id, field_to_change):
-    if len(field_to_change) == 0:
-        raise ValueError('Did not expect empty field_to_change')
+def modify_task(cursor, task_id, field_to_changes):
+    if len(field_to_changes) == 0:
+        raise ValueError('Did not expect empty field_to_changes')
 
     field_and_changes = []
-    for field, change in field_to_change.items():
+    for field, change in field_to_changes.items():
         if field == 'date':
             change = _date_to_seconds_since_epoch(change)
         field_and_changes.append((field, change))
@@ -77,6 +77,10 @@ def modify_task(cursor, task_id, field_to_change):
     query_string = 'UPDATE tasks SET {} WHERE rowid = ?'.format(set_string)
 
     cursor.execute(query_string, [fc[1] for fc in field_and_changes] + [task_id])
+
+
+def delete_task(cursor, task_id):
+    cursor.execute('DELETE FROM tasks WHERE rowid = ?', (task_id,))
 
 
 def _date_to_seconds_since_epoch(date):

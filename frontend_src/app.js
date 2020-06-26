@@ -20,6 +20,7 @@ class App extends React.Component
         };
 
         this.refreshTasks = this.refreshTasks.bind(this);
+        this.refreshTasksCurrentDate = this.refreshTasksCurrentDate.bind(this);
         this.handleEditTask = this.handleEditTask.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleModalEditSuccessful = this.handleModalEditSuccessful.bind(this);
@@ -28,13 +29,18 @@ class App extends React.Component
 
     componentDidMount()
     {
-        this.refreshTasks(this.state.dateStr);
+        this.refreshTasksCurrentDate();
     }
 
     refreshTasks(dateStr)
     {
         ajaxGet('/date_tasks', {'date': dateStr})
             .done((data) => this.setState({'tasks': data['tasks']}));
+    }
+
+    refreshTasksCurrentDate()
+    {
+        this.refreshTasks(this.state.dateStr);
     }
 
     handleEditTask(task)
@@ -51,7 +57,7 @@ class App extends React.Component
 
     handleModalEditSuccessful()
     {
-        this.refreshTasks(this.state.dateStr);
+        this.refreshTasksCurrentDate();
         this.handleModalClose();
     }
 
@@ -71,7 +77,8 @@ class App extends React.Component
         return (
             <div>
                 <div id="center-view">
-                    <TaskView tasks={this.state.tasks} onEditTask={this.handleEditTask}/>
+                    <TaskView tasks={this.state.tasks} onEditTask={this.handleEditTask} 
+                        onTaskDeleteSuccessful={this.refreshTasksCurrentDate}/>
                     <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>
@@ -82,7 +89,7 @@ class App extends React.Component
                             </div>
                         </div>
                         <TaskEntryForm date={this.state.dateStr} 
-                            onTaskEntrySuccessful={() => this.refreshTasks(this.state.dateStr)}/>
+                            onTaskEntrySuccessful={this.refreshTasksCurrentDate}/>
                     </div>
                 </div>
                 {(this.state.currently_edited_task !== null) ? modalTaskEditForm : null}

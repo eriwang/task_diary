@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ajaxPut} from './ajax.js';
+import {ajaxPut, ajaxDelete} from './ajax.js';
 import StatusDropdown from './status_dropdown.js';
 
 export default class TaskView extends React.Component
@@ -25,7 +25,7 @@ export default class TaskView extends React.Component
             taskArray.push(
                 <Task key={task['id']} id={task['id']} date={task['date']} name={task['name']}
                     is_planned={task['is_planned']} status={task['status']} notes={task['notes']}
-                    onEditTask={this.props.onEditTask}/>
+                    onEditTask={this.props.onEditTask} onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
             );
         }
 
@@ -41,9 +41,9 @@ export default class TaskView extends React.Component
     }
 }
 
-/* TODO: Date/ planned are only on here because I want to pass all the task information back when editing.
- *       The Task rendering component has no need to know about either of those.
- *       Is the better design pattern to have a TaskStore that's the source of truth, that everything reads?
+/* Date/ planned are only on here because I want to pass all the task information back when editing.
+ * The Task rendering component has no need to know about either of those.
+ * Is the better design pattern to have a TaskStore that's the source of truth, that everything reads?
  */
 class Task extends React.Component
 {
@@ -55,6 +55,7 @@ class Task extends React.Component
         this.handleToggleDetails = this.handleToggleDetails.bind(this);
         this.handleStatusChange = this.handleStatusChange.bind(this);
         this.handleEditTask = this.handleEditTask.bind(this);
+        this.handleDeleteTask = this.handleDeleteTask.bind(this);
     }
 
     handleToggleDetails()
@@ -82,16 +83,17 @@ class Task extends React.Component
         });
     }
 
+    handleDeleteTask()
+    {
+        ajaxDelete('/task', {'id': this.props.id})
+            .done(() => this.props.onTaskDeleteSuccessful());
+    }
+
     render()
     {
         const taskHideable = this.state.are_details_hidden ? null : (
-            <div className="task-hideable-container">
-                <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
-                <div className="task-modification-container">
-                    <button onClick={this.handleEditTask}>Edit</button>
-                    <button>Delete</button>
-                </div>
-            </div>
+            <TaskHideableSection notes={this.props.notes} onEditTask={this.handleEditTask}
+                onDeleteTask={this.handleDeleteTask}/>
         );
 
         return (
@@ -107,5 +109,27 @@ class Task extends React.Component
                 {taskHideable}
             </div>
         );
+    }
+}
+
+class TaskHideableSection extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+    }
+
+    render()
+    {
+        return (
+            <div className="task-hideable-container">
+                <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>
+                <div className="task-modification-container">
+                    <button onClick={this.props.onEditTask}>Edit</button>
+                    <button onClick={this.props.onDeleteTask}>Delete</button>
+                </div>
+            </div>
+        );
+
     }
 }

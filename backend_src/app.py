@@ -3,7 +3,7 @@ import sqlite3
 from flask import Flask, jsonify, render_template, request
 
 import api_utils as au
-from model.task import Task, add_task, modify_task
+from model.task import Task, add_task, modify_task, delete_task
 
 DB_FILEPATH = 'test.db'
 app = Flask(__name__, static_folder='static_gen')
@@ -83,6 +83,25 @@ def api_modify_task():
     connection.commit()
 
     return jsonify(task_changes), 200
+
+
+@app.route('/task', methods=['DELETE'])
+@au.api_jsonify_errors
+def api_delete_task():
+    _PARAM_KEY_TO_VALUE_TYPES = {'id': int}
+
+    if not request.is_json:
+        raise au.BadRequestException('Expected JSON mimetype')
+
+    task_id = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_VALUE_TYPES)['id']
+
+    connection = sqlite3.connect(DB_FILEPATH)
+    cursor = connection.cursor()
+    delete_task(cursor, task_id)
+
+    connection.commit()
+
+    return jsonify(success=True), 200
 
 
 @app.route('/', methods=['GET'])
