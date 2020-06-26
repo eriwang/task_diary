@@ -10,15 +10,14 @@ task_bp = Blueprint('task', __name__)
 @task_bp.route('/date_tasks', methods=['GET'])
 @au.api_jsonify_errors
 def api_get_tasks_for_date():
-    _PARAM_KEY_TO_VALUE_TYPES = {
-        'date': 'yyyy-mm-dd'
-    }
+    _PARAM_KEY_TO_VALUE_TYPES = {'date': 'yyyy-mm-dd'}
 
     date = au.validate_and_load_params(request.args, _PARAM_KEY_TO_VALUE_TYPES)['date']
+
     with open_db_cursor() as cursor:
         tasks = Task.query_tasks_for_date(cursor, date)
 
-    return jsonify({'tasks': [a.to_json_dict() for a in tasks]}), 200
+    return jsonify({'tasks': [t.to_json_dict() for t in tasks]}), 200
 
 
 @task_bp.route('/task', methods=['POST'])
@@ -46,9 +45,7 @@ def api_add_task():
 @task_bp.route('/task', methods=['PUT'])
 @au.api_jsonify_errors
 def api_modify_task():
-    _PARAM_KEY_TO_REQUIRED_VALUE_TYPES = {
-        'id': int
-    }
+    _PARAM_KEY_TO_REQUIRED_VALUE_TYPES = {'id': int}
     _PARAM_KEY_TO_OPTIONAL_VALUE_TYPES = {
         'date': 'yyyy-mm-dd',
         'name': str,

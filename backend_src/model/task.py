@@ -22,7 +22,7 @@ class Task:
 
     @classmethod
     def query_tasks_for_date(cls, cursor, date):
-        cursor.execute('SELECT rowid, * FROM tasks WHERE date=?', (_date_to_seconds_since_epoch(date),))
+        cursor.execute('SELECT * FROM tasks WHERE date=?', (_date_to_seconds_since_epoch(date),))
         return [cls._create_from_fetch_result(result) for result in cursor.fetchall()]
 
     @classmethod
@@ -48,18 +48,21 @@ class Task:
 def create_task_table(cursor):
     query_string = '''
     CREATE TABLE tasks (
+        id INTEGER PRIMARY KEY,
         date INTEGER,
         name TEXT,
         is_planned INT2,
         status INT2,
-        notes TEXT
+        notes TEXT,
+        goal_id INTEGER,
+        FOREIGN KEY(goal_id) REFERENCES goals(id)
     )
     '''
     cursor.execute(query_string)
 
 
 def add_task(cursor, date, name, is_planned, status, notes):
-    cursor.execute('INSERT INTO tasks VALUES (?, ?, ?, ?, ?)',
+    cursor.execute('INSERT INTO tasks (date, name, is_planned, status, notes) VALUES (?, ?, ?, ?, ?)',
                    (_date_to_seconds_since_epoch(date), name, is_planned, status, notes))
 
 
@@ -74,13 +77,13 @@ def modify_task(cursor, task_id, field_to_changes):
         field_and_changes.append((field, change))
 
     set_string = ', '.join([f'{fc[0]} = ?' for fc in field_and_changes])
-    query_string = 'UPDATE tasks SET {} WHERE rowid = ?'.format(set_string)
+    query_string = 'UPDATE tasks SET {} WHERE id = ?'.format(set_string)
 
     cursor.execute(query_string, [fc[1] for fc in field_and_changes] + [task_id])
 
 
 def delete_task(cursor, task_id):
-    cursor.execute('DELETE FROM tasks WHERE rowid = ?', (task_id,))
+    cursor.execute('DELETE FROM tasks WHERE id = ?', (task_id,))
 
 
 def _date_to_seconds_since_epoch(date):

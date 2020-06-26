@@ -3,7 +3,16 @@ import datetime
 import os
 import sqlite3
 
+from model.goal import create_goal_table, add_goal
 from model.task import Status, create_task_table, add_task
+
+_LOREM_IPSUM = '''\
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna \
+aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\
+Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."\
+'''
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Init a db file with a proper schema.')
@@ -27,15 +36,21 @@ def main():
     connection = sqlite3.connect(db_filepath)
     cursor = connection.cursor()
 
+    create_goal_table(cursor)
     create_task_table(cursor)
 
     if args.add_dummy_data:
+        add_goal(cursor, 'Goal 1')
+        add_goal(cursor, 'Goal 2')
+        add_goal(cursor, 'Goal 3')
+
         add_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
                  Status.NOT_STARTED, 't - 2 notes')
         add_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
                  Status.NOT_STARTED, 'yesterday notes')
         add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes')
         add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2')
+        add_task(cursor, datetime.date.today(), 'lorem ipsum', False, Status.IN_PROGRESS, _LOREM_IPSUM)
 
     connection.commit()
 
