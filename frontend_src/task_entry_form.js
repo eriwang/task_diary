@@ -12,6 +12,7 @@ export default class TaskEntryForm extends React.Component
         this.state = {
             'name': '',
             'notes': '',
+            'goal': -1,  // no goal
             'is_planned': true,
             'status': Status.NOT_STARTED
         };
@@ -47,7 +48,8 @@ export default class TaskEntryForm extends React.Component
             <div>
                 <h3>Task Entry</h3>
                 <TaskForm id={null} date={this.props.date} name={this.state.name} is_planned={this.state.is_planned}
-                    status={this.state.status} notes={this.state.notes} 
+                    status={this.state.status} notes={this.state.notes} goal={this.state.goal}
+                    goals={this.props.goals}
                     onFieldChange={this.handleFieldChange}
                     onSubmitTask={this.handleSubmit} />
             </div>

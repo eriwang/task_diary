@@ -29,6 +29,11 @@ export function ajaxPut(url, data)
     return ajaxJsonBody(url, data, 'PUT');
 }
 
+export function ajaxDelete(url, data)
+{
+    return ajaxJsonBody(url, data, 'DELETE');
+}
+
 function ajaxJsonBody(url, data, method)
 {
     return $.ajax(url, {

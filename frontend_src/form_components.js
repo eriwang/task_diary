@@ -1,6 +1,6 @@
 import React from 'react';
 
-import StatusDropdown from './status_dropdown.js';
+import Status from './status.js';
 
 export class TextInput extends React.Component
 {
@@ -27,26 +27,58 @@ export class TextInput extends React.Component
 }
 TextInput.id = 0;  // static
 
+export class DropdownInput extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.instanceId = DropdownInput.id++;
+    }
+
+    render()
+    {
+        const elementId = `entry-dropdown-input-${this.instanceId}`;
+        const options = this.props.options.map((d) => <option key={d.id} value={d.value}>{d.label}</option>);
+        const select = (
+            <select id={elementId} value={this.props.value}
+                onChange={(event) => this.props.onChange(event.target.value)}>
+                {options}
+            </select>
+        );
+
+        if (this.props.label === undefined)
+        {
+            return select;
+        }
+
+        return (
+            <div className="entry-single-row-field">
+                <label htmlFor={elementId}>{this.props.label}</label>
+                {select}
+            </div>
+        );
+    }
+}
+DropdownInput.id = 0; // static
+
 export class StatusInput extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.instanceId = StatusInput.id++;
     }
 
     render()
     {
-        const elementId = `entry-status-input-${this.instanceId}`;
-        return (
-            <div className="entry-single-row-field">
-                <label htmlFor={elementId}>Status</label>
-                <StatusDropdown id={elementId} status={this.props.status} onStatusChange={this.props.onStatusChange} />
-            </div>
-        );
+        const options = [
+            {'id': Status.NOT_STARTED, 'value': Status.NOT_STARTED, 'label': 'Not Started'},
+            {'id': Status.IN_PROGRESS, 'value': Status.IN_PROGRESS, 'label': 'In Progress'},
+            {'id': Status.COMPLETE, 'value': Status.COMPLETE, 'label': 'Complete'},
+            {'id': Status.DROPPED, 'value': Status.DROPPED, 'label': 'Dropped'}
+        ];
+        return <DropdownInput options={options} {...this.props}/>;
     }
 }
-StatusInput.id = 0; // static
 
 export class CheckboxInput extends React.Component
 {
