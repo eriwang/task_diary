@@ -1,11 +1,13 @@
 import argparse
 import logging
+import os
 
 from flask import Flask, render_template
 
 from api.goal_api import goal_bp
 from api.task_api import task_bp
 from config import Config
+from model.db_management import init_db, upgrade_db_if_needed
 
 app = Flask(__name__, template_folder=Config.TEMPLATE_FOLDER, static_folder=Config.STATIC_FOLDER)
 app.register_blueprint(goal_bp)
@@ -36,7 +38,7 @@ def main():
 
     # This is weird: the defaults are set in config.py based on prod or not, then they can be overwritten in the
     # argument parsing. I wanted the DB path to be global so db_utils.py could access it, but I still wanted it to be
-    # modifiable on the command line. Not optimal, but gets the job done.
+    # modifiable on the command line. Not optimal and can probably be managed better, but gets the job done.
     Config.LOG_PATH = args.logpath
     Config.DB_PATH = args.dbpath
 
@@ -44,6 +46,13 @@ def main():
 
     print(f'Serving on {args.host}:{args.port}')
     print(f'DB_PATH={Config.DB_PATH}, LOG_PATH={Config.LOG_PATH}')
+
+    if os.path.exists(Config.DB_PATH):
+        upgrade_db_if_needed(Config.DB_PATH)
+    else:
+        print(f'Did not find database at {Config.DB_PATH}, initializing.')
+        init_db(Config.DB_PATH)
+
     app.run(debug=args.debug, host=args.host, port=args.port)
 
 
