@@ -5,8 +5,9 @@ from flask import Flask, render_template
 
 from api.goal_api import goal_bp
 from api.task_api import task_bp
+from config import Config
 
-app = Flask(__name__, static_folder='static_gen')
+app = Flask(__name__, template_folder=Config.TEMPLATE_FOLDER, static_folder=Config.STATIC_FOLDER)
 app.register_blueprint(goal_bp)
 app.register_blueprint(task_bp)
 
@@ -18,26 +19,31 @@ def home():
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the web server component for Task Diary.')
-    parser.add_argument('--debug', help='Run in flask debug mode', action='store_true')
     parser.add_argument('--host', help='Host to run on. 127.0.0.1 by default.', default='127.0.0.1')
     parser.add_argument('--port', help='Port to run on. 5000 by default.', default=5000)
+    parser.add_argument('--logpath', help=f'Where to log. {Config.LOG_PATH} by default.', default=Config.LOG_PATH)
 
-    # If debug mode is on, the werkzeug reloader will run this file twice. When I build a pyinstaller binary with
-    # --onefile sys.argv lists "<app_dir>/app" twice for some reason (at least on Linux). Using parse_known_args instead
-    # of parse_args avoids a confusing argument error if you specify debug on this binary. The rest is a best effort
-    # attempt to still die on supported arguments.
-    known_args, unknown_args = parser.parse_known_args()
-    unknown_args_remove_extra_app_arg = [a for a in unknown_args if not a.endswith('app')]
-    if len(unknown_args_remove_extra_app_arg) != 0:
-        raise ValueError(f'Found extra args: {unknown_args_remove_extra_app_arg}')
+    if not Config.IS_PROD:
+        parser.add_argument('--debug', help='Run in flask debug mode.', action='store_true')
+        parser.add_argument('--dbpath', help=f'Where the sqlite db file is store. {Config.DB_PATH} by default.',
+                            default=Config.DB_PATH)
 
-    return known_args
+    return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(filename='task_diary.log', level=log_level)
+
+    # This is weird: the defaults are set in config.py based on prod or not, then they can be overwritten in the
+    # argument parsing. I wanted the DB path to be global so db_utils.py could access it, but I still wanted it to be
+    # modifiable on the command line. Not optimal, but gets the job done.
+    Config.LOG_PATH = args.logpath
+    Config.DB_PATH = args.dbpath
+
+    logging.basicConfig(filename=Config.LOG_PATH, level=logging.DEBUG if args.debug else logging.INFO)
+
+    print(f'Serving on {args.host}:{args.port}')
+    print(f'DB_PATH={Config.DB_PATH}, LOG_PATH={Config.LOG_PATH}')
     app.run(debug=args.debug, host=args.host, port=args.port)
 
 
