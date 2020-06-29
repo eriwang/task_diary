@@ -1,7 +1,15 @@
+# Application Files
 *.db
+*.log
 
+# Dev Directories
 backend_src/static_gen/
 node_modules/
 __pycache__/
 venv/
 .idea/
+
+# PyInstaller Output
+*.spec
+build/
+dist/

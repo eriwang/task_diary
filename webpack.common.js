@@ -1,9 +1,6 @@
 const path = require('path');
 
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-
 module.exports = {
-    mode: 'development',
     entry: './frontend_src/app.js',
     output: {
         'filename': 'main.js',
@@ -12,8 +9,6 @@ module.exports = {
     externals: {
         jquery: 'jQuery'
     },
-    devtool: 'inline-source-map',
-    watch: true,
 
     module: {
         rules: [
@@ -28,13 +23,4 @@ module.exports = {
             }
         ]
     },
-
-    plugins: [
-        new BrowserSyncPlugin({
-            host: 'localhost',
-            port: 5001,
-            proxy: 'http://localhost:5000',  // flask server,
-            files: ['./backend_src/templates/*']
-        })
-    ]
 };

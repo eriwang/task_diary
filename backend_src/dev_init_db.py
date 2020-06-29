@@ -1,10 +1,11 @@
 import argparse
 import datetime
 import os
-import sqlite3
 
-from model.goal import create_goal_table, add_goal
-from model.task import Status, create_task_table, add_task
+from model.db_management import init_db
+from model.db_utils import open_db_cursor
+from model.goal import add_goal
+from model.task import Status, add_task
 
 _LOREM_IPSUM = '''\
 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna \
@@ -33,26 +34,21 @@ def main():
             raise ValueError(f'{db_filepath} already exists, '
                              f'if you want to clear it and reinit run with --delete-existing-db')
 
-    connection = sqlite3.connect(db_filepath)
-    cursor = connection.cursor()
-
-    create_goal_table(cursor)
-    create_task_table(cursor)
+    init_db(db_filepath)
 
     if args.add_dummy_data:
-        add_goal(cursor, 'Goal 1')
-        add_goal(cursor, 'Goal 2')
-        add_goal(cursor, 'Goal 3')
+        with open_db_cursor(db_filepath) as cursor:
+            add_goal(cursor, 'Goal 1')
+            add_goal(cursor, 'Goal 2')
+            add_goal(cursor, 'Goal 3')
 
-        add_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
-                 Status.NOT_STARTED, 't - 2 notes')
-        add_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
-                 Status.NOT_STARTED, 'yesterday notes')
-        add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes', 1)
-        add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2', 2)
-        add_task(cursor, datetime.date.today(), 'lorem ipsum', False, Status.IN_PROGRESS, _LOREM_IPSUM)
-
-    connection.commit()
+            add_task(cursor, datetime.date.today() - datetime.timedelta(days=2), 't - 2 task', True,
+                     Status.NOT_STARTED, 't - 2 notes')
+            add_task(cursor, datetime.date.today() - datetime.timedelta(days=1), 'yesterday task', True,
+                     Status.NOT_STARTED, 'yesterday notes')
+            add_task(cursor, datetime.date.today(), 'today task', True, Status.NOT_STARTED, 'today notes', 1)
+            add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2', 2)
+            add_task(cursor, datetime.date.today(), 'lorem ipsum', False, Status.IN_PROGRESS, _LOREM_IPSUM)
 
 
 if __name__ == '__main__':
