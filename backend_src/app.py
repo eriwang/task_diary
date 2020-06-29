@@ -8,6 +8,7 @@ from api.goal_api import goal_bp
 from api.task_api import task_bp
 from config import Config
 from model.db_management import init_db, upgrade_db_if_needed
+from path_utils import create_file_parent_directories_if_needed
 
 app = Flask(__name__, template_folder=Config.TEMPLATE_FOLDER, static_folder=Config.STATIC_FOLDER)
 app.register_blueprint(goal_bp)
@@ -36,16 +37,21 @@ def parse_args():
 def main():
     args = parse_args()
 
-    # This is weird: the defaults are set in config.py based on prod or not, then they can be overwritten in the
-    # argument parsing. I wanted the DB path to be global so db_utils.py could access it, but I still wanted it to be
-    # modifiable on the command line. Not optimal and can probably be managed better, but gets the job done.
-    Config.LOG_PATH = args.logpath
-    Config.DB_PATH = args.dbpath
+    # This entire config/ arg handling is weird: the defaults are set in config.py based on prod or not,
+    # then they can be overwritten in the argument parsing. I wanted the DB path to be global so db_utils.py could
+    # access it without a circular dependency, but I still wanted it to be modifiable on the command line.
+    # Not optimal and can probably be managed better, but gets the job done.
+    debug_mode = not Config.IS_PROD and args.debug
 
-    logging.basicConfig(filename=Config.LOG_PATH, level=logging.DEBUG if args.debug else logging.INFO)
+    Config.LOG_PATH = args.logpath
+    if not Config.IS_PROD:
+        Config.DB_PATH = args.dbpath
 
     print(f'Serving on {args.host}:{args.port}')
     print(f'DB_PATH={Config.DB_PATH}, LOG_PATH={Config.LOG_PATH}')
+
+    create_file_parent_directories_if_needed(Config.LOG_PATH)
+    logging.basicConfig(filename=Config.LOG_PATH, level=logging.DEBUG if debug_mode else logging.INFO)
 
     if os.path.exists(Config.DB_PATH):
         upgrade_db_if_needed(Config.DB_PATH)
@@ -53,7 +59,7 @@ def main():
         print(f'Did not find database at {Config.DB_PATH}, initializing.')
         init_db(Config.DB_PATH)
 
-    app.run(debug=args.debug, host=args.host, port=args.port)
+    app.run(debug=debug_mode, host=args.host, port=args.port)
 
 
 if __name__ == '__main__':
