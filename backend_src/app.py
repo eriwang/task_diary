@@ -7,7 +7,7 @@ from flask import Flask, render_template
 from api.goal_api import goal_bp
 from api.task_api import task_bp
 from config import Config
-from model.db_management import init_db, upgrade_db_if_needed
+from model.db_management import init_db, check_version_and_upgrade_db_if_needed
 from path_utils import create_file_parent_directories_if_needed
 
 app = Flask(__name__, template_folder=Config.TEMPLATE_FOLDER, static_folder=Config.STATIC_FOLDER)
@@ -54,7 +54,7 @@ def main():
     logging.basicConfig(filename=Config.LOG_PATH, level=logging.DEBUG if debug_mode else logging.INFO)
 
     if os.path.exists(Config.DB_PATH):
-        upgrade_db_if_needed(Config.DB_PATH)
+        check_version_and_upgrade_db_if_needed(Config.DB_PATH)
     else:
         print(f'Did not find database at {Config.DB_PATH}, initializing.')
         init_db(Config.DB_PATH)

@@ -1,7 +1,7 @@
 import datetime
 from enum import IntEnum
 
-import pytz
+from datetime_utils import date_to_seconds_since_epoch
 
 
 class Status(IntEnum):
@@ -25,7 +25,7 @@ class Task:
     @classmethod
     def query_tasks_for_date_with_goals(cls, cursor, date):
         cursor.execute('SELECT * FROM tasks LEFT JOIN goals ON tasks.goal_id = goals.id WHERE tasks.date = ?',
-                       (_date_to_seconds_since_epoch(date),))
+                       (date_to_seconds_since_epoch(date),))
         return [cls._create_from_fetch_result(result) for result in cursor.fetchall()]
 
     @classmethod
@@ -74,7 +74,7 @@ def add_task(cursor, date, name, is_planned, status, notes, goal_id=None):
         (date, name, is_planned, status, notes{})
         VALUES (?, ?, ?, ?, ?{})
     '''
-    values = [_date_to_seconds_since_epoch(date), name, is_planned, status, notes]
+    values = [date_to_seconds_since_epoch(date), name, is_planned, status, notes]
 
     if goal_id is not None:
         query_string = query_string.format(', goal_id', ', ?')
@@ -92,7 +92,7 @@ def modify_task(cursor, task_id, field_to_changes):
     field_and_changes = []
     for field, change in field_to_changes.items():
         if field == 'date':
-            change = _date_to_seconds_since_epoch(change)
+            change = date_to_seconds_since_epoch(change)
         field_and_changes.append((field, change))
 
     set_string = ', '.join([f'{fc[0]} = ?' for fc in field_and_changes])
@@ -103,7 +103,3 @@ def modify_task(cursor, task_id, field_to_changes):
 
 def delete_task(cursor, task_id):
     cursor.execute('DELETE FROM tasks WHERE id = ?', (task_id,))
-
-
-def _date_to_seconds_since_epoch(date):
-    return datetime.datetime.combine(date, datetime.time(0, 0, 0), tzinfo=pytz.utc).timestamp()

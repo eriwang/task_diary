@@ -40,7 +40,6 @@ export default class TaskForm extends React.Component
             <DateInput label="Date" value={this.props.date}
                 onChange={(e) => this.props.onFieldChange('date', e.target.value)} />
         );
-        console.log(dateInput);
 
         return (
             <div>

@@ -83,7 +83,7 @@ class App extends React.Component
         let shownGoals = Array.from(this.state.goals);
         shownGoals.unshift({'id': -1, 'name': 'No goal'});
 
-        const modalTaskEditForm = (
+        const modalTaskEditForm = (this.state.currently_edited_task === null) ? null : (
             <ModalTaskEditForm task={this.state['currently_edited_task']}
                 goals={shownGoals}
                 onTaskEntrySuccessful={this.handleModalEditSuccessful}
@@ -108,7 +108,7 @@ class App extends React.Component
                             onTaskEntrySuccessful={this.refreshTasksCurrentDate}/>
                     </div>
                 </div>
-                {(this.state.currently_edited_task !== null) ? modalTaskEditForm : null}
+                {modalTaskEditForm}
             </div>
         );
     }
