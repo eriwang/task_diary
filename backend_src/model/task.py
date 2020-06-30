@@ -68,20 +68,14 @@ def create_task_table(cursor):
     cursor.execute(query_string)
 
 
-def add_task(cursor, date, name, is_planned, status, notes, goal_id=None):
+def add_task(cursor, date, name, is_planned, status, notes, goal_id=-1):
     query_string = '''
     INSERT INTO tasks
-        (date, name, is_planned, status, notes{})
-        VALUES (?, ?, ?, ?, ?{})
+        (date, name, is_planned, status, notes, goal_id)
+        VALUES (?, ?, ?, ?, ?, ?)
     '''
-    values = [date_to_seconds_since_epoch(date), name, is_planned, status, notes]
-
-    if goal_id is not None:
-        query_string = query_string.format(', goal_id', ', ?')
-        values += [goal_id]
-    else:
-        query_string = query_string.format('', '')
-
+    goal_id = goal_id if goal_id != -1 else None
+    values = [date_to_seconds_since_epoch(date), name, is_planned, status, notes, goal_id]
     cursor.execute(query_string, values)
 
 
@@ -93,6 +87,8 @@ def modify_task(cursor, task_id, field_to_changes):
     for field, change in field_to_changes.items():
         if field == 'date':
             change = date_to_seconds_since_epoch(change)
+        elif field == 'goal_id':
+            change = change if change != -1 else None
         field_and_changes.append((field, change))
 
     set_string = ', '.join([f'{fc[0]} = ?' for fc in field_and_changes])
