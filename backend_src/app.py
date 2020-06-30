@@ -4,6 +4,7 @@ import os
 
 from flask import Flask, render_template
 
+from api.daily_notes_api import daily_notes_bp
 from api.goal_api import goal_bp
 from api.task_api import task_bp
 from config import Config
@@ -11,6 +12,7 @@ from model.db_management import init_db, check_version_and_upgrade_db_if_needed
 from path_utils import create_file_parent_directories_if_needed
 
 app = Flask(__name__, template_folder=Config.TEMPLATE_FOLDER, static_folder=Config.STATIC_FOLDER)
+app.register_blueprint(daily_notes_bp)
 app.register_blueprint(goal_bp)
 app.register_blueprint(task_bp)
 

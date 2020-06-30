@@ -8,6 +8,8 @@ import {DateInput} from './form_components.js';
 import GoalEntryForm from './goal_entry_form.js';
 import ModalTaskEditForm from './modal_task_edit_form.js';
 import GoalManager from './state_managers/goal_manager.js';
+import NotesManager from './state_managers/notes_manager.js';
+import NotesView from './notes_view.js';
 import TaskEntryForm from './task_entry_form.js';
 import TaskView from './task_view.js';
 
@@ -20,10 +22,12 @@ class App extends React.Component
             'dateStr': getCurrentDateStr(),
             'tasks': [],
             'goals': [],
+            'notes': null,
             'currently_edited_task': null
         };
 
         this.handleGoalsChange = this.handleGoalsChange.bind(this);
+        this.handleNotesChange = this.handleNotesChange.bind(this);
         this.refreshTasks = this.refreshTasks.bind(this);
         this.refreshTasksCurrentDate = this.refreshTasksCurrentDate.bind(this);
         this.handleEditTask = this.handleEditTask.bind(this);
@@ -36,12 +40,19 @@ class App extends React.Component
     {
         GoalManager.addListenerCallback(this.handleGoalsChange);
         GoalManager.refreshGoals();
+        NotesManager.addListenerCallback(this.handleNotesChange);
+        NotesManager.changeDateAndRefresh(this.state.dateStr);
         this.refreshTasksCurrentDate();
     }
 
     handleGoalsChange(goals)
     {
         this.setState({'goals': goals});
+    }
+
+    handleNotesChange(notes)
+    {
+        this.setState({'notes': notes});
     }
 
     refreshTasks(dateStr)
@@ -93,10 +104,13 @@ class App extends React.Component
         return (
             <div>
                 <div id="center-view">
-                    <TaskView tasks={this.state.tasks}
-                        onEditTask={this.handleEditTask} 
-                        onStatusChangeSuccessful={this.refreshTasksCurrentDate}
-                        onTaskDeleteSuccessful={this.refreshTasksCurrentDate}/>
+                    <div id="date-view-container">
+                        <TaskView tasks={this.state.tasks}
+                            onEditTask={this.handleEditTask} 
+                            onStatusChangeSuccessful={this.refreshTasksCurrentDate}
+                            onTaskDeleteSuccessful={this.refreshTasksCurrentDate}/>
+                        <NotesView notes={this.state.notes} />
+                    </div>
                     <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>

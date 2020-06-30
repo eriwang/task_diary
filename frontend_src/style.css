@@ -36,7 +36,7 @@ select
     justify-content: space-between;
 }
 
-#task-view
+#date-view-container
 {
     width: 65%;
 }
