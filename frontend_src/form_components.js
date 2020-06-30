@@ -27,6 +27,27 @@ export class TextInput extends React.Component
 }
 TextInput.id = 0;  // static
 
+export class DateInput extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.instanceId = DateInput.id++;
+    }
+
+    render()
+    {
+        const elementId = `entry-date-input-${this.instanceId}`;
+        return (
+            <div className="entry-multi-row-field">
+                <label htmlFor={elementId}>{this.props.label}</label>
+                <input type="date" id={elementId} onChange={this.props.onChange} value={this.props.value}/>
+            </div>
+        );
+    }
+}
+DateInput.id = 0;  // static
+
 export class DropdownInput extends React.Component
 {
     constructor(props)

@@ -11,9 +11,10 @@ export default class ModalTaskEditForm extends React.Component
         this.state = {
             'date': this.props.task.date,
             'name': this.props.task.name,
+            'goal_id': this.props.task.goal_id,
             'is_planned': this.props.task.is_planned,
             'status': this.props.task.status,
-            'notes': this.props.task.notes,            
+            'notes': this.props.task.notes,
         };
 
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -41,11 +42,12 @@ export default class ModalTaskEditForm extends React.Component
                 <div className="modal-content">
                     <h3>Edit Task</h3>
                     <TaskForm id={this.props.task.id} date={this.state.date} name={this.state.name} 
-                        is_planned={this.state.is_planned} status={this.state.status} notes={this.state.notes}
-                        goal={this.state.goal}
+                        goal_id={this.state.goal_id} is_planned={this.state.is_planned} status={this.state.status}
+                        notes={this.state.notes}
                         goals={this.props.goals}
                         onFieldChange={this.handleFieldChange}
-                        onSubmitTask={this.handleSubmit} />
+                        onSubmitTask={this.handleSubmit}
+                        showDateInput />
                     <button onClick={this.props.onClose}>Close</button>
                 </div>
             </div>

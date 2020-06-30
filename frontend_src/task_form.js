@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput, DropdownInput, StatusInput, CheckboxInput} from './form_components.js';
+import {TextInput, DateInput, DropdownInput, StatusInput, CheckboxInput} from './form_components.js';
 
 // TODO: allow enter to submit when fields (besides notes) are focused
 // TODO: validation for empty name on submit
@@ -36,6 +36,10 @@ export default class TaskForm extends React.Component
         const goalOptions = this.props.goals.map((g) => {
             return {'id': g.id, 'value': g.id, 'label': g.name};
         });
+        const dateInput = (this.props.showDateInput === undefined) ? null : (
+            <DateInput label="Date" value={this.props.date}
+                onChange={(e) => this.props.onFieldChange('date', e.target.value)} />
+        );
 
         return (
             <div>
@@ -43,9 +47,10 @@ export default class TaskForm extends React.Component
                     onChange={(e) => this.props.onFieldChange('name', e.target.value)}/>
                 <TextInput label="Notes" value={this.props.notes} 
                     onChange={(e) => this.props.onFieldChange('notes', e.target.value)} isMultiLine />
+                {dateInput}
                 <StatusInput label="Status" value={this.props.status} 
                     onChange={(value) => this.props.onFieldChange('status', parseInt(value))} />
-                <DropdownInput label="Goal" options={goalOptions} value={this.props.goal}
+                <DropdownInput label="Goal" options={goalOptions} value={this.props.goal_id}
                     onChange={(value) => this.props.onFieldChange('goal', parseInt(value))} />
                 <CheckboxInput label="Is Planned" checked={this.props.is_planned}
                     onCheckedChange={(c) => this.props.onFieldChange('is_planned', c)} />
