@@ -5,7 +5,7 @@ class NotesManagerClass
     constructor()
     {
         this.dateStr = null;
-        this.notes = null;
+        this.notes = '';
         this.listenerCallbacks = [];
 
         this.refreshNotes = this.refreshNotes.bind(this);
@@ -40,10 +40,10 @@ class NotesManagerClass
 
     onChange(notes)
     {
-        this.notes = notes;
+        this.notes = (notes === null) ? '' : notes.text;
         for (const cb of this.listenerCallbacks)
         {
-            cb(this.notes.text);
+            cb(this.notes);
         }
     }
 }
