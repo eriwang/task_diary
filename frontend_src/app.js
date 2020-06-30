@@ -76,6 +76,7 @@ class App extends React.Component
         const dateStr = event.target.value;
         this.setState({'dateStr': dateStr});
         this.refreshTasks(dateStr);
+        NotesManager.changeDateAndRefresh(dateStr);
     }
 
     handleModalEditSuccessful()
