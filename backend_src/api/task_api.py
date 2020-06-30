@@ -26,21 +26,20 @@ def api_add_task():
     _PARAM_KEY_TO_REQUIRED_VALUE_TYPES = {
         'date': 'yyyy-mm-dd',
         'name': str,
+        'goal_id': int,
         'is_planned': bool,
         'status': 'Status',
         'notes': str
     }
-    _PARAM_KEY_TO_OPTIONAL_VALUE_TYPES = {'goal_id': int}
 
     if not request.is_json:
         raise au.BadRequestException('Expected JSON mimetype')
 
-    task = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_REQUIRED_VALUE_TYPES,
-                                       _PARAM_KEY_TO_OPTIONAL_VALUE_TYPES)
+    task = au.validate_and_load_params(request.get_json(), _PARAM_KEY_TO_REQUIRED_VALUE_TYPES)
 
     with open_db_cursor() as cursor:
         add_task(cursor, task['date'], task['name'], task['is_planned'], task['status'], task['notes'],
-                 task['goal_id'] if 'goal_id' in task else None)
+                 task['goal_id'])
 
     return jsonify(success=True), 200
 

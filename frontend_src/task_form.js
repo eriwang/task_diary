@@ -19,14 +19,11 @@ export default class TaskForm extends React.Component
             'id': this.props.id,
             'date': this.props.date,
             'name': this.props.name,
+            'goal_id': this.props.goal,
             'is_planned': this.props.is_planned,
             'status': this.props.status,
             'notes': this.props.notes
         };
-        if (this.props.goal != -1)
-        {
-            data['goal_id'] = this.props.goal;
-        }
 
         this.props.onSubmitTask(data);
     }
@@ -50,7 +47,7 @@ export default class TaskForm extends React.Component
                 {dateInput}
                 <StatusInput label="Status" value={this.props.status} 
                     onChange={(value) => this.props.onFieldChange('status', parseInt(value))} />
-                <DropdownInput label="Goal" options={goalOptions} value={this.props.goal_id}
+                <DropdownInput label="Goal" options={goalOptions} value={this.props.goal}
                     onChange={(value) => this.props.onFieldChange('goal', parseInt(value))} />
                 <CheckboxInput label="Is Planned" checked={this.props.is_planned}
                     onCheckedChange={(c) => this.props.onFieldChange('is_planned', c)} />

@@ -11,7 +11,7 @@ export default class ModalTaskEditForm extends React.Component
         this.state = {
             'date': this.props.task.date,
             'name': this.props.task.name,
-            'goal_id': this.props.task.goal_id,
+            'goal': this.props.task.goal_id,
             'is_planned': this.props.task.is_planned,
             'status': this.props.task.status,
             'notes': this.props.task.notes,
@@ -42,7 +42,7 @@ export default class ModalTaskEditForm extends React.Component
                 <div className="modal-content">
                     <h3>Edit Task</h3>
                     <TaskForm id={this.props.task.id} date={this.state.date} name={this.state.name} 
-                        goal_id={this.state.goal_id} is_planned={this.state.is_planned} status={this.state.status}
+                        goal={this.state.goal} is_planned={this.state.is_planned} status={this.state.status}
                         notes={this.state.notes}
                         goals={this.props.goals}
                         onFieldChange={this.handleFieldChange}
