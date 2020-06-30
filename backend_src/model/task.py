@@ -12,13 +12,14 @@ class Status(IntEnum):
 
 
 class Task:
-    def __init__(self, task_id, date, name, is_planned, status, notes, goal):
+    def __init__(self, task_id, date, name, is_planned, status, notes, goal_id, goal):
         self.id = task_id
         self.date = date
         self.name = name
         self.is_planned = is_planned
         self.status = status
         self.notes = notes
+        self.goal_id = goal_id
         self.goal = goal
 
     @classmethod
@@ -30,7 +31,7 @@ class Task:
     @classmethod
     def _create_from_fetch_result(cls, result):
         return cls(result[0], datetime.datetime.utcfromtimestamp(result[1]).date(), result[2], bool(result[3]),
-                   Status(result[4]), result[5], result[8])  # result[6] and result[7] are the goal IDs
+                   Status(result[4]), result[5], result[7], result[8])  # result[6] is also a goal ID
 
     def to_json_dict(self):
         fields = {
@@ -43,6 +44,7 @@ class Task:
         }
         if self.goal is not None:
             fields['goal'] = self.goal
+            fields['goal_id'] = self.goal_id
         return fields
 
     def __str__(self):

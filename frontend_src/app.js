@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import {ajaxGet} from './ajax.js';
+import {DateInput} from './form_components.js';
 import GoalEntryForm from './goal_entry_form.js';
 import ModalTaskEditForm from './modal_task_edit_form.js';
 import GoalManager from './state_managers/goal_manager.js';
@@ -99,11 +100,7 @@ class App extends React.Component
                     <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>
-                            <div className="entry-multi-row-field">
-                                <label htmlFor="date-selector">Date</label>
-                                <input type="date" id="date-selector" onChange={this.handleDateChange}
-                                    value={this.state.dateStr}/>
-                            </div>
+                            <DateInput label="Date" value={this.state.dateStr} onChange={this.handleDateChange}/>
                         </div>
                         <GoalEntryForm />
                         <TaskEntryForm date={this.state.dateStr}
