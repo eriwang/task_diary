@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput, DateInput, DropdownInput, StatusInput, CheckboxInput} from './form_components.js';
+import {TextInput, DateInput, DropdownInput, StatusInput, CheckboxInput} from '../common/form_components.js';
 
 // TODO: allow enter to submit when fields (besides notes) are focused
 // TODO: validation for empty name on submit

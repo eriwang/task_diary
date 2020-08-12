@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput} from './form_components.js';
+import {TextInput} from './common/form_components.js';
 import NotesManager from './state_managers/notes_manager.js';
 
 export default class NotesView extends React.Component

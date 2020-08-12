@@ -1,4 +1,4 @@
-import {ajaxGet, ajaxPost} from '../ajax.js';
+import {ajaxGet, ajaxPost} from '../common/ajax.js';
 
 class GoalManagerClass
 {

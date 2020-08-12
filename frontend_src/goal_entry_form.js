@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput} from './form_components.js';
+import {TextInput} from './common/form_components.js';
 import GoalManager from './state_managers/goal_manager.js';
 
 export default class GoalEntryForm extends React.Component

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {ajaxPut} from './ajax.js';
-import {CrossButton} from './svg_buttons.js';
+import {ajaxPut} from '../common/ajax.js';
+import {CrossButton} from '../common/svg_buttons.js';
 import TaskForm from './task_form.js';
 
 export default class ModalTaskEditForm extends React.Component

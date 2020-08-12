@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {ajaxPut, ajaxDelete} from './ajax.js';
-import {StatusInput} from './form_components.js';
-import {CrossButton, EditButton, DropdownButton} from './svg_buttons.js';
+import {ajaxPut, ajaxDelete} from '../common/ajax.js';
+import {StatusInput} from '../common/form_components.js';
+import {CrossButton, EditButton, DropdownButton} from '../common/svg_buttons.js';
 
 export default class TaskView extends React.Component
 {

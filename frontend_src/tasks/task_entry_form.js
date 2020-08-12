@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {ajaxPost} from './ajax.js';
-import Status from './status.js';
+import {ajaxPost} from '../common/ajax.js';
+import Status from '../common/status.js';
 import TaskForm from './task_form.js';
 
 export default class TaskEntryForm extends React.Component

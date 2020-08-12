@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom';
 
 import './style.css';
 
-import {ajaxGet} from './ajax.js';
-import {DateInput} from './form_components.js';
+import {ajaxGet} from './common/ajax.js';
+import {DateInput} from './common/form_components.js';
 import GoalEntryForm from './goal_entry_form.js';
-import ModalTaskEditForm from './modal_task_edit_form.js';
 import GoalManager from './state_managers/goal_manager.js';
+import ModalTaskEditForm from './tasks/modal_task_edit_form.js';
 import NotesManager from './state_managers/notes_manager.js';
 import NotesView from './notes_view.js';
-import TaskEntryForm from './task_entry_form.js';
-import TaskView from './task_view.js';
+import TaskEntryForm from './tasks/task_entry_form.js';
+import TaskView from './tasks/task_view.js';
 
 class App extends React.Component
 {

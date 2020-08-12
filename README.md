@@ -18,3 +18,7 @@ Only dev mode supported at the moment. From repo root:
 - `npx webpack`
 
 Flask and webpack will continue to monitor changes to files as long as the commands are running.
+
+## Credits
+
+SVG for all icons used taken from https://feathericons.com/.
