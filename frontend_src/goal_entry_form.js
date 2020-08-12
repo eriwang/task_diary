@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput} from './form_components.js';
+import {TextInput} from './common/form_components.js';
 import GoalManager from './state_managers/goal_manager.js';
 
 export default class GoalEntryForm extends React.Component
@@ -9,17 +9,14 @@ export default class GoalEntryForm extends React.Component
     {
         super(props);
         this.state = {'name': ''};
-
-        this.handleGoalNameChange = this.handleGoalNameChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleGoalNameChange(event)
+    _handleGoalNameChange = (event) =>
     {
         this.setState({'name': event.target.value});
     }
 
-    handleSubmit()
+    _handleSubmit = () =>
     {
         GoalManager.addGoal(this.state.name)
             .done(() => this.setState({'name': ''}));
@@ -30,8 +27,8 @@ export default class GoalEntryForm extends React.Component
         return (
             <div>
                 <h3>Create New Goal</h3>
-                <TextInput label="Name" value={this.state.name} onChange={this.handleGoalNameChange}/>
-                <button onClick={this.handleSubmit}>Submit</button>
+                <TextInput label="Name" value={this.state.name} onChange={this._handleGoalNameChange}/>
+                <button onClick={this._handleSubmit}>Submit</button>
             </div>
         );
     }

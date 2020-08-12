@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {TextInput} from './form_components.js';
+import {TextInput} from './common/form_components.js';
 import NotesManager from './state_managers/notes_manager.js';
 
 export default class NotesView extends React.Component
@@ -11,10 +11,6 @@ export default class NotesView extends React.Component
         this.state = {
             'notes': (this.props.notes === null) ? '' : this.props.notes
         };
-
-        this.handleTextInputChange = this.handleTextInputChange.bind(this);
-        this.handleNotesChange = this.handleNotesChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount()
@@ -22,20 +18,20 @@ export default class NotesView extends React.Component
         // No refresh is necessary here because the App component handles it. That said, might be cleaner to have the 
         // "addListener" call (or maybe rename to subscribe) immediately fire with the current value, and have the
         // refresh managed externally the first time.
-        NotesManager.addListenerCallback(this.handleNotesChange);
+        NotesManager.addListenerCallback(this._handleNotesChange);
     }
 
-    handleTextInputChange(event)
+    _handleTextInputChange = (event) =>
     {
-        this.handleNotesChange(event.target.value);
+        this._handleNotesChange(event.target.value);
     }
 
-    handleNotesChange(notes)
+    _handleNotesChange = (notes) =>
     {
         this.setState({'notes': notes});
     }
 
-    handleSubmit()
+    _handleSubmit = () =>
     {
         NotesManager.setNotes(this.state.notes);
     }
@@ -46,8 +42,8 @@ export default class NotesView extends React.Component
             <div id="notes-view">
                 <h3>Daily Notes</h3>
                 <TextInput label="Notes" value={this.state.notes}
-                    onChange={this.handleTextInputChange} isMultiLine />
-                <button onClick={this.handleSubmit}>Submit</button>
+                    onChange={this._handleTextInputChange} isMultiLine />
+                <button onClick={this._handleSubmit}>Submit</button>
             </div>
         );
     }
