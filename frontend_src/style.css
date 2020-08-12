@@ -20,12 +20,19 @@ select
     height: 1.6em;
 }
 
-
 #content
 {
     min-width: 1000px;
     max-width: 70%;
     margin: auto;
+}
+
+#header
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
 }
 
 #center-view
@@ -44,6 +51,20 @@ select
 #sidebar
 {
     width: 30%;
+}
+
+.header-date-selector
+{
+    font-size: 2em;
+    font-weight: bold;
+    border: none;
+    width: 25%;
+    text-align: right;
+}
+
+.header-date-selector:focus
+{
+    outline: none;
 }
 
 .entry-multi-row-field
