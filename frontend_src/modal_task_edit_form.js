@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {ajaxPut} from './ajax.js';
+import {CrossButton} from './svg_buttons.js';
 import TaskForm from './task_form.js';
 
 export default class ModalTaskEditForm extends React.Component
@@ -40,7 +41,10 @@ export default class ModalTaskEditForm extends React.Component
         return (
             <div className="modal">
                 <div className="modal-content">
-                    <h3>Edit Task</h3>
+                    <div className="modal-content-header">
+                        <h3>Edit Task</h3>
+                        <CrossButton onClick={this.props.onClose} />
+                    </div>
                     <TaskForm id={this.props.task.id} date={this.state.date} name={this.state.name} 
                         goal={this.state.goal} is_planned={this.state.is_planned} status={this.state.status}
                         notes={this.state.notes}
@@ -48,7 +52,6 @@ export default class ModalTaskEditForm extends React.Component
                         onFieldChange={this.handleFieldChange}
                         onSubmitTask={this.handleSubmit}
                         showDateInput />
-                    <button onClick={this.props.onClose}>Close</button>
                 </div>
             </div>
         );

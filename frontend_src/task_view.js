@@ -2,6 +2,7 @@ import React from 'react';
 
 import {ajaxPut, ajaxDelete} from './ajax.js';
 import {StatusInput} from './form_components.js';
+import {CrossButton, EditButton, DropdownButton} from './svg_buttons.js';
 
 export default class TaskView extends React.Component
 {
@@ -110,7 +111,7 @@ class Task extends React.Component
                         <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
                         <StatusInput value={this.props.status}
                             onChange={(value) => this.handleStatusChange(parseInt(value))} />
-                        <button onClick={this.handleToggleDetails}>Toggle Details</button>
+                        <DropdownButton onClick={this.handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
                     </div>
                 </div>
                 {taskHideable}
@@ -128,13 +129,14 @@ class TaskHideableSection extends React.Component
 
     render()
     {
+        // TODO: at some point the delete task should get a confirmation modal
         const notes = (this.props.notes != '') ? this.props.notes : 'Task has no notes.';
         return (
             <div className="task-hideable-container">
                 <p className="task-notes">{notes}</p>
                 <div className="task-modification-container">
-                    <button onClick={this.props.onEditTask}>Edit</button>
-                    <button onClick={this.props.onDeleteTask}>Delete</button>
+                    <EditButton onClick={this.props.onEditTask} />
+                    <CrossButton onClick={this.props.onDeleteTask} />
                 </div>
             </div>
         );
