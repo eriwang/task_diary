@@ -4,14 +4,13 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import {ajaxGet} from './common/ajax.js';
-import {DateInput} from './common/form_components.js';
-import GoalEntryForm from './goal_entry_form.js';
+// import {DateInput} from './common/form_components.js';
+// import GoalEntryForm from './goal_entry_form.js';
 import GoalManager from './state_managers/goal_manager.js';
-import HeaderDateSelector from './header_date_selector.js';
 import ModalTaskEditForm from './tasks/modal_task_edit_form.js';
 import NotesManager from './state_managers/notes_manager.js';
 import NotesView from './notes_view.js';
-import TaskEntryForm from './tasks/task_entry_form.js';
+import StickyHeader from './sticky_header.js';
 import TaskView from './tasks/task_view.js';
 
 class App extends React.Component
@@ -96,19 +95,18 @@ class App extends React.Component
 
         return (
             <div>
-                <div id="header">
-                    <h1>Task Diary</h1>
-                    <HeaderDateSelector onChange={this._handleDateChange} value={this.state.dateStr} />
-                </div>
+                <StickyHeader onDateChange={this._handleDateChange} dateStr={this.state.dateStr}/>
                 <div id="center-view">
                     <div id="date-view-container">
                         <TaskView tasks={this.state.tasks}
                             onEditTask={this._handleEditTask} 
                             onStatusChangeSuccessful={this._refreshTasksCurrentDate}
                             onTaskDeleteSuccessful={this._refreshTasksCurrentDate}/>
-                        <NotesView notes={this.state.notes} />
                     </div>
                     <div id="sidebar">
+                        <NotesView notes={this.state.notes} />
+                    </div>
+                    {/* <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>
                             <DateInput label="Date" value={this.state.dateStr} onChange={this._handleDateChange}/>
@@ -117,7 +115,7 @@ class App extends React.Component
                         <TaskEntryForm date={this.state.dateStr}
                             goals={shownGoals}
                             onTaskEntrySuccessful={this._refreshTasksCurrentDate}/>
-                    </div>
+                    </div> */}
                 </div>
                 {modalTaskEditForm}
             </div>

@@ -22,8 +22,8 @@ select
 
 #content
 {
-    min-width: 1000px;
-    max-width: 70%;
+    min-width: 800px;
+    max-width: 95%;
     margin: auto;
 }
 
@@ -33,10 +33,14 @@ select
     flex-direction: row;
     justify-content: space-between;
     align-items: baseline;
+    height: 80px;
+    background-color: white;
 }
 
 #center-view
 {
+    margin-top: 80px;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -45,12 +49,46 @@ select
 
 #date-view-container
 {
-    width: 65%;
+    width: 70%;
 }
 
 #sidebar
 {
-    width: 30%;
+    width: 25%;
+}
+
+/* header */
+.sticky-header
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background-color: white;
+    border-bottom: 1px solid lightgray;
+
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
+.header-sidebar-toggle-btn
+{
+    margin-left: 1em;
+}
+
+.header-other
+{
+    min-width: 700px;
+    width: 100%;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 .header-date-selector
@@ -58,7 +96,6 @@ select
     font-size: 2em;
     font-weight: bold;
     border: none;
-    width: 25%;
     text-align: right;
 }
 
@@ -67,6 +104,7 @@ select
     outline: none;
 }
 
+/* form entry components */
 .entry-multi-row-field
 {
     display: flex;
@@ -91,6 +129,7 @@ select
     height: 100px;
 }
 
+/* task components */
 .task
 {
     margin-bottom: 1em;
@@ -104,22 +143,35 @@ select
     justify-content: space-between;
 }
 
-.task-name
+.task-name-goal-container
 {
-    width: 50%;
-}
-
-.task-flush-right-container
-{
-    width: 45%;
+    width: 70%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
+.task-name
+{
+    width: 70%;
+}
+
+.task-flush-right-container
+{
+    width: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.task-flush-right-container > :first-child
+{
+    margin-right: 1em
+}
+
 .task-notes
 {
-    max-width: 80%;
+    max-width: 70%;
     white-space: pre-line;
 }
 
@@ -134,15 +186,16 @@ select
 .task-modification-container
 {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 .task-modification-container > :first-child
 {
-    margin-bottom: 0.5em;
+    margin-right: 0.5em;
 }
 
+/* modal components */
 .modal
 {
     display: flex;

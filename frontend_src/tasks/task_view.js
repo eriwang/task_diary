@@ -101,9 +101,11 @@ class Task extends React.Component
         return (
             <div className="task">
                 <div className="task-always-shown">
-                    <p className="task-name">{this.props.name}</p>
-                    <div className="task-flush-right-container">
+                    <div className="task-name-goal-container">
+                        <p className="task-name">{this.props.name}</p>
                         <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
+                    </div>
+                    <div className="task-flush-right-container">
                         <StatusInput value={this.props.status}
                             onChange={(value) => this._handleStatusChange(parseInt(value))} />
                         <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
