@@ -57,27 +57,22 @@ class Task extends React.Component
     {
         super(props);
         this.state = {'are_details_hidden': true};
-
-        this.handleToggleDetails = this.handleToggleDetails.bind(this);
-        this.handleStatusChange = this.handleStatusChange.bind(this);
-        this.handleEditTask = this.handleEditTask.bind(this);
-        this.handleDeleteTask = this.handleDeleteTask.bind(this);
     }
 
-    handleToggleDetails()
+    _handleToggleDetails = () =>
     {
         this.setState((state) => {
             return {'are_details_hidden': !state.are_details_hidden};
         });
     }
 
-    handleStatusChange(status)
+    _handleStatusChange = (status) =>
     {
         ajaxPut('/task', {'id': this.props.id, 'status': status})
             .done(this.props.onStatusChangeSuccessful);
     }
 
-    handleEditTask()
+    _handleEditTask = () =>
     {
         this.props.onEditTask({
             'id': this.props.id,
@@ -90,7 +85,7 @@ class Task extends React.Component
         });
     }
 
-    handleDeleteTask()
+    _handleDeleteTask = () =>
     {
         ajaxDelete('/task', {'id': this.props.id})
             .done(() => this.props.onTaskDeleteSuccessful());
@@ -99,8 +94,8 @@ class Task extends React.Component
     render()
     {
         const taskHideable = this.state.are_details_hidden ? null : (
-            <TaskHideableSection notes={this.props.notes} onEditTask={this.handleEditTask}
-                onDeleteTask={this.handleDeleteTask}/>
+            <TaskHideableSection notes={this.props.notes} onEditTask={this._handleEditTask}
+                onDeleteTask={this._handleDeleteTask}/>
         );
 
         return (
@@ -110,8 +105,8 @@ class Task extends React.Component
                     <div className="task-flush-right-container">
                         <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
                         <StatusInput value={this.props.status}
-                            onChange={(value) => this.handleStatusChange(parseInt(value))} />
-                        <DropdownButton onClick={this.handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
+                            onChange={(value) => this._handleStatusChange(parseInt(value))} />
+                        <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
                     </div>
                 </div>
                 {taskHideable}
@@ -140,6 +135,5 @@ class TaskHideableSection extends React.Component
                 </div>
             </div>
         );
-
     }
 }

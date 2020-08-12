@@ -9,11 +9,9 @@ export default class TaskForm extends React.Component
     constructor(props)
     {
         super(props);
-
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleSubmit()
+    _handleSubmit = () =>
     {
         let data = {
             'id': this.props.id,
@@ -51,7 +49,7 @@ export default class TaskForm extends React.Component
                     onChange={(value) => this.props.onFieldChange('goal', parseInt(value))} />
                 <CheckboxInput label="Is Planned" checked={this.props.is_planned}
                     onCheckedChange={(c) => this.props.onFieldChange('is_planned', c)} />
-                <button onClick={this.handleSubmit}>Submit</button>
+                <button onClick={this._handleSubmit}>Submit</button>
             </div>
         );
     }

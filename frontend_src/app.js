@@ -25,67 +25,58 @@ class App extends React.Component
             'notes': null,
             'currently_edited_task': null
         };
-
-        this.handleGoalsChange = this.handleGoalsChange.bind(this);
-        this.handleNotesChange = this.handleNotesChange.bind(this);
-        this.refreshTasks = this.refreshTasks.bind(this);
-        this.refreshTasksCurrentDate = this.refreshTasksCurrentDate.bind(this);
-        this.handleEditTask = this.handleEditTask.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleModalEditSuccessful = this.handleModalEditSuccessful.bind(this);
-        this.handleModalClose = this.handleModalClose.bind(this);
     }
 
     componentDidMount()
     {
-        GoalManager.addListenerCallback(this.handleGoalsChange);
+        GoalManager.addListenerCallback(this._handleGoalsChange);
         GoalManager.refreshGoals();
-        NotesManager.addListenerCallback(this.handleNotesChange);
+        NotesManager.addListenerCallback(this._handleNotesChange);
         NotesManager.changeDateAndRefresh(this.state.dateStr);
-        this.refreshTasksCurrentDate();
+        this._refreshTasksCurrentDate();
     }
 
-    handleGoalsChange(goals)
-    {
-        this.setState({'goals': goals});
-    }
-
-    handleNotesChange(notes)
-    {
-        this.setState({'notes': notes});
-    }
-
-    refreshTasks(dateStr)
+    _refreshTasks = (dateStr) =>
     {
         ajaxGet('/date_tasks', {'date': dateStr})
             .done((data) => this.setState({'tasks': data['tasks']}));
     }
 
-    refreshTasksCurrentDate()
+    _refreshTasksCurrentDate = () =>
     {
-        this.refreshTasks(this.state.dateStr);
+        this._refreshTasks(this.state.dateStr);
     }
 
-    handleEditTask(task)
+    _handleGoalsChange = (goals) =>
+    {
+        this.setState({'goals': goals});
+    }
+
+    _handleNotesChange = (notes) =>
+    {
+        this.setState({'notes': notes});
+    }
+
+    _handleEditTask = (task) =>
     {
         this.setState({'currently_edited_task': task});
     }
 
-    handleDateChange(event)
+    _handleDateChange = (event) =>
     {
         const dateStr = event.target.value;
         this.setState({'dateStr': dateStr});
-        this.refreshTasks(dateStr);
+        this._refreshTasks(dateStr);
         NotesManager.changeDateAndRefresh(dateStr);
     }
 
-    handleModalEditSuccessful()
+    _handleModalEditSuccessful = () =>
     {
-        this.refreshTasksCurrentDate();
-        this.handleModalClose();
+        this._refreshTasksCurrentDate();
+        this._handleModalClose();
     }
 
-    handleModalClose()
+    _handleModalClose = () =>
     {
         this.setState({'currently_edited_task': null});
     }
@@ -98,8 +89,8 @@ class App extends React.Component
         const modalTaskEditForm = (this.state.currently_edited_task === null) ? null : (
             <ModalTaskEditForm task={this.state['currently_edited_task']}
                 goals={shownGoals}
-                onTaskEntrySuccessful={this.handleModalEditSuccessful}
-                onClose={this.handleModalClose} />
+                onTaskEntrySuccessful={this._handleModalEditSuccessful}
+                onClose={this._handleModalClose} />
         );
 
         return (
@@ -107,20 +98,20 @@ class App extends React.Component
                 <div id="center-view">
                     <div id="date-view-container">
                         <TaskView tasks={this.state.tasks}
-                            onEditTask={this.handleEditTask} 
-                            onStatusChangeSuccessful={this.refreshTasksCurrentDate}
-                            onTaskDeleteSuccessful={this.refreshTasksCurrentDate}/>
+                            onEditTask={this._handleEditTask} 
+                            onStatusChangeSuccessful={this._refreshTasksCurrentDate}
+                            onTaskDeleteSuccessful={this._refreshTasksCurrentDate}/>
                         <NotesView notes={this.state.notes} />
                     </div>
                     <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>
-                            <DateInput label="Date" value={this.state.dateStr} onChange={this.handleDateChange}/>
+                            <DateInput label="Date" value={this.state.dateStr} onChange={this._handleDateChange}/>
                         </div>
                         <GoalEntryForm />
                         <TaskEntryForm date={this.state.dateStr}
                             goals={shownGoals}
-                            onTaskEntrySuccessful={this.refreshTasksCurrentDate}/>
+                            onTaskEntrySuccessful={this._refreshTasksCurrentDate}/>
                     </div>
                 </div>
                 {modalTaskEditForm}

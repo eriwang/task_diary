@@ -17,19 +17,16 @@ export default class ModalTaskEditForm extends React.Component
             'status': this.props.task.status,
             'notes': this.props.task.notes,
         };
-
-        this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleFieldChange(fieldName, value)
+    _handleFieldChange = (fieldName, value) =>
     {
         const newState = {};
         newState[fieldName] = value;
         this.setState(newState);
     }
 
-    handleSubmit(task)
+    _handleSubmit = (task) =>
     {
         ajaxPut('/task', task).done(() => {
             this.props.onTaskEntrySuccessful();
@@ -49,8 +46,8 @@ export default class ModalTaskEditForm extends React.Component
                         goal={this.state.goal} is_planned={this.state.is_planned} status={this.state.status}
                         notes={this.state.notes}
                         goals={this.props.goals}
-                        onFieldChange={this.handleFieldChange}
-                        onSubmitTask={this.handleSubmit}
+                        onFieldChange={this._handleFieldChange}
+                        onSubmitTask={this._handleSubmit}
                         showDateInput />
                 </div>
             </div>

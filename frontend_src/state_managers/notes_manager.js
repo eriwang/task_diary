@@ -7,38 +7,32 @@ class NotesManagerClass
         this.dateStr = null;
         this.notes = '';
         this.listenerCallbacks = [];
-
-        this.refreshNotes = this.refreshNotes.bind(this);
-        this.setNotes = this.setNotes.bind(this);
-        this.changeDateAndRefresh = this.changeDateAndRefresh.bind(this);
-        this.addListenerCallback = this.addListenerCallback.bind(this);
-        this.onChange = this.onChange.bind(this);
     }
 
-    refreshNotes()
+    refreshNotes = () =>
     {
         ajaxGet('/daily_notes', {'date': this.dateStr})
-            .done((data) => this.onChange(data['notes']));
+            .done((data) => this._onChange(data['notes']));
     }
 
-    setNotes(text)
+    setNotes = (text) =>
     {
         return ajaxPut('/daily_notes', {'date': this.dateStr, 'text': text})
             .done(this.refreshNotes);
     }
 
-    changeDateAndRefresh(dateStr)
+    changeDateAndRefresh = (dateStr) =>
     {
         this.dateStr = dateStr;
         this.refreshNotes();
     }
 
-    addListenerCallback(cb)
+    addListenerCallback = (cb) =>
     {
         this.listenerCallbacks.push(cb);
     }
 
-    onChange(notes)
+    _onChange = (notes) =>
     {
         this.notes = (notes === null) ? '' : notes.text;
         for (const cb of this.listenerCallbacks)

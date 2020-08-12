@@ -16,19 +16,16 @@ export default class TaskEntryForm extends React.Component
             'is_planned': true,
             'status': Status.NOT_STARTED
         };
-
-        this.handleFieldChange = this.handleFieldChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleFieldChange(fieldName, value)
+    _handleFieldChange = (fieldName, value) =>
     {
         const newState = {};
         newState[fieldName] = value;
         this.setState(newState);
     }
 
-    handleSubmit(task)
+    _handleSubmit = (task) =>
     {
         if (task['id'] !== null)
         {
@@ -50,8 +47,8 @@ export default class TaskEntryForm extends React.Component
                 <TaskForm id={null} date={this.props.date} name={this.state.name} is_planned={this.state.is_planned}
                     status={this.state.status} notes={this.state.notes} goal={this.state.goal}
                     goals={this.props.goals}
-                    onFieldChange={this.handleFieldChange}
-                    onSubmitTask={this.handleSubmit} />
+                    onFieldChange={this._handleFieldChange}
+                    onSubmitTask={this._handleSubmit} />
             </div>
         );
     }

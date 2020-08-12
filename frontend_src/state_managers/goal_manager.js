@@ -6,29 +6,25 @@ class GoalManagerClass
     {
         this.goals = [];
         this.listenerCallbacks = [];
-
-        this.refreshGoals = this.refreshGoals.bind(this);
-        this.addListenerCallback = this.addListenerCallback.bind(this);
-        this.onChange = this.onChange.bind(this);
     }
 
-    refreshGoals()
+    refreshGoals = () =>
     {
         ajaxGet('/all_goals', {})
-            .done((data) => this.onChange(data['goals']));
+            .done((data) => this._onChange(data['goals']));
     }
 
-    addGoal(name)
+    addGoal = (name) =>
     {
         return ajaxPost('/goal', {'name': name}).done(this.refreshGoals);
     }
 
-    addListenerCallback(cb)
+    addListenerCallback = (cb) =>
     {
         this.listenerCallbacks.push(cb);
     }
 
-    onChange(goals)
+    _onChange = (goals) =>
     {
         this.goals = goals;
         for (const cb of this.listenerCallbacks)
