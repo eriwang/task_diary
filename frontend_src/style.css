@@ -192,9 +192,18 @@ select
 }
 
 /* task components */
+.task-container
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    margin-bottom: 1em;
+}
+
 .task
 {
-    margin-bottom: 1em;
+    width: 100%;
 }
 
 .task-always-shown
@@ -226,11 +235,6 @@ select
     justify-content: flex-end;
 }
 
-.task-flush-right-container > :first-child
-{
-    margin-right: 1em
-}
-
 .task-notes
 {
     max-width: 70%;
@@ -255,6 +259,14 @@ select
 .task-modification-container > :first-child
 {
     margin-right: 0.5em;
+}
+
+.task-dropdown-button
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 24px;
 }
 
 /* modal components */

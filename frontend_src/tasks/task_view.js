@@ -3,6 +3,7 @@ import React from 'react';
 import {ajaxPut, ajaxDelete} from '../common/ajax.js';
 import {StatusInput} from '../common/form_components.js';
 import {CrossButton, EditButton, DropdownButton} from '../common/svg_buttons.js';
+import InlineTaskEntryForm from './inline_task_entry_form.js';
 
 export default class TaskView extends React.Component
 {
@@ -11,9 +12,13 @@ export default class TaskView extends React.Component
         super(props);
     }
 
-    renderTaskDiv(tasks)
+    _renderTaskDiv(tasks, isPlanned)
     {
-        return <div>{(tasks.length == 0) ? 'None' : tasks}</div>;
+        return (
+            <div>
+                {(tasks.length == 0) ? 'None' : tasks}
+                <InlineTaskEntryForm isPlanned={isPlanned} />
+            </div>);
     }
 
     render()
@@ -37,9 +42,9 @@ export default class TaskView extends React.Component
             <div id="task-view">
                 <h3>Tasks</h3>
                 <h4>Planned</h4>
-                {this.renderTaskDiv(plannedTasks)}
+                {this._renderTaskDiv(plannedTasks, true)}
                 <h4>Unplanned</h4>
-                {this.renderTaskDiv(unplannedTasks)}
+                {this._renderTaskDiv(unplannedTasks, false)}
             </div>
         );
     }
@@ -99,19 +104,23 @@ class Task extends React.Component
         );
 
         return (
-            <div className="task">
-                <div className="task-always-shown">
-                    <div className="task-name-goal-container">
-                        <p className="task-name">{this.props.name}</p>
-                        <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
+            <div className="task-container">
+                <div className="task">
+                    <div className="task-always-shown">
+                        <div className="task-name-goal-container">
+                            <p className="task-name">{this.props.name}</p>
+                            <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
+                        </div>
+                        <div className="task-flush-right-container">
+                            <StatusInput value={this.props.status}
+                                onChange={(value) => this._handleStatusChange(parseInt(value))} />
+                        </div>
                     </div>
-                    <div className="task-flush-right-container">
-                        <StatusInput value={this.props.status}
-                            onChange={(value) => this._handleStatusChange(parseInt(value))} />
-                        <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
-                    </div>
+                    {taskHideable}
                 </div>
-                {taskHideable}
+                <div className="task-dropdown-button">
+                    <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
+                </div>
             </div>
         );
     }
