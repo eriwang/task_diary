@@ -16,6 +16,7 @@ class SvgButton extends React.Component
     {
         // TODO: The isActive is a bit confusing. Should consider reevaluating how it's done.
         // TODO: isActive is from Site Script Storage play button, for when the script is running. May not need this.
+        // TODO: can this be 100% CSS?
         let fillColor, opacity;
         if (this.props.isActive !== undefined && this.props.isActive)
         {

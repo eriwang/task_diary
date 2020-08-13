@@ -17,6 +17,7 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
+        // TODO: inconsistent key name style
         this.state = {
             'dateStr': getCurrentDateStr(),
             'tasks': [],

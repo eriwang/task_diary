@@ -20,6 +20,13 @@ select
     height: 1.6em;
 }
 
+/* global */
+.svg-button:hover
+{
+    cursor: pointer;
+}
+
+/* specific elements */
 #content
 {
     min-width: 800px;
@@ -64,7 +71,7 @@ select
     top: 0;
     left: 0;
     width: 100%;
-    height: 70px;
+    height: 71px;  /* this looks a bit odd without context, but lines up the border on the sidebar and the header */
     background-color: white;
     border-bottom: 1px solid lightgray;
 
@@ -121,20 +128,39 @@ select
 
     width: 100%;
     height: 100%;
-    z-index: 5;
+    z-index: 1;
 }
 
 .sidebar-body
 {
     background-color: white;
     border-right: 1px solid lightgray;
-    width: 20%;
+    width: 300px;
     height: 100%;
+}
+
+.sidebar-title
+{
+    padding: 16px;
+    border-bottom: 1px solid lightgray;
+    margin: 0;
+}
+
+.sidebar-clickable-item
+{
+    padding: 1em;
+    border-bottom: 1px solid lightgray;
+}
+
+.sidebar-clickable-item:hover
+{
+    background-color: darkgray;
+    cursor: pointer;
 }
 
 .sidebar-close-clickable-div
 {
-    width: 80%;
+    flex-grow: 1;
     height: 100%;
 }
 
@@ -240,7 +266,7 @@ select
     align-items: center;
 
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     left: 0;
     top: 0;
     width: 100%;
@@ -262,4 +288,6 @@ select
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    margin-bottom: 1em;
 }
