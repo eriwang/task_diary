@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {TextInput} from './common/form_components.js';
+import GoalManager from './state_managers/goal_manager.js';
 import Modal from './common/modal.js';
 
 const ModalShown = Object.freeze({
@@ -24,9 +26,12 @@ export default class CollapsibleSidebar extends React.Component
     componentDidMount()
     {
         window.addEventListener('scroll', () => {
-            // The visible check isn't strictly necessary, but reduces the number of closeSidebar() calls (which
-            // reduces calls to setState)
-            if (this.props.visible && this.state.modalShown == ModalShown.NONE)
+            if (!this.props.visible)
+            {
+                return;
+            }
+
+            if (this.state.modalShown == ModalShown.NONE)
             {
                 this.props.closeSidebar();
             }
@@ -73,7 +78,7 @@ export default class CollapsibleSidebar extends React.Component
         switch (this.state.modalShown)
         {
         case ModalShown.ADD_GOAL:
-            return (<Modal title="Add Goal" onClose={this._handleModalClose}><p>Text here</p></Modal>);
+            return <ModalGoalEntryForm onClose={this._handleModalClose} />;
 
         case ModalShown.FEATURES:
             return (
@@ -101,6 +106,36 @@ class SidebarRowButton extends React.Component
     {
         return (
             <p className="sidebar-clickable-item" onClick={this.props.onClick}>{this.props.text}</p>
+        );
+    }
+}
+
+class ModalGoalEntryForm extends React.Component
+{
+    constructor(props)
+    {
+        super(props);
+        this.state = {'name': ''};
+    }
+
+    _handleGoalNameChange = (event) =>
+    {
+        this.setState({'name': event.target.value});
+    }
+
+    _handleSubmit = () =>
+    {
+        GoalManager.addGoal(this.state.name)
+            .done(this.props.onClose);
+    }
+
+    render()
+    {
+        return (
+            <Modal title="Add Goal" onClose={this.props.onClose}>
+                <TextInput label="Name" value={this.state.name} onChange={this._handleGoalNameChange}/>
+                <button onClick={this._handleSubmit}>Submit</button>
+            </Modal>
         );
     }
 }
