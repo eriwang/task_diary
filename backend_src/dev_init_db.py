@@ -50,6 +50,9 @@ def main():
             add_task(cursor, datetime.date.today(), 'today task 2', True, Status.NOT_STARTED, 'today notes 2', 2)
             add_task(cursor, datetime.date.today(), 'lorem ipsum', False, Status.IN_PROGRESS, _LOREM_IPSUM)
 
+            for i in range(1, 21):
+                add_task(cursor, datetime.date.today(), f'repeated task {i}', True, Status.NOT_STARTED, f'notes {i}', 1)
+
 
 if __name__ == '__main__':
     main()

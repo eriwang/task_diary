@@ -4,13 +4,12 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import {ajaxGet} from './common/ajax.js';
-import {DateInput} from './common/form_components.js';
-import GoalEntryForm from './goal_entry_form.js';
+import CollapsibleSidebar from './collapsible_sidebar.js';
 import GoalManager from './state_managers/goal_manager.js';
 import ModalTaskEditForm from './tasks/modal_task_edit_form.js';
 import NotesManager from './state_managers/notes_manager.js';
 import NotesView from './notes_view.js';
-import TaskEntryForm from './tasks/task_entry_form.js';
+import StickyHeader from './sticky_header.js';
 import TaskView from './tasks/task_view.js';
 
 class App extends React.Component
@@ -18,12 +17,14 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
+        // TODO: inconsistent key name style
         this.state = {
             'dateStr': getCurrentDateStr(),
             'tasks': [],
             'goals': [],
             'notes': null,
-            'currently_edited_task': null
+            'currently_edited_task': null,
+            'sidebar_visible': false
         };
     }
 
@@ -81,6 +82,18 @@ class App extends React.Component
         this.setState({'currently_edited_task': null});
     }
 
+    // TODO: not a fan of how state and callbacks end up being across so many files. Read the docs and see what their
+    //       suggested solution is, or go to state managers like the other ones.
+    _handleMenuClick = () =>
+    {
+        this.setState({'sidebar_visible': true});
+    }
+
+    _handleMenuClose = () => 
+    {
+        this.setState({'sidebar_visible': false});
+    }
+
     render()
     {
         let shownGoals = Array.from(this.state.goals);
@@ -95,15 +108,20 @@ class App extends React.Component
 
         return (
             <div>
+                <StickyHeader onMenuClick={this._handleMenuClick} onDateChange={this._handleDateChange}
+                    dateStr={this.state.dateStr}/>
+                <CollapsibleSidebar visible={this.state.sidebar_visible} closeSidebar={this._handleMenuClose}/>
                 <div id="center-view">
                     <div id="date-view-container">
                         <TaskView tasks={this.state.tasks}
                             onEditTask={this._handleEditTask} 
                             onStatusChangeSuccessful={this._refreshTasksCurrentDate}
                             onTaskDeleteSuccessful={this._refreshTasksCurrentDate}/>
+                    </div>
+                    <div id="notes-container">
                         <NotesView notes={this.state.notes} />
                     </div>
-                    <div id="sidebar">
+                    {/* <div id="sidebar">
                         <div>
                             <h3>Date Selection</h3>
                             <DateInput label="Date" value={this.state.dateStr} onChange={this._handleDateChange}/>
@@ -112,7 +130,7 @@ class App extends React.Component
                         <TaskEntryForm date={this.state.dateStr}
                             goals={shownGoals}
                             onTaskEntrySuccessful={this._refreshTasksCurrentDate}/>
-                    </div>
+                    </div> */}
                 </div>
                 {modalTaskEditForm}
             </div>
