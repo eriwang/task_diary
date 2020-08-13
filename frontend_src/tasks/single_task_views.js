@@ -32,8 +32,8 @@ class AddedTaskView extends React.Component
             'id': this.props.id,
             'date': this.props.date,
             'name': this.props.name,
-            'goal_id': this.props.goal_id,
-            'is_planned': this.props.is_planned,
+            'goalId': this.props.goalId,
+            'isPlanned': this.props.isPlanned,
             'status': this.props.status,
             'notes': this.props.notes
         });
@@ -79,6 +79,13 @@ class EditableTaskView extends React.Component
             'goalString': '',
             'status': Status.NOT_STARTED
         };
+    }
+
+    _handleFieldChange = (key, value) =>
+    {
+        const newState = {};
+        newState[key] = value;
+        this.setState(newState);
     }
 
     render()

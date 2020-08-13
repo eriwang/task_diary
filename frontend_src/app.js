@@ -17,14 +17,13 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
-        // TODO: inconsistent key name style
         this.state = {
             'dateStr': getCurrentDateStr(),
             'tasks': [],
             'goals': [],
             'notes': null,
-            'currently_edited_task': null,
-            'sidebar_visible': false
+            'currentlyEditedTask': null,
+            'sidebarVisible': false
         };
     }
 
@@ -60,7 +59,7 @@ class App extends React.Component
 
     _handleEditTask = (task) =>
     {
-        this.setState({'currently_edited_task': task});
+        this.setState({'currentlyEditedTask': task});
     }
 
     _handleDateChange = (event) =>
@@ -79,19 +78,19 @@ class App extends React.Component
 
     _handleModalClose = () =>
     {
-        this.setState({'currently_edited_task': null});
+        this.setState({'currentlyEditedTask': null});
     }
 
     // TODO: not a fan of how state and callbacks end up being across so many files. Read the docs and see what their
     //       suggested solution is, or go to state managers like the other ones.
     _handleMenuClick = () =>
     {
-        this.setState({'sidebar_visible': true});
+        this.setState({'sidebarVisible': true});
     }
 
     _handleMenuClose = () => 
     {
-        this.setState({'sidebar_visible': false});
+        this.setState({'sidebarVisible': false});
     }
 
     render()
@@ -99,8 +98,8 @@ class App extends React.Component
         let shownGoals = Array.from(this.state.goals);
         shownGoals.unshift({'id': -1, 'name': 'No goal'});
 
-        const modalTaskEditForm = (this.state.currently_edited_task === null) ? null : (
-            <ModalTaskEditForm task={this.state['currently_edited_task']}
+        const modalTaskEditForm = (this.state.currentlyEditedTask === null) ? null : (
+            <ModalTaskEditForm task={this.state['currentlyEditedTask']}
                 goals={shownGoals}
                 onTaskEntrySuccessful={this._handleModalEditSuccessful}
                 onClose={this._handleModalClose} />
@@ -110,7 +109,7 @@ class App extends React.Component
             <div>
                 <StickyHeader onMenuClick={this._handleMenuClick} onDateChange={this._handleDateChange}
                     dateStr={this.state.dateStr}/>
-                <CollapsibleSidebar visible={this.state.sidebar_visible} closeSidebar={this._handleMenuClose}/>
+                <CollapsibleSidebar visible={this.state.sidebarVisible} closeSidebar={this._handleMenuClose}/>
                 <div id="center-view">
                     <div id="date-view-container">
                         <TaskView tasks={this.state.tasks}
@@ -121,16 +120,6 @@ class App extends React.Component
                     <div id="notes-container">
                         <NotesView notes={this.state.notes} />
                     </div>
-                    {/* <div id="sidebar">
-                        <div>
-                            <h3>Date Selection</h3>
-                            <DateInput label="Date" value={this.state.dateStr} onChange={this._handleDateChange}/>
-                        </div>
-                        <GoalEntryForm />
-                        <TaskEntryForm date={this.state.dateStr}
-                            goals={shownGoals}
-                            onTaskEntrySuccessful={this._refreshTasksCurrentDate}/>
-                    </div> */}
                 </div>
                 {modalTaskEditForm}
             </div>
