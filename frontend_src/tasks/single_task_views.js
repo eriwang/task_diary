@@ -1,16 +1,10 @@
 import React from 'react';
 
-import {ajaxPut, ajaxDelete} from '../common/ajax.js';
 import {CrossButton, EditButton, DropdownButton} from '../common/svg_buttons.js';
 import {StatusInput} from '../common/form_components.js';
 import Status from '../common/status.js';
+import TaskManager from '../state_managers/task_manager.js';
 
-/* Date/ planned are only on here because I want to pass all the task information back when editing.
- * The Task rendering component has no need to know about either of those.
- * The better design pattern might be to have a TaskStore that's the source of truth that everything reads.
- * Worth noting that there's a big stench (bad smell :) ) associated with this: right now the state controller is App,
- * and everything has to pass its state back there through multiple levels, resulting in tons of confusing callbacks.
- */
 class AddedTaskView extends React.Component
 {
     constructor(props)
@@ -19,40 +13,38 @@ class AddedTaskView extends React.Component
         this.state = {'areDetailsHidden': true};
     }
 
-    /* these three are unique to the regular view */
     _handleStatusChange = (status) =>
     {
-        ajaxPut('/task', {'id': this.props.id, 'status': status})
-            .done(this.props.onStatusChangeSuccessful);
+        TaskManager.editTask({'id': this.props.task.id, 'status': status});
     }
 
     _handleEditTask = () =>
     {
-        this.props.onEditTask({
-            'id': this.props.id,
-            'date': this.props.date,
-            'name': this.props.name,
-            'goalId': this.props.goalId,
-            'isPlanned': this.props.isPlanned,
-            'status': this.props.status,
-            'notes': this.props.notes
-        });
+        // this.props.onEditTask({
+        //     'id': this.props.id,
+        //     'date': this.props.date,
+        //     'name': this.props.name,
+        //     'goalId': this.props.goalId,
+        //     'isPlanned': this.props.isPlanned,
+        //     'status': this.props.status,
+        //     'notes': this.props.notes
+        // });
     }
 
     _handleDeleteTask = () =>
     {
-        ajaxDelete('/task', {'id': this.props.id})
-            .done(() => this.props.onTaskDeleteSuccessful());
+        TaskManager.deleteTask(this.props.task.id);
     }
 
     render()
     {
-        const nameComponent = <p className="task-name">{this.props.name}</p>;
-        const goalComponent = <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>;
+        const task = this.props.task;
+        const nameComponent = <p className="task-name">{task.name}</p>;
+        const goalComponent = <p>{(task.goal !== undefined) ? task.goal : 'No goal'}</p>;
         const statusComponent =
-            <StatusInput value={this.props.status} onChange={(value) => this._handleStatusChange(parseInt(value))} />;
+            <StatusInput value={task.status} onChange={(value) => this._handleStatusChange(parseInt(value))} />;
         const notesComponent = 
-            <p className="task-notes">{(this.props.notes != '') ? this.props.notes : 'Task has no notes.'}</p>;
+            <p className="task-notes">{(task.notes != '') ? task.notes : 'Task has no notes.'}</p>;
         const buttonsComponent = 
             <div className="task-modification-container">
                 <EditButton onClick={this._handleEditTask} />
@@ -88,6 +80,22 @@ class EditableTaskView extends React.Component
         this.setState(newState);
     }
 
+    // TODO: currently only handles new tasks
+    _handleSubmit = () =>
+    {
+        TaskManager.addTask({
+            'name': this.state.name,
+            'goal_id': -1,  // FIXME: populate based on goalString lookup. validate if does not exist
+            'is_planned': this.props.isPlanned,
+            'status': this.state.status,
+            'notes': this.state.notes,
+        });
+
+        // Note that goalString is intentionally kept the same, as it's likely that the user will input a task with the
+        // exact same goal.
+        this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
+    }
+
     render()
     {
         const nameComponent = 
@@ -100,7 +108,7 @@ class EditableTaskView extends React.Component
             <StatusInput value={this.state.status}
                 onChange={(value) => this._handleFieldChange('status', parseInt(value))} />;
         const notesComponent = 
-            <textarea placeholder="Notes" value={this.state.notes}
+            <textarea className="task-notes" placeholder="Notes" value={this.state.notes}
                 onChange={(e) => this._handleFieldChange('notes', e.target.value)}/>;
         const buttonsComponent = <button onClick={this._handleSubmit}>Submit</button>;
 

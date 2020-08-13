@@ -17,12 +17,7 @@ export default class TaskView extends React.Component
         {
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             taskArray.push(
-                <AddedTaskView key={task['id']} id={task['id']} date={task['date']} name={task['name']}
-                    goal={task['goal']} goal_id={task['goal_id']} is_planned={task['is_planned']} 
-                    status={task['status']} notes={task['notes']}
-                    onEditTask={this.props.onEditTask} 
-                    onStatusChangeSuccessful={this.props.onStatusChangeSuccessful}
-                    onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
+                <AddedTaskView key={task['id']} task={task} onEditTask={this.props.onEditTask} />
             );
         }
 
