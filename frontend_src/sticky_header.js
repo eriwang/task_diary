@@ -15,7 +15,7 @@ export default class StickyHeader extends React.Component
         return (
             <div className="sticky-header">
                 <div className="header-sidebar-toggle-btn">
-                    <MenuButton />
+                    <MenuButton onClick={this.props.onMenuClick}/>
                 </div>
                 <div className="header-other">
                     <h1>Task Diary</h1>

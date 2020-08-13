@@ -4,8 +4,7 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import {ajaxGet} from './common/ajax.js';
-// import {DateInput} from './common/form_components.js';
-// import GoalEntryForm from './goal_entry_form.js';
+import CollapsibleSidebar from './collapsible_sidebar.js';
 import GoalManager from './state_managers/goal_manager.js';
 import ModalTaskEditForm from './tasks/modal_task_edit_form.js';
 import NotesManager from './state_managers/notes_manager.js';
@@ -23,7 +22,8 @@ class App extends React.Component
             'tasks': [],
             'goals': [],
             'notes': null,
-            'currently_edited_task': null
+            'currently_edited_task': null,
+            'sidebar_visible': false
         };
     }
 
@@ -81,6 +81,18 @@ class App extends React.Component
         this.setState({'currently_edited_task': null});
     }
 
+    // TODO: not a fan of how state and callbacks end up being across so many files. Read the docs and see what their
+    //       suggested solution is, or go to state managers like the other ones.
+    _handleMenuClick = () =>
+    {
+        this.setState({'sidebar_visible': true});
+    }
+
+    _handleMenuClose = () => 
+    {
+        this.setState({'sidebar_visible': false});
+    }
+
     render()
     {
         let shownGoals = Array.from(this.state.goals);
@@ -95,7 +107,9 @@ class App extends React.Component
 
         return (
             <div>
-                <StickyHeader onDateChange={this._handleDateChange} dateStr={this.state.dateStr}/>
+                <StickyHeader onMenuClick={this._handleMenuClick} onDateChange={this._handleDateChange}
+                    dateStr={this.state.dateStr}/>
+                <CollapsibleSidebar visible={this.state.sidebar_visible} closeSidebar={this._handleMenuClose}/>
                 <div id="center-view">
                     <div id="date-view-container">
                         <TaskView tasks={this.state.tasks}
@@ -103,7 +117,7 @@ class App extends React.Component
                             onStatusChangeSuccessful={this._refreshTasksCurrentDate}
                             onTaskDeleteSuccessful={this._refreshTasksCurrentDate}/>
                     </div>
-                    <div id="sidebar">
+                    <div id="notes-container">
                         <NotesView notes={this.state.notes} />
                     </div>
                     {/* <div id="sidebar">
