@@ -48,7 +48,7 @@ class CommonEditableTaskView extends React.Component
             goalComponent={goalComponent}
             statusComponent={statusComponent}
             notesComponent={notesComponent}
-            buttonsComponent={this.props.buttonsComponent}
+            endComponent={this.props.endComponent}
             startDetailsShown={this.props.startDetailsShown}/>;
     }
 }
@@ -73,7 +73,7 @@ class CommonTaskView extends React.Component
         const hideableComponent = this.state.areDetailsHidden ? null : (
             <div className="task-hideable-container">
                 {this.props.notesComponent}
-                {this.props.buttonsComponent}
+                {this.props.endComponent}
             </div>
         );
 

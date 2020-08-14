@@ -37,7 +37,7 @@ class ExistingTaskView extends React.Component
             <StatusInput value={task.status} onChange={(value) => this._handleStatusChange(parseInt(value))} />;
         const notesComponent = 
             <p className="task-notes">{(task.notes != '') ? task.notes : 'Task has no notes.'}</p>;
-        const buttonsComponent = 
+        const endComponent = 
             <div className="task-modification-container">
                 <EditButton onClick={this._handleEditTask} />
                 <CrossButton onClick={this._handleDeleteTask} />
@@ -48,7 +48,7 @@ class ExistingTaskView extends React.Component
             goalComponent={goalComponent}
             statusComponent={statusComponent}
             notesComponent={notesComponent}
-            buttonsComponent={buttonsComponent}/>;
+            endComponent={endComponent}/>;
     }
 
     _getTaskId = () =>
@@ -100,7 +100,7 @@ class EditableExistingTaskView extends React.Component
 
     render()
     {
-        const buttonsComponent = 
+        const endComponent = 
             <div className="task-modification-container">
                 <CheckButton onClick={this._handleSubmit} />
                 <CrossButton onClick={this._handleExitEditMode} />
@@ -108,7 +108,7 @@ class EditableExistingTaskView extends React.Component
         return <CommonEditableTaskView name={this.state.name} goalString={this.state.goalString}
             status={this.state.status} notes={this.state.notes}
             onEnterPressed={this._handleSubmit} onEscapePressed={this._handleExitEditMode}
-            onFieldChange={this._handleFieldChange} buttonsComponent={buttonsComponent} startDetailsShown
+            onFieldChange={this._handleFieldChange} endComponent={endComponent} startDetailsShown
             autoFocus={true}/>;
     }
 }

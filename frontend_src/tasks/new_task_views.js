@@ -47,11 +47,11 @@ class NewTaskView extends React.Component
 
     render()
     {
-        const buttonsComponent = <button onClick={this._handleSubmit}>Submit</button>;
+        const endComponent = <button onClick={this._handleSubmit}>Submit</button>;
         return <CommonEditableTaskView name={this.state.name} goalString={this.state.goalString}
             status={this.state.status} notes={this.state.notes}
             onEnterPressed={this._handleEnterPressed}
-            onFieldChange={this._handleFieldChange} buttonsComponent={buttonsComponent}/>;
+            onFieldChange={this._handleFieldChange} endComponent={endComponent}/>;
     }
 }
 
