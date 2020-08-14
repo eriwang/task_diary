@@ -44,7 +44,6 @@ class GoalManagerClass
     _onChange = (goals) =>
     {
         this.goals = goals;
-        console.log(goals);
         for (const cb of this.listenerCallbacks)
         {
             cb(this.goals);
