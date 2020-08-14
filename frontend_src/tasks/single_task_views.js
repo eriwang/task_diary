@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {CrossButton, EditButton, DropdownButton} from '../common/svg_buttons.js';
+import {getDefaultIfUndefined} from '../utils/ternary_utils.js';
 import {StatusInput} from '../common/form_components.js';
 import Status from '../common/status.js';
 import TaskManager from '../state_managers/task_manager.js';
@@ -10,37 +11,28 @@ class AddedTaskView extends React.Component
     constructor(props)
     {
         super(props);
-        this.state = {'areDetailsHidden': true};
     }
 
     _handleStatusChange = (status) =>
     {
-        TaskManager.editTask({'id': this.props.task.id, 'status': status});
+        TaskManager.editTask({'id': this._getTaskId(), 'status': status});
     }
 
     _handleEditTask = () =>
     {
-        // this.props.onEditTask({
-        //     'id': this.props.id,
-        //     'date': this.props.date,
-        //     'name': this.props.name,
-        //     'goalId': this.props.goalId,
-        //     'isPlanned': this.props.isPlanned,
-        //     'status': this.props.status,
-        //     'notes': this.props.notes
-        // });
+        this.props.onEditTask(this._getTaskId());
     }
 
     _handleDeleteTask = () =>
     {
-        TaskManager.deleteTask(this.props.task.id);
+        TaskManager.deleteTask(this._getTaskId());
     }
 
     render()
     {
         const task = this.props.task;
         const nameComponent = <p className="task-name">{task.name}</p>;
-        const goalComponent = <p>{(task.goal !== undefined) ? task.goal : 'No goal'}</p>;
+        const goalComponent = <p>{getDefaultIfUndefined(task.goal, 'No goal')}</p>;
         const statusComponent =
             <StatusInput value={task.status} onChange={(value) => this._handleStatusChange(parseInt(value))} />;
         const notesComponent = 
@@ -58,19 +50,41 @@ class AddedTaskView extends React.Component
             notesComponent={notesComponent}
             buttonsComponent={buttonsComponent}/>;
     }
+
+    _getTaskId = () =>
+    {
+        return this.props.task.id;
+    }
 }
 
+// TODO: should I split this into a "new task view" and "editable task view"?
 class EditableTaskView extends React.Component
 {
     constructor(props)
     {
         super(props);
-        this.state = {
-            'name': '',
-            'notes': '',
-            'goalString': '',
-            'status': Status.NOT_STARTED
-        };
+        
+        if (this._isModifyingTask())
+        {
+            const task = props.modifyingTask;
+            this.state = {
+                'name': task.name,
+                'notes': task.notes,
+                'goalString': '',  // FIXME: make correct
+                'status': task.status,
+                'isPlanned': task.is_planned
+            };
+        }
+        else
+        {
+            this.state = {
+                'name': '',
+                'notes': '',
+                'goalString': '',
+                'status': Status.NOT_STARTED,
+                'isPlanned': props.isPlanned
+            };
+        }
     }
 
     _handleFieldChange = (key, value) =>
@@ -80,20 +94,35 @@ class EditableTaskView extends React.Component
         this.setState(newState);
     }
 
-    // TODO: currently only handles new tasks
     _handleSubmit = () =>
     {
-        TaskManager.addTask({
-            'name': this.state.name,
-            'goal_id': -1,  // FIXME: populate based on goalString lookup. validate if does not exist
-            'is_planned': this.props.isPlanned,
-            'status': this.state.status,
-            'notes': this.state.notes,
-        });
-
-        // Note that goalString is intentionally kept the same, as it's likely that the user will input a task with the
-        // exact same goal.
-        this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
+        if (this._isModifyingTask())
+        {
+            const taskId = this.props.modifyingTask.id;
+            TaskManager.editTask({
+                'id': taskId,
+                'name': this.state.name,
+                'goal_id': -1, // FIXME: goalString lookup
+                'is_planned': this.state.isPlanned,
+                'status': this.state.status,
+                'notes': this.state.notes
+            })
+                .then(() => this.props.onEditTaskComplete(taskId));
+        }
+        else
+        {
+            TaskManager.addTask({
+                'name': this.state.name,
+                'goal_id': -1,  // FIXME: populate based on goalString lookup. validate if does not exist
+                'is_planned': this.state.isPlanned,
+                'status': this.state.status,
+                'notes': this.state.notes,
+            });
+    
+            // Note that goalString is intentionally kept the same, as it's likely that the user will input a task with
+            // the exact same goal.
+            this.setState({'name': '', 'notes': '', 'status': Status.NOT_STARTED});
+        }
     }
 
     render()
@@ -117,7 +146,13 @@ class EditableTaskView extends React.Component
             goalComponent={goalComponent}
             statusComponent={statusComponent}
             notesComponent={notesComponent}
-            buttonsComponent={buttonsComponent}/>;
+            buttonsComponent={buttonsComponent}
+            startDetailsShown={this.props.startDetailsShown}/>;
+    }
+
+    _isModifyingTask = () =>
+    {
+        return this.props.modifyingTask !== undefined;
     }
 }
 
@@ -126,7 +161,7 @@ class CommonTaskView extends React.Component
     constructor(props)
     {
         super(props);
-        this.state = {'areDetailsHidden': true};
+        this.state = {'areDetailsHidden': (props.startDetailsShown === undefined)};
     }
 
     _handleToggleDetails = () =>

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {getDefaultIfUndefined} from '../utils/ternary_utils.js';
+
 // SVG sourced from https://feathericons.com/
 class SvgButton extends React.Component
 {
@@ -31,10 +33,9 @@ class SvgButton extends React.Component
 
         // Setting only width is a hack. For my use case, keeping the height at 24 means the element stays centered when
         // I decrease the size. A better solution would be to allow setting of width/ height/ viewbox.
-        const size = (this.props.size === undefined) ? 24 : this.props.size;
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height="24" viewBox="0 0 24 24" stroke="currentColor" 
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            <svg xmlns="http://www.w3.org/2000/svg" width={getDefaultIfUndefined(this.props.size, 24)} height="24"
+                viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 fill={fillColor} opacity={opacity} className="svg-button"
                 onMouseEnter={() => this.setState({'mouseInside': true})}
                 onMouseLeave={() => this.setState({'mouseInside': false})}
