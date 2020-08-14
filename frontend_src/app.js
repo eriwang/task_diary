@@ -109,11 +109,3 @@ function getCurrentDateStr()
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
-
-/* TODO: stuff to complete the "task UI refactor"
- *  - Functioning edit button, transforming the AddTask to an EditableTask
- *  - Functioning goal input/ fuzzy search on new/ editable task
- *  - "Ok" (i.e. save) and "cancel" buttons. Enter works as "ok", escape works as "cancel".
- *      - Thought about click away, focus away, or press escape and everything in the task gets saved. I'm not that 
- *        ballsy to do this without an undo button.
- */
