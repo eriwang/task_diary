@@ -1,7 +1,7 @@
 import React from 'react';
 
+import {CheckButton, CrossButton, EditButton} from '../common/svg_buttons.js';
 import {CommonTaskView, CommonEditableTaskView} from './common_task_views.js';
-import {CrossButton, EditButton} from '../common/svg_buttons.js';
 import {getDefaultIfUndefined} from '../utils/ternary_utils.js';
 import {StatusInput} from '../common/form_components.js';
 import TaskManager from '../state_managers/task_manager.js';
@@ -57,6 +57,7 @@ class ExistingTaskView extends React.Component
     }
 }
 
+// TODO: would be nice if I maintained the dropdown status after completion
 class EditableExistingTaskView extends React.Component
 {
     constructor(props)
@@ -81,24 +82,34 @@ class EditableExistingTaskView extends React.Component
 
     _handleSubmit = () =>
     {
-        const taskId = this.props.task.id;
         TaskManager.editTask({
-            'id': taskId,
+            'id': this.props.task.id,
             'name': this.state.name,
             'goal_id': -1, // FIXME: goalString lookup
             'is_planned': this.state.isPlanned,
             'status': this.state.status,
             'notes': this.state.notes
         })
-            .then(() => this.props.onEditTaskComplete(taskId));
+            .then(this._handleExitEditMode);
+    }
+
+    _handleExitEditMode = () =>
+    {
+        this.props.onEditTaskComplete(this.props.task.id);
     }
 
     render()
     {
-        const buttonsComponent = <button onClick={this._handleSubmit}>Submit</button>;
+        const buttonsComponent = 
+            <div className="task-modification-container">
+                <CheckButton onClick={this._handleSubmit} />
+                <CrossButton onClick={this._handleExitEditMode} />
+            </div>;
         return <CommonEditableTaskView name={this.state.name} goalString={this.state.goalString}
             status={this.state.status} notes={this.state.notes}
-            onFieldChange={this._handleFieldChange} buttonsComponent={buttonsComponent} startDetailsShown/>;
+            onEnterPressed={this._handleSubmit} onEscapePressed={this._handleExitEditMode}
+            onFieldChange={this._handleFieldChange} buttonsComponent={buttonsComponent} startDetailsShown
+            autoFocus={true}/>;
     }
 }
 

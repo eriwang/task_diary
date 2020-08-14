@@ -25,6 +25,11 @@ class NewTaskView extends React.Component
         this.setState(newState);
     }
 
+    _handleEnterPressed = () =>
+    {
+        this._handleSubmit();
+    }
+
     _handleSubmit = () =>
     {
         TaskManager.addTask({
@@ -45,6 +50,7 @@ class NewTaskView extends React.Component
         const buttonsComponent = <button onClick={this._handleSubmit}>Submit</button>;
         return <CommonEditableTaskView name={this.state.name} goalString={this.state.goalString}
             status={this.state.status} notes={this.state.notes}
+            onEnterPressed={this._handleEnterPressed}
             onFieldChange={this._handleFieldChange} buttonsComponent={buttonsComponent}/>;
     }
 }

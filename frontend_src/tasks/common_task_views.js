@@ -10,20 +10,34 @@ class CommonEditableTaskView extends React.Component
         super(props);
     }
 
+    // TODO: this is where form_components might be useful
+    _handleKeyPress = (e) =>
+    {
+        if (e.key === 'Enter' && this.props.onEnterPressed !== undefined)
+        {
+            this.props.onEnterPressed();
+        }
+        else if (e.key === 'Escape' && this.props.onEscapePressed !== undefined)
+        {
+            this.props.onEscapePressed();
+        }
+    }
+
     render()
     {
         const nameComponent = 
-            <input className="task-name" placeholder="Name" value={this.props.name} 
-                onChange={(e) => this.props.onFieldChange('name', e.target.value)}/>;
+            <input autoFocus={this.props.autoFocus} className="task-name" placeholder="Name" value={this.props.name}
+                onKeyDown={this._handleKeyPress} onChange={(e) => this.props.onFieldChange('name', e.target.value)}/>;
         const goalComponent =
-            <input placeholder="Goal" value={this.props.goalString} 
+            <input placeholder="Goal" value={this.props.goalString} onKeyDown={this._handleKeyPress} 
                 onChange={(e) => this.props.onFieldChange('goalString', e.target.value)}/>;
+        // TODO: keypress handling
         const statusComponent =
             <StatusInput value={this.props.status}
                 onChange={(value) => this.props.onFieldChange('status', parseInt(value))} />;
         const notesComponent = 
             <textarea className="task-notes" placeholder="Notes" value={this.props.notes}
-                onChange={(e) => this.props.onFieldChange('notes', e.target.value)}/>;
+                onKeyDown={this._handleKeyPress} onChange={(e) => this.props.onFieldChange('notes', e.target.value)}/>;
 
         return <CommonTaskView 
             nameComponent={nameComponent}
