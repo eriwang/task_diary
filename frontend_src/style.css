@@ -176,7 +176,7 @@ select
 {
     display: flex;
     flex-direction: row;
-    margin: 1em 0em;
+    margin: 0.25em 0em;
 }
 
 .entry-single-row-field > :first-child
@@ -192,9 +192,18 @@ select
 }
 
 /* task components */
+.task-container
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    margin-bottom: 1em;
+}
+
 .task
 {
-    margin-bottom: 1em;
+    width: 100%;
 }
 
 .task-always-shown
@@ -226,15 +235,10 @@ select
     justify-content: flex-end;
 }
 
-.task-flush-right-container > :first-child
-{
-    margin-right: 1em
-}
-
 .task-notes
 {
-    max-width: 70%;
-    white-space: pre-line;
+    width: 70%;
+    white-space: pre-wrap;
 }
 
 .task-hideable-container
@@ -255,6 +259,51 @@ select
 .task-modification-container > :first-child
 {
     margin-right: 0.5em;
+}
+
+.task-dropdown-button
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 24px;
+}
+
+.editable-task-goal-container
+{
+    position: relative;
+}
+
+.editable-task-goal-fuzzy-search-results
+{
+    position: absolute;
+    min-width: 100%;
+    width: max-content;
+    top: 100%;
+    background-color: white;
+    z-index: 1;
+}
+
+.editable-task-goal-result
+{
+    padding: 0.5em;
+    border: 1px solid lightgray;
+    border-top: 0px;
+}
+
+.editable-task-goal-fuzzy-search-results > :first-child
+{
+    border-top: 1px solid lightgray;
+}
+
+.editable-task-goal-result:hover
+{
+    background-color: lightgray;
+}
+
+.editable-task-goal-result-selected
+{
+    background-color: darkgray !important;  /* overriding the hover */
 }
 
 /* modal components */

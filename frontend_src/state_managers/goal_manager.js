@@ -24,6 +24,23 @@ class GoalManagerClass
         this.listenerCallbacks.push(cb);
     }
 
+    getGoalIdFromName = (name) =>
+    {
+        if (name === '')
+        {
+            return -1;
+        }
+
+        for (let goal of this.goals)
+        {
+            if (goal.name === name)
+            {
+                return goal.id;
+            }
+        }
+        throw `Goal id for name ${name} not found`;
+    }
+
     _onChange = (goals) =>
     {
         this.goals = goals;

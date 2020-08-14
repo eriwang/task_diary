@@ -44,7 +44,6 @@ export default class CollapsibleSidebar extends React.Component
 
     _handleLaunchModal = (modalShown) =>
     {
-        console.log(window.scrollX, window.scrollY);
         this.windowScrollX = window.scrollX;
         this.windowScrollY = window.scrollY;
 

@@ -1,19 +1,39 @@
 import React from 'react';
 
-import {ajaxPut, ajaxDelete} from '../common/ajax.js';
-import {StatusInput} from '../common/form_components.js';
-import {CrossButton, EditButton, DropdownButton} from '../common/svg_buttons.js';
+import {ExistingTaskView, EditableExistingTaskView} from './existing_task_views.js';
+import {NewTaskView} from './new_task_views';
 
 export default class TaskView extends React.Component
 {
     constructor(props)
     {
         super(props);
+        this.state = {
+            'currentlyEditableTasks': new Set()
+        };
     }
 
-    renderTaskDiv(tasks)
+    // React does a shallow compare on state, so in these functions we make a brand new set instead of just calling 
+    // functions on the state set.
+    _handleAddedTaskEditTask = (taskId) =>
     {
-        return <div>{(tasks.length == 0) ? 'None' : tasks}</div>;
+        this.setState(state => {
+            let newEditableTasks = new Set(state.currentlyEditableTasks);
+            newEditableTasks.add(taskId);
+            return {'currentlyEditableTasks': newEditableTasks};
+        });
+    }
+
+    _handleEditTaskComplete = (taskId) =>
+    {
+        this.setState(state => {
+            let newEditableTasks = new Set(state.currentlyEditableTasks);
+            if (!newEditableTasks.delete(taskId))
+            {
+                throw `Removing ${taskId} from editable task set failed.`;
+            }
+            return {'currentlyEditableTasks': newEditableTasks};
+        });
     }
 
     render()
@@ -23,117 +43,25 @@ export default class TaskView extends React.Component
         for (const task of this.props.tasks)
         {
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
-            taskArray.push(
-                <Task key={task['id']} id={task['id']} date={task['date']} name={task['name']} goal={task['goal']}
-                    goal_id={task['goal_id']} is_planned={task['is_planned']} status={task['status']}
-                    notes={task['notes']}
-                    onEditTask={this.props.onEditTask} 
-                    onStatusChangeSuccessful={this.props.onStatusChangeSuccessful}
-                    onTaskDeleteSuccessful={this.props.onTaskDeleteSuccessful}/>
-            );
+            const taskComponent = (this.state.currentlyEditableTasks.has(task['id'])) ? 
+                <EditableExistingTaskView key={task['id']} task={task}
+                    onEditTaskComplete={this._handleEditTaskComplete} /> : 
+                <ExistingTaskView key={task['id']} task={task} onEditTask={this._handleAddedTaskEditTask} />;
+            taskArray.push(taskComponent);
         }
 
         return (
             <div id="task-view">
                 <h3>Tasks</h3>
                 <h4>Planned</h4>
-                {this.renderTaskDiv(plannedTasks)}
-                <h4>Unplanned</h4>
-                {this.renderTaskDiv(unplannedTasks)}
-            </div>
-        );
-    }
-}
-
-/* Date/ planned are only on here because I want to pass all the task information back when editing.
- * The Task rendering component has no need to know about either of those.
- * The better design pattern might be to have a TaskStore that's the source of truth that everything reads.
- * Worth noting that there's a big stench (bad smell :) ) associated with this: right now the state controller is App,
- * and everything has to pass its state back there through multiple levels, resulting in tons of confusing callbacks.
- */
-class Task extends React.Component
-{
-    constructor(props)
-    {
-        super(props);
-        this.state = {'are_details_hidden': true};
-    }
-
-    _handleToggleDetails = () =>
-    {
-        this.setState((state) => {
-            return {'are_details_hidden': !state.are_details_hidden};
-        });
-    }
-
-    _handleStatusChange = (status) =>
-    {
-        ajaxPut('/task', {'id': this.props.id, 'status': status})
-            .done(this.props.onStatusChangeSuccessful);
-    }
-
-    _handleEditTask = () =>
-    {
-        this.props.onEditTask({
-            'id': this.props.id,
-            'date': this.props.date,
-            'name': this.props.name,
-            'goal_id': this.props.goal_id,
-            'is_planned': this.props.is_planned,
-            'status': this.props.status,
-            'notes': this.props.notes
-        });
-    }
-
-    _handleDeleteTask = () =>
-    {
-        ajaxDelete('/task', {'id': this.props.id})
-            .done(() => this.props.onTaskDeleteSuccessful());
-    }
-
-    render()
-    {
-        const taskHideable = this.state.are_details_hidden ? null : (
-            <TaskHideableSection notes={this.props.notes} onEditTask={this._handleEditTask}
-                onDeleteTask={this._handleDeleteTask}/>
-        );
-
-        return (
-            <div className="task">
-                <div className="task-always-shown">
-                    <div className="task-name-goal-container">
-                        <p className="task-name">{this.props.name}</p>
-                        <p>{(this.props.goal !== undefined) ? this.props.goal : 'No goal'}</p>
-                    </div>
-                    <div className="task-flush-right-container">
-                        <StatusInput value={this.props.status}
-                            onChange={(value) => this._handleStatusChange(parseInt(value))} />
-                        <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.are_details_hidden}/>
-                    </div>
+                <div>
+                    {plannedTasks}
+                    <NewTaskView isPlanned={true} />
                 </div>
-                {taskHideable}
-            </div>
-        );
-    }
-}
-
-class TaskHideableSection extends React.Component
-{
-    constructor(props)
-    {
-        super(props);
-    }
-
-    render()
-    {
-        // TODO: at some point the delete task should get a confirmation modal
-        const notes = (this.props.notes != '') ? this.props.notes : 'Task has no notes.';
-        return (
-            <div className="task-hideable-container">
-                <p className="task-notes">{notes}</p>
-                <div className="task-modification-container">
-                    <EditButton onClick={this.props.onEditTask} />
-                    <CrossButton onClick={this.props.onDeleteTask} />
+                <h4>Unplanned</h4>
+                <div>
+                    {unplannedTasks}
+                    <NewTaskView isPlanned={false} />
                 </div>
             </div>
         );
