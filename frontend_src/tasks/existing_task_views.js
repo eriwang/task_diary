@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {CheckboxInput} from '../common/form_components.js';
 import {CheckButton, CrossButton, EditButton} from '../common/svg_buttons.js';
 import {CommonTaskView, CommonEditableTaskView} from './common_task_views.js';
 import {getDefaultIfUndefined} from '../utils/ternary_utils.js';
@@ -68,9 +69,9 @@ class EditableExistingTaskView extends React.Component
         this.state = {
             'name': task.name,
             'notes': task.notes,
-            'goalString': '',
+            'goalString': task.goal,
             'status': task.status,
-            'isPlanned': task.is_planned  // FIXME: make this changeable
+            'isPlanned': task.is_planned
         };
     }
 
@@ -103,10 +104,15 @@ class EditableExistingTaskView extends React.Component
     render()
     {
         const endComponent = 
-            <div className="task-modification-container">
-                <CheckButton onClick={this._handleSubmit} />
-                <CrossButton onClick={this._handleExitEditMode} />
-            </div>;
+            <div>
+                <CheckboxInput label="Is Planned" checked={this.state.isPlanned}
+                    onCheckedChange={(checked) => this._handleFieldChange('isPlanned', checked)} />
+                <div className="task-modification-container">
+                    <CheckButton onClick={this._handleSubmit} />
+                    <CrossButton onClick={this._handleExitEditMode} />
+                </div>
+            </div>
+            ;
         return <CommonEditableTaskView name={this.state.name} goalString={this.state.goalString}
             status={this.state.status} notes={this.state.notes}
             onEnterPressed={this._handleSubmit} onEscapePressed={this._handleExitEditMode}

@@ -176,7 +176,7 @@ select
 {
     display: flex;
     flex-direction: row;
-    margin: 1em 0em;
+    margin: 0.25em 0em;
 }
 
 .entry-single-row-field > :first-child

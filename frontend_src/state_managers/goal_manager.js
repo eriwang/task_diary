@@ -26,6 +26,11 @@ class GoalManagerClass
 
     getGoalIdFromName = (name) =>
     {
+        if (name === '' || name === undefined)
+        {
+            return -1;
+        }
+
         for (let goal of this.goals)
         {
             if (goal.name === name)
