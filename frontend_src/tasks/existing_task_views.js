@@ -69,7 +69,7 @@ class EditableExistingTaskView extends React.Component
         this.state = {
             'name': task.name,
             'notes': task.notes,
-            'goalString': task.goal,
+            'goalString': getDefaultIfUndefined(task.goal, ''),
             'status': task.status,
             'isPlanned': task.is_planned
         };

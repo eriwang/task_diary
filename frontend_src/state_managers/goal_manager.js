@@ -26,7 +26,7 @@ class GoalManagerClass
 
     getGoalIdFromName = (name) =>
     {
-        if (name === '' || name === undefined)
+        if (name === '')
         {
             return -1;
         }
