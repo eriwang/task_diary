@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {AddedTaskView, EditableTaskView} from './single_task_views.js';
+import {ExistingTaskView, EditableExistingTaskView} from './existing_task_views.js';
+import {NewTaskView} from './new_task_views';
 
 export default class TaskView extends React.Component
 {
@@ -43,9 +44,9 @@ export default class TaskView extends React.Component
         {
             let taskArray = (task['is_planned']) ? plannedTasks : unplannedTasks;
             const taskComponent = (this.state.currentlyEditableTasks.has(task['id'])) ? 
-                <EditableTaskView key={task['id']} modifyingTask={task} 
-                    onEditTaskComplete={this._handleEditTaskComplete} startDetailsShown/> : 
-                <AddedTaskView key={task['id']} task={task} onEditTask={this._handleAddedTaskEditTask} />;
+                <EditableExistingTaskView key={task['id']} task={task}
+                    onEditTaskComplete={this._handleEditTaskComplete} /> : 
+                <ExistingTaskView key={task['id']} task={task} onEditTask={this._handleAddedTaskEditTask} />;
             taskArray.push(taskComponent);
         }
 
@@ -55,12 +56,12 @@ export default class TaskView extends React.Component
                 <h4>Planned</h4>
                 <div>
                     {plannedTasks}
-                    <EditableTaskView isPlanned={true} />
+                    <NewTaskView isPlanned={true} />
                 </div>
                 <h4>Unplanned</h4>
                 <div>
-                    {plannedTasks}
-                    <EditableTaskView isPlanned={false} />
+                    {unplannedTasks}
+                    <NewTaskView isPlanned={false} />
                 </div>
             </div>
         );
