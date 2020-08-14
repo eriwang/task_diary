@@ -5,6 +5,7 @@ import {CommonTaskView, CommonEditableTaskView} from './common_task_views.js';
 import {getDefaultIfUndefined} from '../utils/ternary_utils.js';
 import {StatusInput} from '../common/form_components.js';
 import TaskManager from '../state_managers/task_manager.js';
+import GoalManager from '../state_managers/goal_manager.js';
 
 class ExistingTaskView extends React.Component
 {
@@ -67,7 +68,7 @@ class EditableExistingTaskView extends React.Component
         this.state = {
             'name': task.name,
             'notes': task.notes,
-            'goalString': '',  // FIXME: make correct
+            'goalString': '',
             'status': task.status,
             'isPlanned': task.is_planned  // FIXME: make this changeable
         };
@@ -82,10 +83,11 @@ class EditableExistingTaskView extends React.Component
 
     _handleSubmit = () =>
     {
+        // TODO: graceful nonexistent goal handling
         TaskManager.editTask({
             'id': this.props.task.id,
             'name': this.state.name,
-            'goal_id': -1, // FIXME: goalString lookup
+            'goal_id': GoalManager.getGoalIdFromName(this.state.goalString),
             'is_planned': this.state.isPlanned,
             'status': this.state.status,
             'notes': this.state.notes

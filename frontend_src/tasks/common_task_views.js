@@ -29,10 +29,7 @@ class CommonEditableTaskView extends React.Component
 
     _handleGoalChange = (e) =>
     {
-        const goalString = e.target.value;
-        const fuzzySearchResults = fuzzysort.go(goalString, GoalManager.goals, {key: 'name'});
-        console.log(fuzzySearchResults);
-        this.props.onFieldChange('goalString', goalString);
+        this.props.onFieldChange('goalString', e.target.value);
     }
 
     render()
@@ -69,48 +66,135 @@ class GoalAutoCompleteInput extends React.Component
     {
         super(props);
         this.state = {
-            'fuzzySearchResults': []
+            'fuzzySearchResults': [],
+            'resultHighlightedIndex': null
         };
     }
 
     _handleChange = (e) =>
     {
-        const goalString = e.target.value;
-        
-        const fuzzySearchResultStrings = 
-            fuzzysort.go(goalString, GoalManager.goals.map(goalObj => goalObj.name), {allowTypo: true})
-                .map(result => result.target);
-        this.setState({'fuzzySearchResults': fuzzySearchResultStrings});
-
-        console.log(fuzzySearchResultStrings);
+        this._fuzzySearchGoals(e.target.value);
         this.props.onChange(e);
     }
 
     _handleKeyDown = (e) =>
     {
-        const key = e.key;
-        switch (key)
+        if (this._goalHasNoResultsOrIsExistingGoal())
+        {
+            this.props.onKeyDown(e);
+            return;
+        }
+
+        const numResults = this.state.fuzzySearchResults.length;
+        let resultHighlightedIndex = this.state.resultHighlightedIndex;
+        if (resultHighlightedIndex >= numResults)
+        {
+            resultHighlightedIndex = null;
+        }
+
+        switch (e.key)
         {
         case 'ArrowUp':
-            break;
-
         case 'ArrowDown':
+            if (resultHighlightedIndex === null)
+            {
+                this.setState({'resultHighlightedIndex': 0});
+            }
+            else
+            {
+                let direction = (e.key === 'ArrowDown') ? 1 : -1;
+                // We add numResults to compensate for negative mods not behaving as they do in math.
+                this.setState({
+                    'resultHighlightedIndex': (resultHighlightedIndex + direction + numResults) % numResults}
+                );
+            }
             break;
 
         case 'Enter':
+            if (resultHighlightedIndex !== null)
+            {
+                this._handleResultSelected(resultHighlightedIndex);
+            }
             break;
         
         case 'Escape':
+            this.setState({'fuzzySearchResults': []});
             break;
         }
+    }
 
-        this.props.onKeyDown(e);
+    _handleResultSelected = (index) =>
+    {
+        this.setState({'fuzzySearchResults': []});
+        // TODO: hack because onChange expects an event, which isn't exactly correct
+        this.props.onChange({'target': {'value': this.state.fuzzySearchResults[index]}});
+    }
+
+    _handleFocus = () =>
+    {
+        this._fuzzySearchGoals(this.props.value);
+    }
+
+    _handleBlur = () =>
+    {
+        this.setState({'fuzzySearchResults': [], 'resultHighlightedIndex': null});
+    }
+
+    _fuzzySearchGoals = (goalString) =>
+    {
+        const fuzzySearchResultStrings = 
+        fuzzysort.go(goalString, GoalManager.goals.map(goalObj => goalObj.name), {allowTypo: true})
+            .map(result => result.target);
+        this.setState({'fuzzySearchResults': fuzzySearchResultStrings});
+    }
+
+    _goalHasNoResultsOrIsExistingGoal = () =>
+    {
+        const results = this.state.fuzzySearchResults;
+        return (results.length === 0) || (results.length === 1 && this.props.value === results[0]);
     }
 
     render()
     {
         const {onChange, onKeyDown, ...props} = this.props;  /* eslint-disable-line no-unused-vars */
-        return <input {...props} onKeyDown={this._handleKeyDown} onChange={this._handleChange}/>;
+        return (
+            <div className="editable-task-goal-container">
+                <input {...props} onKeyDown={this._handleKeyDown} onChange={this._handleChange} 
+                    onFocus={this._handleFocus} onBlur={this._handleBlur}/>
+                {this._renderFuzzySearchResults()}
+            </div>
+        );
+    }
+
+    _renderFuzzySearchResults = () =>
+    {
+        if (this._goalHasNoResultsOrIsExistingGoal())
+        {
+            return null;
+        }
+
+        const results = this.state.fuzzySearchResults;
+        let resultsArray = [];
+        for (let i = 0; i < results.length; ++i)
+        {
+            let className = 'editable-task-goal-result';
+            if (i === this.state.resultHighlightedIndex)
+            {
+                className += ' editable-task-goal-result-selected';
+            }
+            
+            // Interestingly, onClick doesn't get captured: this is because onClick requires a mouse release to register
+            // as a click (at this point the paragraph is already gone due to the onBlur event).
+            resultsArray.push(
+                <p key={i} onMouseDown={() => this._handleResultSelected(i)} className={className}>{results[i]}</p>
+            );
+        }
+
+        return (
+            <div className='editable-task-goal-fuzzy-search-results'>
+                {resultsArray}
+            </div>
+        );
     }
 }
 

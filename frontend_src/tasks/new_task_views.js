@@ -3,6 +3,7 @@ import React from 'react';
 import {CommonEditableTaskView} from './common_task_views.js';
 import Status from '../common/status.js';
 import TaskManager from '../state_managers/task_manager.js';
+import GoalManager from '../state_managers/goal_manager.js';
 
 class NewTaskView extends React.Component
 {
@@ -12,7 +13,7 @@ class NewTaskView extends React.Component
         this.state = {
             'name': '',
             'notes': '',
-            'goalString': '',  // FIXME: fix
+            'goalString': '',
             'status': Status.NOT_STARTED,
             'isPlanned': props.isPlanned
         };
@@ -32,9 +33,10 @@ class NewTaskView extends React.Component
 
     _handleSubmit = () =>
     {
+        // TODO: should get better feedback if goal not legit
         TaskManager.addTask({
             'name': this.state.name,
-            'goal_id': -1,  // FIXME: populate based on goalString lookup. validate if does not exist
+            'goal_id': GoalManager.getGoalIdFromName(this.state.goalString),
             'is_planned': this.state.isPlanned,
             'status': this.state.status,
             'notes': this.state.notes,

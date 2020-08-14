@@ -269,6 +269,43 @@ select
     width: 24px;
 }
 
+.editable-task-goal-container
+{
+    position: relative;
+}
+
+.editable-task-goal-fuzzy-search-results
+{
+    position: absolute;
+    min-width: 100%;
+    width: max-content;
+    top: 100%;
+    background-color: white;
+    z-index: 1;
+}
+
+.editable-task-goal-result
+{
+    padding: 0.5em;
+    border: 1px solid lightgray;
+    border-top: 0px;
+}
+
+.editable-task-goal-fuzzy-search-results > :first-child
+{
+    border-top: 1px solid lightgray;
+}
+
+.editable-task-goal-result:hover
+{
+    background-color: lightgray;
+}
+
+.editable-task-goal-result-selected
+{
+    background-color: darkgray !important;  /* overriding the hover */
+}
+
 /* modal components */
 .modal
 {
