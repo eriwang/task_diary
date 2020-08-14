@@ -10,7 +10,9 @@ class CommonEditableTaskView extends React.Component
         super(props);
     }
 
-    // TODO: this is where form_components might be useful
+    // It may be worth extracting the key presses and inputs to another component (for example something like the form
+    // components, but without enforced row styling). For now leaving these here since this is the only component that
+    // actually uses these features.
     _handleKeyPress = (e) =>
     {
         if (e.key === 'Enter' && this.props.onEnterPressed !== undefined)
@@ -31,7 +33,9 @@ class CommonEditableTaskView extends React.Component
         const goalComponent =
             <input placeholder="Goal" value={this.props.goalString} onKeyDown={this._handleKeyPress} 
                 onChange={(e) => this.props.onFieldChange('goalString', e.target.value)}/>;
-        // TODO: keypress handling
+        
+        // Enter and escape on dropdowns are used to toggle the select options themselves, so I don't want to add enter/
+        // escape handlers.
         const statusComponent =
             <StatusInput value={this.props.status}
                 onChange={(value) => this.props.onFieldChange('status', parseInt(value))} />;
