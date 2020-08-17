@@ -90,7 +90,6 @@ export default class CollapsibleSidebar extends React.Component
             return <ModalGoalEntryForm onClose={this._handleModalClose} />;
 
         case ModalShown.FEATURES:
-            // TODO: better text here
             return (
                 <Modal title="Planned Features" onClose={this._handleModalClose}>
                     <p>There are a number of features I have in mind for this but haven&apos;t started work on.</p>
