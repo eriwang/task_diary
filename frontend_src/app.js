@@ -36,14 +36,19 @@ class App extends React.Component
         NotesManager.changeDateAndRefresh(this.state.dateStr);
         TaskManager.addListenerCallback((tasks) => this.setState({'tasks': tasks}));
         TaskManager.changeDateAndRefresh(this.state.dateStr);
+
+        window.addEventListener('beforeunload', (e) => {
+            if (this._changesPending())
+            {
+                e.preventDefault();
+            }
+        });
     }
 
     _handleDateChange = (event) =>
     {
         const dateStr = event.target.value;
-        const changesPending = 
-            (EditingFieldTracker.currentlyEditingField() || OngoingChangeRequestTracker.requestsAreInProgress());
-        if (changesPending)
+        if (this._changesPending())
         {
             this.storedDateStrAwaitingConfirm = dateStr;
             this.setState({'confirmationModalVisible': true});
@@ -81,6 +86,11 @@ class App extends React.Component
 
         NotesManager.changeDateAndRefresh(dateStr);
         TaskManager.changeDateAndRefresh(dateStr);
+    }
+
+    _changesPending = () =>
+    {
+        return EditingFieldTracker.currentlyEditingField() || OngoingChangeRequestTracker.requestsAreInProgress();
     }
 
     render()
