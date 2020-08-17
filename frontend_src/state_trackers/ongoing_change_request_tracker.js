@@ -7,6 +7,11 @@ class OngoingChangeRequestTrackerClass
         this.listenerCallbacks = [];
     }
 
+    requestsAreInProgress = () =>
+    {
+        return this.requests.size > 0;
+    }
+
     addRequest = () =>
     {
         const newRequestId = this.requestId++;
@@ -31,7 +36,7 @@ class OngoingChangeRequestTrackerClass
 
     _onChange = () =>
     {
-        const requestsAreInProgress = (this.requests.size > 0);
+        const requestsAreInProgress = this.requestsAreInProgress();
         for (const cb of this.listenerCallbacks)
         {
             cb(requestsAreInProgress);

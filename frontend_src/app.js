@@ -4,9 +4,12 @@ import ReactDOM from 'react-dom';
 import './style.css';
 
 import CollapsibleSidebar from './collapsible_sidebar.js';
+import ConfirmationModal from './common/confirmation_modal.js';
+import EditingFieldTracker from './state_trackers/editing_field_tracker.js';
 import GoalManager from './state_managers/goal_manager.js';
 import NotesManager from './state_managers/notes_manager.js';
 import NotesView from './notes_view.js';
+import OngoingChangeRequestTracker from './state_trackers/ongoing_change_request_tracker.js';
 import StickyHeader from './sticky_header.js';
 import TaskView from './tasks/task_view.js';
 import TaskManager from './state_managers/task_manager.js';
@@ -16,48 +19,38 @@ class App extends React.Component
     constructor(props)
     {
         super(props);
+        this.storedDateStrAwaitingConfirm = null;
         this.state = {
             'dateStr': getCurrentDateStr(),
             'tasks': [],
-            'goals': [],
             'notes': null,
-            'sidebarVisible': false
+            'sidebarVisible': false,
+            'confirmationModalVisible': false
         };
     }
 
     componentDidMount()
     {
-        GoalManager.addListenerCallback(this._handleGoalsChange);
         GoalManager.refreshGoals();
-        NotesManager.addListenerCallback(this._handleNotesChange);
+        NotesManager.addListenerCallback((notes) => this.setState({'notes': notes}));
         NotesManager.changeDateAndRefresh(this.state.dateStr);
-        TaskManager.addListenerCallback(this._handleTasksChange);
+        TaskManager.addListenerCallback((tasks) => this.setState({'tasks': tasks}));
         TaskManager.changeDateAndRefresh(this.state.dateStr);
-    }
-
-    _handleGoalsChange = (goals) =>
-    {
-        this.setState({'goals': goals});
-    }
-
-    _handleNotesChange = (notes) =>
-    {
-        this.setState({'notes': notes});
-    }
-
-    _handleTasksChange = (tasks) =>
-    {
-        this.setState({'tasks': tasks});
     }
 
     _handleDateChange = (event) =>
     {
-        // TODO: if request in flight or unsaved changes, modal alerting user. Ideally enter to continue, esc to cancel
         const dateStr = event.target.value;
-        this.setState({'dateStr': dateStr});
+        const changesPending = 
+            (EditingFieldTracker.currentlyEditingField() || OngoingChangeRequestTracker.requestsAreInProgress());
+        if (changesPending)
+        {
+            this.storedDateStrAwaitingConfirm = dateStr;
+            this.setState({'confirmationModalVisible': true});
+            return;
+        }
 
-        NotesManager.changeDateAndRefresh(dateStr);
-        TaskManager.changeDateAndRefresh(dateStr);
+        this._changeDate(dateStr);
     }
 
     // TODO: not a fan of how state and callbacks end up being across so many files. Read the docs and see what their
@@ -72,10 +65,33 @@ class App extends React.Component
         this.setState({'sidebarVisible': false});
     }
 
+    _handleConfirmationModalConfirm = () =>
+    {
+        // We force clear edits so the other views get their right state, but we don't force clear the actual request
+        // tracking, as if it's taking very long we do want to know it's still going.
+        EditingFieldTracker.forceClearEdits();
+        this.setState({'confirmationModalVisible': false});
+        this._changeDate(this.storedDateStrAwaitingConfirm);
+        this.storedDateStrAwaitingConfirm = null;
+    }
+
+    _changeDate(dateStr)
+    {
+        this.setState({'dateStr': dateStr});
+
+        NotesManager.changeDateAndRefresh(dateStr);
+        TaskManager.changeDateAndRefresh(dateStr);
+    }
+
     render()
     {
-        let shownGoals = Array.from(this.state.goals);
-        shownGoals.unshift({'id': -1, 'name': 'No goal'});
+        const CONFIRMATION_MODAL_MESSAGE = 
+            'You have unsaved changes or a change still being sent to the server. Do you still wish to continue?';
+        const confirmationModal = (!this.state.confirmationModalVisible) ? null : (
+            <ConfirmationModal title="Unsaved Changes" message={CONFIRMATION_MODAL_MESSAGE}
+                onClose={() => this.setState({'confirmationModalVisible': false})}
+                onConfirm={this._handleConfirmationModalConfirm} />
+        );
 
         return (
             <div>
@@ -90,6 +106,7 @@ class App extends React.Component
                         <NotesView notes={this.state.notes} />
                     </div>
                 </div>
+                {confirmationModal}
             </div>
         );
     }

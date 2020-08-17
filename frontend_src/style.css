@@ -202,7 +202,6 @@ select
     margin-right: 0.25em;
 }
 
-/* TODO: bad */
 .entry-textarea
 {
     height: 300px;
@@ -357,4 +356,16 @@ select
     justify-content: space-between;
 
     margin-bottom: 1em;
+}
+
+.confirmation-modal-confirm-row
+{
+    margin-top: 1em;
+    display: flex;
+    width: 50%;
+}
+
+.confirmation-modal-confirm-row > *
+{
+    margin-right: 0.5em;
 }
