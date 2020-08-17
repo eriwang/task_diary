@@ -15,10 +15,14 @@ class NotesManagerClass
             .done((data) => this._onChange(data['notes']));
     }
 
-    setNotes = (text) =>
+    setNotes = (text, noRefreshAfterSet) =>
     {
-        return ajaxPut('/daily_notes', {'date': this.dateStr, 'text': text})
-            .done(this.refreshNotes);
+        let putResult = ajaxPut('/daily_notes', {'date': this.dateStr, 'text': text});
+        if (!noRefreshAfterSet)
+        {
+            putResult.done(this.refreshNotes);
+        }
+        return putResult;
     }
 
     changeDateAndRefresh = (dateStr) =>

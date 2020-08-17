@@ -51,13 +51,9 @@ class App extends React.Component
         this.setState({'tasks': tasks});
     }
 
-    _handleEditTask = (task) =>
-    {
-        this.setState({'currentlyEditedTask': task});
-    }
-
     _handleDateChange = (event) =>
     {
+        // TODO: if request in flight or unsaved changes, modal alerting user. Ideally enter to continue, esc to cancel
         const dateStr = event.target.value;
         this.setState({'dateStr': dateStr});
 
