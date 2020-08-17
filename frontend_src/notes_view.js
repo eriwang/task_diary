@@ -19,7 +19,8 @@ export default class NotesView extends React.Component
         // No refresh is necessary here because the App component handles it. That said, might be cleaner to have the 
         // "addListener" call (or maybe rename to subscribe) immediately fire with the current value, and have the
         // refresh managed externally the first time.
-        NotesManager.addListenerCallback(this._handleNotesChange);
+        // We don't call _handleNotesChange here because we don't want to hit the server with a note change request.
+        NotesManager.addListenerCallback((notes) => this.setState({'notes': notes}));
     }
 
     _handleTextInputChange = (event) =>

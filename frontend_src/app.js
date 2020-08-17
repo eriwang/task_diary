@@ -21,7 +21,6 @@ class App extends React.Component
             'tasks': [],
             'goals': [],
             'notes': null,
-            'currentlyEditedTask': null,
             'sidebarVisible': false
         };
     }

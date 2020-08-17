@@ -85,7 +85,7 @@ select
     margin-left: 1em;
 }
 
-.header-other
+.header-content
 {
     min-width: 700px;
     width: 100%;
@@ -98,17 +98,35 @@ select
     margin-right: 1em;
 }
 
+.header-flush-right
+{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
 .header-date-selector
 {
+    margin-left: 0.5em;
     font-size: 2em;
     font-weight: bold;
     border: none;
-    text-align: right;
 }
 
 .header-date-selector:focus
 {
     outline: none;
+}
+
+.header-save-indicator
+{
+    opacity: 0;
+    transition: opacity 0.75s;
+}
+
+.header-save-indicator-opaque
+{
+    opacity: 1;
 }
 
 /* sidebar */
