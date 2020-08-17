@@ -130,12 +130,7 @@ select
 }
 
 /* sidebar */
-.sidebar-hidden
-{
-    display: none;
-}
-
-.sidebar-shown
+.sidebar-container
 {
     position: fixed;
     top: 0;
@@ -144,17 +139,47 @@ select
     display: flex;
     flex-direction: row;
 
-    width: 100%;
+    /* This feels a bit hacky to me. When the sidebar is not open, I don't want this div to be clickable. When it is
+       open, I want width to be maxed. However, when transitioning back into the closed state, setting width immediately
+       to zero will hide the sidebar. */
+    transition: width 0.5s;
+    width: 0;
     height: 100%;
+
     z-index: 1;
+}
+
+.sidebar-container.sidebar-shown
+{
+    width: 100%;
 }
 
 .sidebar-body
 {
     background-color: white;
     border-right: 1px solid lightgray;
-    width: 300px;
+    width: 0px;
     height: 100%;
+    transition: width 0.25s;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sidebar-body.sidebar-shown
+{
+    width: 300px;
+}
+
+.sidebar-close-clickable-div
+{
+    flex-grow: 1;
+    height: 100%;
+    display: none;
+}
+
+.sidebar-close-clickable-div.sidebar-shown
+{
+    display: block;
 }
 
 .sidebar-title
@@ -174,12 +199,6 @@ select
 {
     background-color: darkgray;
     cursor: pointer;
-}
-
-.sidebar-close-clickable-div
-{
-    flex-grow: 1;
-    height: 100%;
 }
 
 /* form entry components */

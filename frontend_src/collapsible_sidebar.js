@@ -57,16 +57,26 @@ export default class CollapsibleSidebar extends React.Component
 
     render()
     {
-        let className = this.props.visible ? 'sidebar-shown' : 'sidebar-hidden';
+        let containerClasses = 'sidebar-container';
+        let bodyClasses = 'sidebar-body';
+        let closeClickableDivClasses = 'sidebar-close-clickable-div';   
+        if (this.props.visible)
+        {
+            const sidebarShownClass = ' sidebar-shown';
+            containerClasses += sidebarShownClass;
+            bodyClasses += sidebarShownClass;
+            closeClickableDivClasses += sidebarShownClass;
+        }
+
         return (
-            <div className={className}>
-                <div className="sidebar-body">
+            <div className={containerClasses}>
+                <div className={bodyClasses}>
                     <h1 className="sidebar-title">Menu</h1>
                     <SidebarRowButton text="Add Goal" onClick={() => this._handleLaunchModal(ModalShown.ADD_GOAL)} />
                     <SidebarRowButton text="Possible Features"
                         onClick={() => this._handleLaunchModal(ModalShown.FEATURES)} />
                 </div>
-                <div className="sidebar-close-clickable-div" onClick={this.props.closeSidebar} />
+                <div className={closeClickableDivClasses} onClick={this.props.closeSidebar} />
                 {this._renderModalShown()}
             </div>
         );
