@@ -26,6 +26,11 @@ select
     cursor: pointer;
 }
 
+textarea
+{
+    resize: vertical;
+}
+
 /* specific elements */
 #content
 {
@@ -223,8 +228,8 @@ select
 
 .entry-textarea
 {
-    height: 300px;
-    resize: none;
+    min-height: 25vh;
+    max-height: 75vh;
 }
 
 /* task components */
@@ -279,6 +284,12 @@ select
        might at least make a bit more sense with a bit more context. */
     width: calc((100% + 24px) * .7);
     white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+textarea.task-notes
+{
+    height: 6em;
 }
 
 /* Dynamic heights make animating this in CSS a bit more difficult. This visually looks good but there's an annoying 
@@ -298,7 +309,7 @@ select
 
 .task-hideable-container-shown
 {
-    max-height: 100vh;
+    max-height: 50vh;
     transition: max-height 0.5s ease-in;
 }
 
