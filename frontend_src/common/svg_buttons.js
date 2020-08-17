@@ -14,6 +14,14 @@ class SvgButton extends React.Component
         };
     }
 
+    _handleKeyDown = (e) =>
+    {
+        if (e.key === 'Enter')
+        {
+            this.props.onClick();
+        }
+    }
+
     render()
     {
         // TODO: The isActive is a bit confusing. Should consider reevaluating how it's done.
@@ -36,10 +44,11 @@ class SvgButton extends React.Component
         return (
             <svg xmlns="http://www.w3.org/2000/svg" width={getDefaultIfUndefined(this.props.size, 24)} height="24"
                 viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                fill={fillColor} opacity={opacity} className="svg-button"
+                fill={fillColor} opacity={opacity} className="svg-button" tabIndex="0"
                 onMouseEnter={() => this.setState({'mouseInside': true})}
                 onMouseLeave={() => this.setState({'mouseInside': false})}
-                onClick={this.props.onClick}>
+                onClick={this.props.onClick}
+                onKeyDown={this._handleKeyDown}>
                 {this.props.children}
             </svg>
         );

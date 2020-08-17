@@ -27,6 +27,19 @@ class CommonEditableTaskView extends React.Component
         }
     }
 
+    // TODO: needlessly copying code
+    _handleKeyDownShiftEnter = (e) =>
+    {
+        if (e.key === 'Enter' && e.shiftKey && this.props.onEnterPressed !== undefined)
+        {
+            this.props.onEnterPressed();
+        }
+        else if (e.key === 'Escape' && this.props.onEscapePressed !== undefined)
+        {
+            this.props.onEscapePressed();
+        }
+    }
+
     _handleGoalChange = (e) =>
     {
         this.props.onFieldChange('goalString', e.target.value);
@@ -48,7 +61,8 @@ class CommonEditableTaskView extends React.Component
                 onChange={(value) => this.props.onFieldChange('status', parseInt(value))} />;
         const notesComponent = 
             <textarea className="task-notes" placeholder="Notes" value={this.props.notes}
-                onKeyDown={this._handleKeyDown} onChange={(e) => this.props.onFieldChange('notes', e.target.value)}/>;
+                onKeyDown={this._handleKeyDownShiftEnter}
+                onChange={(e) => this.props.onFieldChange('notes', e.target.value)}/>;
 
         return <CommonTaskView 
             nameComponent={nameComponent}
@@ -215,10 +229,17 @@ class CommonTaskView extends React.Component
 
     render()
     {
+        // The HTML structure here is a bit weird, it boils down to having two rows, each with a "task-dropdown-button"
+        // at the end for some spacing on the right side. An alternative is having a single dropdown button as a totally
+        // separate div after the "task" div that extends down to the second row, but that messed with the tab focus
+        // order (would end up highlighting dropdown last, even though it appeared above buttons in the end component).
         const hideableComponent = this.state.areDetailsHidden ? null : (
             <div className="task-hideable-container">
-                {this.props.notesComponent}
-                {this.props.endComponent}
+                <div className="task-hideable-container-contents">
+                    {this.props.notesComponent}
+                    {this.props.endComponent}
+                </div>
+                <div className="task-dropdown-button" />
             </div>
         );
 
@@ -232,12 +253,13 @@ class CommonTaskView extends React.Component
                         </div>
                         <div className="task-flush-right-container">
                             {this.props.statusComponent}
+                            <div className="task-dropdown-button">
+                                <DropdownButton onClick={this._handleToggleDetails} 
+                                    isDropped={!this.state.areDetailsHidden}/>
+                            </div>
                         </div>
                     </div>
                     {hideableComponent}
-                </div>
-                <div className="task-dropdown-button">
-                    <DropdownButton onClick={this._handleToggleDetails} isDropped={!this.state.areDetailsHidden}/>
                 </div>
             </div>
         );
