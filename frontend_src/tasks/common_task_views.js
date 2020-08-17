@@ -233,8 +233,14 @@ class CommonTaskView extends React.Component
         // at the end for some spacing on the right side. An alternative is having a single dropdown button as a totally
         // separate div after the "task" div that extends down to the second row, but that messed with the tab focus
         // order (would end up highlighting dropdown last, even though it appeared above buttons in the end component).
-        const hideableComponent = this.state.areDetailsHidden ? null : (
-            <div className="task-hideable-container">
+
+        let hideableComponentClassName = 'task-hideable-container';
+        if (!this.state.areDetailsHidden)
+        {
+            hideableComponentClassName += ' task-hideable-container-shown';
+        }
+        const hideableComponent = (//) this.state.areDetailsHidden ? null : (
+            <div className={hideableComponentClassName}>
                 <div className="task-hideable-container-contents">
                     {this.props.notesComponent}
                     {this.props.endComponent}
