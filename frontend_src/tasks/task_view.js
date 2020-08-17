@@ -2,21 +2,29 @@ import React from 'react';
 
 import {ExistingTaskView, EditableExistingTaskView} from './existing_task_views.js';
 import {NewTaskView} from './new_task_views';
+import EditingFieldTracker from '../state_trackers/editing_field_tracker.js';
 
 export default class TaskView extends React.Component
 {
     constructor(props)
     {
         super(props);
+        this.editingTaskIdToEditingFieldTrackingId = new Map();
         this.state = {
             'currentlyEditableTasks': new Set()
         };
+    }
+
+    componentDidMount()
+    {
+        EditingFieldTracker.addEditClearListenerCallback(this._handleEditsCleared);
     }
 
     // React does a shallow compare on state, so in these functions we make a brand new set instead of just calling 
     // functions on the state set.
     _handleAddedTaskEditTask = (taskId) =>
     {
+        this.editingTaskIdToEditingFieldTrackingId.set(taskId, EditingFieldTracker.addCurrentlyEditing());
         this.setState(state => {
             let newEditableTasks = new Set(state.currentlyEditableTasks);
             newEditableTasks.add(taskId);
@@ -26,6 +34,8 @@ export default class TaskView extends React.Component
 
     _handleEditTaskComplete = (taskId) =>
     {
+        EditingFieldTracker.completeEdit(this.editingTaskIdToEditingFieldTrackingId.get(taskId));
+        this.editingTaskIdToEditingFieldTrackingId.delete(taskId);
         this.setState(state => {
             let newEditableTasks = new Set(state.currentlyEditableTasks);
             if (!newEditableTasks.delete(taskId))
@@ -34,6 +44,12 @@ export default class TaskView extends React.Component
             }
             return {'currentlyEditableTasks': newEditableTasks};
         });
+    }
+
+    _handleEditsCleared = () =>
+    {
+        this.editingTaskIdToEditingFieldTrackingId.clear();
+        this.setState({'currentlyEditableTasks': new Set()});
     }
 
     render()

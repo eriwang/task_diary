@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+import OngoingChangeRequestTracker from '../state_trackers/ongoing_change_request_tracker.js';
+
 $(document).ajaxError((event, jqXHR, settings, exception) => {
     const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
                         `with status ${jqXHR.status}, "${exception}"`;
@@ -21,25 +23,32 @@ export function ajaxGet(url, data)
 
 export function ajaxPost(url, data)
 {
-    return ajaxJsonBody(url, data, 'POST');
+    return _changeAjaxJsonBody(url, data, 'POST');
 }
 
 export function ajaxPut(url, data)
 {
-    return ajaxJsonBody(url, data, 'PUT');
+    return _changeAjaxJsonBody(url, data, 'PUT');
 }
 
 export function ajaxDelete(url, data)
 {
-    return ajaxJsonBody(url, data, 'DELETE');
+    return _changeAjaxJsonBody(url, data, 'DELETE');
 }
 
-function ajaxJsonBody(url, data, method)
+function _changeAjaxJsonBody(url, data, method)
 {
+    const requestId = OngoingChangeRequestTracker.addRequest();
     return $.ajax(url, {
         'contentType': 'application/json',
         'data': JSON.stringify(data),
         'method': method,
         'processData': false
-    });
+    })
+        .done((data) => {
+            // I don't believe any code actually needs data after a change at time of writing, but including this for
+            // if/ when that changes.
+            OngoingChangeRequestTracker.completeRequest(requestId);
+            return data;
+        });
 }

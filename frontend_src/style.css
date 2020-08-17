@@ -9,7 +9,6 @@ p, h3
     margin: 0;
 }
 
-/* TODO: unsure if this is the way I'll end up going */
 button
 {
     height: 1.6em;
@@ -24,6 +23,11 @@ select
 .svg-button:hover
 {
     cursor: pointer;
+}
+
+textarea
+{
+    resize: vertical;
 }
 
 /* specific elements */
@@ -85,7 +89,7 @@ select
     margin-left: 1em;
 }
 
-.header-other
+.header-content
 {
     min-width: 700px;
     width: 100%;
@@ -98,12 +102,19 @@ select
     margin-right: 1em;
 }
 
+.header-flush-right
+{
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+
 .header-date-selector
 {
+    margin-left: 0.5em;
     font-size: 2em;
     font-weight: bold;
     border: none;
-    text-align: right;
 }
 
 .header-date-selector:focus
@@ -111,13 +122,19 @@ select
     outline: none;
 }
 
-/* sidebar */
-.sidebar-hidden
+.header-save-indicator
 {
-    display: none;
+    opacity: 0;
+    transition: opacity 0.75s;
 }
 
-.sidebar-shown
+.header-save-indicator-opaque
+{
+    opacity: 1;
+}
+
+/* sidebar */
+.sidebar-container
 {
     position: fixed;
     top: 0;
@@ -126,17 +143,47 @@ select
     display: flex;
     flex-direction: row;
 
-    width: 100%;
+    /* This feels a bit hacky to me. When the sidebar is not open, I don't want this div to be clickable. When it is
+       open, I want width to be maxed. However, when transitioning back into the closed state, setting width immediately
+       to zero will hide the sidebar. */
+    transition: width 0.5s;
+    width: 0;
     height: 100%;
+
     z-index: 1;
+}
+
+.sidebar-container.sidebar-shown
+{
+    width: 100%;
 }
 
 .sidebar-body
 {
     background-color: white;
     border-right: 1px solid lightgray;
-    width: 300px;
+    width: 0px;
     height: 100%;
+    transition: width 0.25s;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sidebar-body.sidebar-shown
+{
+    width: 300px;
+}
+
+.sidebar-close-clickable-div
+{
+    flex-grow: 1;
+    height: 100%;
+    display: none;
+}
+
+.sidebar-close-clickable-div.sidebar-shown
+{
+    display: block;
 }
 
 .sidebar-title
@@ -156,12 +203,6 @@ select
 {
     background-color: darkgray;
     cursor: pointer;
-}
-
-.sidebar-close-clickable-div
-{
-    flex-grow: 1;
-    height: 100%;
 }
 
 /* form entry components */
@@ -184,11 +225,10 @@ select
     margin-right: 0.25em;
 }
 
-/* TODO: bad */
 .entry-textarea
 {
-    height: 300px;
-    resize: none;
+    min-height: 25vh;
+    max-height: 75vh;
 }
 
 /* task components */
@@ -199,6 +239,7 @@ select
     width: 100%;
 
     margin-bottom: 1em;
+    /* transition: max-height 0.25s; */
 }
 
 .task
@@ -237,13 +278,44 @@ select
 
 .task-notes
 {
-    width: 70%;
+    /* This is a pretty nasty CSS hack for the weird HTML structure I'm using for the dropdown button. The result is
+       that this aligns the end of the notes with the end of the goal. Ideally I move to a CSS preprocessor, where this
+       might at least make a bit more sense with a bit more context. */
+    width: calc((100% + 24px) * .7);
     white-space: pre-wrap;
+    overflow-y: auto;
 }
 
+textarea.task-notes
+{
+    height: 6em;
+}
+
+/* Dynamic heights make animating this in CSS a bit more difficult. This visually looks good but there's an annoying 
+   delay when minimizing (the initial transition is making a ridiculously large max-height smaller, which doesn't affect
+   the height we see). */
 .task-hideable-container
 {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+}
+
+.task-hideable-container-shown
+{
+    max-height: 50vh;
+    transition: max-height 0.5s ease-in;
+}
+
+.task-hideable-container-contents
+{
     margin-top: 1em;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -339,4 +411,16 @@ select
     justify-content: space-between;
 
     margin-bottom: 1em;
+}
+
+.confirmation-modal-confirm-row
+{
+    margin-top: 1em;
+    display: flex;
+    width: 50%;
+}
+
+.confirmation-modal-confirm-row > *
+{
+    margin-right: 0.5em;
 }

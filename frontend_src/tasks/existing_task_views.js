@@ -59,7 +59,6 @@ class ExistingTaskView extends React.Component
     }
 }
 
-// TODO: would be nice if I maintained the dropdown status after completion
 class EditableExistingTaskView extends React.Component
 {
     constructor(props)
@@ -84,7 +83,6 @@ class EditableExistingTaskView extends React.Component
 
     _handleSubmit = () =>
     {
-        // TODO: graceful nonexistent goal handling
         TaskManager.editTask({
             'id': this.props.task.id,
             'name': this.state.name,

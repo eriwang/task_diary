@@ -33,7 +33,6 @@ class NewTaskView extends React.Component
 
     _handleSubmit = () =>
     {
-        // TODO: should get better feedback if goal not legit
         TaskManager.addTask({
             'name': this.state.name,
             'goal_id': GoalManager.getGoalIdFromName(this.state.goalString),
