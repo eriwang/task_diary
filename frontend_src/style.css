@@ -254,7 +254,10 @@ select
 
 .task-notes
 {
-    width: 70%;
+    /* This is a pretty nasty CSS hack for the weird HTML structure I'm using for the dropdown button. The result is
+       that this aligns the end of the notes with the end of the goal. Ideally I move to a CSS preprocessor, where this
+       might at least make a bit more sense with a bit more context. */
+    width: calc((100% + 24px) * .7);
     white-space: pre-wrap;
 }
 
