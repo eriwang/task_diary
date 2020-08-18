@@ -1,17 +1,31 @@
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
 
 const common = require('./webpack.common.js');
 
-module.exports = merge(common, {
-    'mode': 'production',
-    'devtool': 'source-map',
-    'output': {
-        'filename': 'main.js',
-        'path': path.resolve(__dirname, 'mock_site_dist')
-    },
-    'plugins': [
-        new webpack.NormalModuleReplacementPlugin(/ajax\/prod_ajax\.js/, './mock_ajax.js')
-    ]
-});
+// TODO: single webpack file that reads env should be all I need, none of this merge stuff
+module.exports = (env) => {
+    let plugins = [new webpack.NormalModuleReplacementPlugin(/ajax\/prod_ajax\.js/, './mock_ajax.js')];
+    let watch = false;
+
+    if (env !== undefined && (env.dev === true))
+    {
+        plugins.push(new BrowserSyncPlugin({server: './mock_site_dist'}));
+        watch = true;
+    }
+
+    return merge(common, {
+        'entry': ['./frontend_src/app.js', './frontend_src/mock_site/mock_app_main.js'],
+        'output': {
+            'filename': 'main.js',
+            'path': path.resolve(__dirname, 'mock_site_dist')
+        },
+
+        'mode': 'production',
+        'devtool': 'source-map',
+        'watch': watch,
+        'plugins': plugins
+    });
+};
