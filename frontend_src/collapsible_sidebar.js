@@ -135,7 +135,7 @@ class ModalGoalEntryForm extends React.Component
     _handleSubmit = () =>
     {
         GoalManager.addGoal(this.state.name)
-            .done(this.props.onClose);
+            .then(this.props.onClose);
     }
 
     render()

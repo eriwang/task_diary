@@ -15,19 +15,19 @@ function ajaxGet(url, data)
 function ajaxPost(url, data)
 {
     return ajaxJson(url, data, 'POST')
-        .done(_createRequestCompleteCallback());
+        .then(_createRequestCompleteCallback());
 }
 
 function ajaxPut(url, data)
 {
     return ajaxJson(url, data, 'PUT')
-        .done(_createRequestCompleteCallback());
+        .then(_createRequestCompleteCallback());
 }
 
 function ajaxDelete(url, data)
 {
     return ajaxJson(url, data, 'DELETE')
-        .done(_createRequestCompleteCallback());
+        .then(_createRequestCompleteCallback());
 }
 
 function _createRequestCompleteCallback()

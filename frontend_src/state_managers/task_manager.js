@@ -11,7 +11,7 @@ class TaskManagerClass
     refreshTasks = () => 
     {
         ajaxGet('/date_tasks', {'date': this.dateStr})
-            .done((data) => this._onChange(data['tasks']));
+            .then((data) => this._onChange(data['tasks']));
     }
 
     changeDateAndRefresh = (dateStr) =>
@@ -28,17 +28,17 @@ class TaskManagerClass
             taskData['date'] = this.dateStr;
         }
 
-        return ajaxPost('/task', taskData).done(this.refreshTasks);
+        return ajaxPost('/task', taskData).then(this.refreshTasks);
     }
 
     editTask = (taskData) =>
     {
-        return ajaxPut('/task', taskData).done(this.refreshTasks);
+        return ajaxPut('/task', taskData).then(this.refreshTasks);
     }
 
     deleteTask = (taskId) =>
     {
-        return ajaxDelete('/task', {'id': taskId}).done(this.refreshTasks);
+        return ajaxDelete('/task', {'id': taskId}).then(this.refreshTasks);
     }
 
     addListenerCallback = (cb) =>

@@ -11,12 +11,12 @@ class GoalManagerClass
     refreshGoals = () =>
     {
         ajaxGet('/all_goals', {})
-            .done((data) => this._onChange(data['goals']));
+            .then((data) => this._onChange(data['goals']));
     }
 
     addGoal = (name) =>
     {
-        return ajaxPost('/goal', {'name': name}).done(this.refreshGoals);
+        return ajaxPost('/goal', {'name': name}).then(this.refreshGoals);
     }
 
     addListenerCallback = (cb) =>
