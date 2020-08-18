@@ -1,4 +1,4 @@
-import {ajaxGet, ajaxPut} from '../common/ajax.js';
+import {ajaxGet, ajaxPut} from '../ajax/ajax.js';
 
 class NotesManagerClass
 {

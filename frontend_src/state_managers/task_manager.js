@@ -1,4 +1,4 @@
-import {ajaxDelete, ajaxGet, ajaxPost, ajaxPut} from '../common/ajax.js';
+import {ajaxDelete, ajaxGet, ajaxPost, ajaxPut} from '../ajax/ajax.js';
 
 class TaskManagerClass
 {
