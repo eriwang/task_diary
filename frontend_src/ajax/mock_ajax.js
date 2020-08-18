@@ -1,27 +1,29 @@
-import $ from 'jquery';  // TODO: remove real ajax
+import BackendAjaxHandler from '../mock_site/backend_ajax_handler.js';
 
 // Do not use anywhere other than ajax.js!
 
 function ajaxQueryParameter(url, data, method)
 {
-    console.log('ajaxQueryParameter');
-    return $.ajax(url, {
-        'data': data,
-        'method': method,
-        'processData': true
-    });
+    return _createBackendAjaxHandlerPromise(url, data, method);
 }
 
 function ajaxJson(url, data, method)
 {
-    console.log('ajaxJson');
-    return $.ajax(url, {
-        'contentType': 'application/json',
-        'data': JSON.stringify(data),
-        'method': method,
-        'processData': false
-    });
+    return _createBackendAjaxHandlerPromise(url, data, method);
 }
 
+function _createBackendAjaxHandlerPromise(url, data, method)
+{
+    return new Promise((resolve, reject) => {
+        try
+        {
+            resolve(BackendAjaxHandler.callAjax(url, data, method));
+        }
+        catch (e)
+        {
+            reject(e);
+        }
+    });
+}
 
 export {ajaxQueryParameter, ajaxJson};
