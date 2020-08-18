@@ -16,8 +16,9 @@ module.exports = (env) => {
         watch = true;
     }
 
+    // Order of "entry" matters: we need the mock backend handlers to be hooked up before app.js calls them.
     return merge(common, {
-        'entry': ['./frontend_src/app.js', './frontend_src/mock_site/mock_app_main.js'],
+        'entry': ['./frontend_src/mock_site/mock_app_main.js', './frontend_src/app.js'],
         'output': {
             'filename': 'main.js',
             'path': path.resolve(__dirname, 'mock_site_dist')
