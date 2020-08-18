@@ -1,3 +1,5 @@
+import './goal_backend_handler.js';
+import './notes_backend_handler.js';
 import './task_backend_handler.js';
 
 // We need to wait to ensure react has actually loaded the component when we grab the header element.

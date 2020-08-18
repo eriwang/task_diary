@@ -6,17 +6,17 @@ class TaskBackendHandlerClass
     {
     }
 
-    dateTasksAjaxRouteHandler = (method, data) =>
+    dateTasksRouteHandler = (method, data) =>
     {
         if (method !== 'GET')
         {
-            throw `Invalid date_tasks method ${method}`;
+            throw `Invalid /date_tasks method ${method}`;
         }
         console.log(data);
         return null;
     }
 
-    taskAjaxRouteHandler = (method, data) =>
+    taskRouteHandler = (method, data) =>
     {
         switch (method)
         {
@@ -30,7 +30,7 @@ class TaskBackendHandlerClass
             break;
         
         default:
-            throw `Invalid tasks method ${method}`;
+            throw `Invalid /tasks method ${method}`;
         }
 
         console.log(data);
@@ -39,5 +39,5 @@ class TaskBackendHandlerClass
 }
 
 let taskBackendHandler = new TaskBackendHandlerClass();
-BackendAjaxHandler.addAjaxRouteHandler('/date_tasks', taskBackendHandler.dateTasksAjaxRouteHandler);
-BackendAjaxHandler.addAjaxRouteHandler('/task', taskBackendHandler.taskAjaxRouteHandler);
+BackendAjaxHandler.addAjaxRouteHandler('/date_tasks', taskBackendHandler.dateTasksRouteHandler);
+BackendAjaxHandler.addAjaxRouteHandler('/task', taskBackendHandler.taskRouteHandler);
