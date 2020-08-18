@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+// Do not use anywhere other than ajax.js!
+
 $(document).ajaxError((event, jqXHR, settings, exception) => {
     const errorText = `"${settings.type}" request to URL "${settings.url}" failed ` +
                         `with status ${jqXHR.status}, "${exception}"`;
@@ -28,6 +30,5 @@ function ajaxJson(url, data, method)
         'processData': false
     });
 }
-
 
 export {ajaxQueryParameter, ajaxJson};

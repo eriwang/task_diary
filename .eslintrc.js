@@ -26,7 +26,7 @@ module.exports = {
         'react/jsx-uses-vars': 'error',
         'react/prop-types': 0,
     },
-    'ignorePatterns': ['backend_src/**', 'venv/**'],
+    'ignorePatterns': ['backend_src/**', 'venv/**', 'mock_site_dist/'],
 
     'settings': {
         'react': {'version': 'detect'}
