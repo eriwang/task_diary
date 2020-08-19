@@ -1,9 +1,29 @@
+import {getDateStr, getTodayPlusDelta} from '../utils/date_utils.js';
 import BackendAjaxHandler from './backend_ajax_handler.js';
 
 class NotesBackendHandlerClass
 {
     constructor()
     {
+        const yesterdayDateStr = getDateStr(getTodayPlusDelta(-1));
+        const todayDateStr = getDateStr(new Date());
+
+        this.notesId = 0;
+        this.data = [
+            {
+                'id': ++this.notesId,
+                'text': 'Productive day today. I think my code for routing is probably flawless, no bugs.',
+                'date': yesterdayDateStr
+            },
+            {
+                'id': ++this.notesId,
+                'text': 'So far not super productive, I should stop procrastinating and watching YouTube videos. My ' + 
+                        'productive self from yesterday really needs to take over for today.\n\n' +
+                        'On another note, hopefully the bugs from yesterday and forgetting about rice are the last ' + 
+                        'surprises I\'ll have today.',
+                'date': todayDateStr
+            }
+        ];
     }
 
     dailyNotesRoutehandler = (method, data) =>
@@ -11,7 +31,7 @@ class NotesBackendHandlerClass
         switch (method)
         {
         case 'GET':
-            break;
+            return this._handleDailyNotesGet(data);
 
         case 'PUT':
             break;
@@ -22,6 +42,18 @@ class NotesBackendHandlerClass
 
         console.log(data);
         return null;
+    }
+
+    _handleDailyNotesGet = (data) =>
+    {
+        for (const notes of this.data)
+        {
+            if (notes.date === data['date'])
+            {
+                return {'notes': notes};
+            }
+        }
+        return {'notes': null};
     }
 }
 

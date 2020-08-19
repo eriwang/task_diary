@@ -12,18 +12,20 @@ class GoalBackendHandlerClass
     constructor()
     {
         this.data = [
-            
+            {'id': MockGoalId.NODEJS_MIGRATION, 'name': 'Backend NodeJS Migration'},
+            {'id': MockGoalId.INTEGRATED_TESTS, 'name': 'Integrated testing'},
+            {'id': MockGoalId.TOP_SECRET, 'name': 'Top Secret'}
         ];
     }
 
-    allGoalsRouteHandler = (method, data) =>
+    allGoalsRouteHandler = (method, data) =>  /* eslint-disable-line no-unused-vars */
     {
         if (method !== 'GET')
         {
             throw `Invalid /all_goals method ${method}`;
         }
-        console.log(data);
-        return null;
+
+        return {'goals': this.data};
     }
 
     goalRoutehandler = (method, data) =>
@@ -42,14 +44,27 @@ class GoalBackendHandlerClass
         default:
             throw `Invalid /goal method ${method}`;
         }
-
+        
         console.log(data);
         return null;
     }
+
+    getGoalNameFromId = (goalId) =>
+    {
+        for (let goal of this.data)
+        {
+            if (goal.id === goalId)
+            {
+                return goal.name;
+            }
+        }
+
+        throw `Could not find matching goal for id ${goalId}`;
+    }
 }
 
-let goalBackendHandler = new GoalBackendHandlerClass();
-BackendAjaxHandler.addAjaxRouteHandler('/all_goals', goalBackendHandler.allGoalsRouteHandler);
-BackendAjaxHandler.addAjaxRouteHandler('/goal', goalBackendHandler.goalRoutehandler);
+let GoalBackendHandler = new GoalBackendHandlerClass();
+BackendAjaxHandler.addAjaxRouteHandler('/all_goals', GoalBackendHandler.allGoalsRouteHandler);
+BackendAjaxHandler.addAjaxRouteHandler('/goal', GoalBackendHandler.goalRoutehandler);
 
-export {MockGoalId};
+export {MockGoalId, GoalBackendHandler};

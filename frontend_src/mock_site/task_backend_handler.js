@@ -1,5 +1,5 @@
-import {getDateStr} from '../utils/date_utils.js';
-import {MockGoalId} from './goal_backend_handler.js';
+import {getDateStr, getTodayPlusDelta} from '../utils/date_utils.js';
+import {MockGoalId, GoalBackendHandler} from './goal_backend_handler.js';
 import BackendAjaxHandler from './backend_ajax_handler.js';
 import Status from '../common/status.js';
 
@@ -7,9 +7,9 @@ class TaskBackendHandlerClass
 {
     constructor()
     {
-        const yesterdayDateStr = getDateStr(_getTodayPlusDelta(-1));
+        const yesterdayDateStr = getDateStr(getTodayPlusDelta(-1));
         const todayDateStr = getDateStr(new Date());
-        const tomorrowDateStr = getDateStr(_getTodayPlusDelta(1));
+        const tomorrowDateStr = getDateStr(getTodayPlusDelta(1));
 
         this.taskId = 0;
         this.data = [
@@ -19,7 +19,7 @@ class TaskBackendHandlerClass
                 'name': 'Hack in all Flask routes as NodeJS and Express routes instead',
                 'status': Status.COMPLETE,
                 'is_planned': true,
-                'notes': 'No database logic for now, just return valid dummy data',
+                'notes': 'No database logic for now, just return valid dummy data',         
                 'goal_id': MockGoalId.NODEJS_MIGRATION
             },
             {
@@ -124,10 +124,22 @@ class TaskBackendHandlerClass
 
         let dateTasks = [];
         this.data.forEach((task) => {
-            if (task.date === data['date'])
+            if (task.date !== data['date'])
             {
-                dateTasks.push(task);
+                return;
             }
+
+            let newTask = {...task};
+            if (newTask.goal_id === MockGoalId.NONE)
+            {
+                delete newTask.goal_id;
+            }
+            else
+            {
+                newTask.goal = GoalBackendHandler.getGoalNameFromId(newTask.goal_id);
+            }
+
+            dateTasks.push(newTask);
         });
 
         return {'tasks': dateTasks};
@@ -155,13 +167,6 @@ class TaskBackendHandlerClass
     }
 }
 
-function _getTodayPlusDelta(deltaDays)
-{
-    let newDate = new Date();
-    newDate.setDate(new Date().getDate() + deltaDays);
-    return newDate;
-}
-
-let taskBackendHandler = new TaskBackendHandlerClass();
-BackendAjaxHandler.addAjaxRouteHandler('/date_tasks', taskBackendHandler.dateTasksRouteHandler);
-BackendAjaxHandler.addAjaxRouteHandler('/task', taskBackendHandler.taskRouteHandler);
+let TaskBackendHandler = new TaskBackendHandlerClass();
+BackendAjaxHandler.addAjaxRouteHandler('/date_tasks', TaskBackendHandler.dateTasksRouteHandler);
+BackendAjaxHandler.addAjaxRouteHandler('/task', TaskBackendHandler.taskRouteHandler);

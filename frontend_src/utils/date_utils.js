@@ -5,4 +5,11 @@ function getDateStr(date)
     return `${date.getFullYear()}-${monthStr}-${dayStr}`;
 }
 
-export {getDateStr};
+function getTodayPlusDelta(deltaDays)
+{
+    let newDate = new Date();
+    newDate.setDate(new Date().getDate() + deltaDays);
+    return newDate;
+}
+
+export {getDateStr, getTodayPlusDelta};

@@ -8,7 +8,6 @@ class BackendAjaxHandlerClass
 
     callAjax(url, data, method)
     {
-        console.log(`[${method}] ${url} with ${data}`);
         let handler = this.urlToHandler[url];
         if (handler === undefined)
         {
@@ -20,9 +19,7 @@ class BackendAjaxHandlerClass
 
     addAjaxRouteHandler(url, handler)
     {
-        console.log(`Add ${url}`);
         this.urlToHandler[url] = handler;
-        console.log(this.urlToHandler);
     }
 }
 
