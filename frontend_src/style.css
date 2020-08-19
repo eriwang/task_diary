@@ -266,6 +266,12 @@ textarea
 .task-name
 {
     width: 70%;
+    margin-right: 1em;
+}
+
+.task-goal
+{
+    text-align: right;
 }
 
 .task-flush-right-container

@@ -19,7 +19,7 @@ export default class GoalEntryForm extends React.Component
     _handleSubmit = () =>
     {
         GoalManager.addGoal(this.state.name)
-            .done(() => this.setState({'name': ''}));
+            .then(() => this.setState({'name': ''}));
     }
 
     render()

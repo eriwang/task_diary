@@ -13,3 +13,6 @@ venv/
 *.spec
 build/
 dist/
+
+# Mock Files
+mock_site_dist/

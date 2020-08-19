@@ -12,7 +12,7 @@ module.exports = merge(common, {
         new BrowserSyncPlugin({
             host: 'localhost',
             port: 5001,
-            proxy: 'http://localhost:5000',  // flask server,
+            proxy: 'http://localhost:5000',  // flask server
             files: ['./backend_src/templates/*']
         })
     ]

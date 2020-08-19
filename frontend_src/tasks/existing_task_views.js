@@ -34,7 +34,7 @@ class ExistingTaskView extends React.Component
     {
         const task = this.props.task;
         const nameComponent = <p className="task-name">{task.name}</p>;
-        const goalComponent = <p>{getDefaultIfUndefined(task.goal, 'No goal')}</p>;
+        const goalComponent = <p className="task-goal">{getDefaultIfUndefined(task.goal, 'No goal')}</p>;
         const statusComponent =
             <StatusInput value={task.status} onChange={(value) => this._handleStatusChange(parseInt(value))} />;
         const notesComponent = 

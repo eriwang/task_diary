@@ -1,4 +1,4 @@
-import {ajaxGet, ajaxPut} from '../common/ajax.js';
+import {ajaxGet, ajaxPut} from '../ajax/ajax.js';
 
 class NotesManagerClass
 {
@@ -12,7 +12,7 @@ class NotesManagerClass
     refreshNotes = () =>
     {
         ajaxGet('/daily_notes', {'date': this.dateStr})
-            .done((data) => this._onChange(data['notes']));
+            .then((data) => this._onChange(data['notes']));
     }
 
     setNotes = (text, noRefreshAfterSet) =>
@@ -20,7 +20,7 @@ class NotesManagerClass
         let putResult = ajaxPut('/daily_notes', {'date': this.dateStr, 'text': text});
         if (!noRefreshAfterSet)
         {
-            putResult.done(this.refreshNotes);
+            putResult.then(this.refreshNotes);
         }
         return putResult;
     }
