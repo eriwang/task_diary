@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './style.css';
 
+import {getDateStr} from './utils/date_utils.js';
 import CollapsibleSidebar from './collapsible_sidebar.js';
 import ConfirmationModal from './common/confirmation_modal.js';
 import EditingFieldTracker from './state_trackers/editing_field_tracker.js';
@@ -21,7 +22,7 @@ class App extends React.Component
         super(props);
         this.storedDateStrAwaitingConfirm = null;
         this.state = {
-            'dateStr': getCurrentDateStr(),
+            'dateStr': getDateStr(new Date()),
             'tasks': [],
             'notes': null,
             'sidebarVisible': false,
@@ -120,14 +121,6 @@ class App extends React.Component
             </div>
         );
     }
-}
-
-function getCurrentDateStr()
-{
-    const today = new Date();
-    const monthStr = (today.getMonth() + 1).toString().padStart(2, '0');
-    const dayStr = (today.getDate()).toString().padStart(2, '0');
-    return `${today.getFullYear()}-${monthStr}-${dayStr}`;
 }
 
 ReactDOM.render(<App />, document.getElementById('app'));
