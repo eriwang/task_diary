@@ -15,4 +15,4 @@ build/
 dist/
 
 # Mock Files
-mock_site_dist/
+docs/
