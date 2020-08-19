@@ -12,7 +12,7 @@ module.exports = (env) => {
 
     if (env !== undefined && (env.dev === true))
     {
-        plugins.push(new BrowserSyncPlugin({server: './mock_site_dist'}));
+        plugins.push(new BrowserSyncPlugin({server: './docs'}));
         watch = true;
     }
 
