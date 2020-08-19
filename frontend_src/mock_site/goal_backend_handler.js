@@ -11,6 +11,7 @@ class GoalBackendHandlerClass
 {
     constructor()
     {
+        this.goalId = Math.max(...Object.values(MockGoalId));  // ensure no id reuse
         this.data = [
             {'id': MockGoalId.NODEJS_MIGRATION, 'name': 'Backend NodeJS Migration'},
             {'id': MockGoalId.INTEGRATED_TESTS, 'name': 'Integrated testing'},
@@ -33,20 +34,17 @@ class GoalBackendHandlerClass
         switch (method)
         {
         case 'POST':
-            break;
+            return this._handleGoalPost(data);
 
         case 'PUT':
-            break;
+            return this._handleGoalPut(data);
 
         case 'DELETE':
-            break;
+            return this._handleGoalDelete(data);
         
         default:
             throw `Invalid /goal method ${method}`;
         }
-        
-        console.log(data);
-        return null;
     }
 
     getGoalNameFromId = (goalId) =>
@@ -60,6 +58,43 @@ class GoalBackendHandlerClass
         }
 
         throw `Could not find matching goal for id ${goalId}`;
+    }
+
+    _handleGoalPost = (data) =>
+    {
+        data['id'] = ++this.goalId;
+        this.data.push(data);
+        return {'success': true};
+    }
+
+    _handleGoalPut = (data) =>
+    {
+        let modifyGoal = this._findGoalForId(data.id)[1];
+        for (const key in data)
+        {
+            modifyGoal[key] = data[key];
+        }
+        return data;
+    }
+
+    _handleGoalDelete = (data) =>
+    {
+        let deleteGoalIndex = this._findGoalForId(data.id)[0];
+        this.data.splice(deleteGoalIndex, 1);
+        return {'success': true};
+    }
+
+    _findGoalForId = (goalId) =>
+    {
+        for (let [index, goal] of this.data.entries())
+        {
+            if (goal.id === goalId)
+            {
+                return [index, goal];
+            }
+        }
+
+        throw `Unknown goal id ${goalId}`;
     }
 }
 

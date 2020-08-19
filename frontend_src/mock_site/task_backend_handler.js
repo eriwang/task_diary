@@ -163,6 +163,13 @@ class TaskBackendHandlerClass
         }
     }
 
+    _handleTaskPost = (data) =>
+    {
+        data['id'] = ++this.taskId;
+        this.data.push(data);
+        return {'success': true};
+    }
+
     _handleTaskPut = (data) =>
     {
         let modifyTask = this._findTaskForId(data.id)[1];
@@ -171,13 +178,6 @@ class TaskBackendHandlerClass
             modifyTask[key] = data[key];
         }
         return data;
-    }
-
-    _handleTaskPost = (data) =>
-    {
-        data['id'] = ++this.taskId;
-        this.data.push(data);
-        return {'success': true};
     }
 
     _handleTaskDelete = (data) =>

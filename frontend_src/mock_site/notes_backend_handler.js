@@ -34,14 +34,11 @@ class NotesBackendHandlerClass
             return this._handleDailyNotesGet(data);
 
         case 'PUT':
-            break;
+            return this._handleDailyNotesPut(data);
         
         default:
             throw `Invalid /daily_notes method ${method}`;
         }
-
-        console.log(data);
-        return null;
     }
 
     _handleDailyNotesGet = (data) =>
@@ -54,6 +51,22 @@ class NotesBackendHandlerClass
             }
         }
         return {'notes': null};
+    }
+
+    _handleDailyNotesPut = (data) =>
+    {
+        for (let notes of this.data)
+        {
+            if (notes.date === data['date'])
+            {
+                notes.text = data['text'];
+                return {'success': true};
+            }
+        }
+
+        data['id'] = ++this.notesId;
+        this.data.push(data);
+        return {'success': true};
     }
 }
 
