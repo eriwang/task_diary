@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-dev": "webpack --config webpack.dev.js"
+    "package-mock": "webpack --env.mock",
+    "start-dev": "webpack --env.dev",
+    "start-dev-mock": "webpack --env.dev --env.mock"
   },
   "author": "",
   "license": "ISC",
