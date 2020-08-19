@@ -12,7 +12,7 @@ module.exports = (env) => {
 
     if (env !== undefined && (env.dev === true))
     {
-        plugins.push(new BrowserSyncPlugin({server: './mock_site_dist'}));
+        plugins.push(new BrowserSyncPlugin({server: './docs'}));
         watch = true;
     }
 
@@ -21,7 +21,7 @@ module.exports = (env) => {
         'entry': ['./frontend_src/mock_site/mock_app_main.js', './frontend_src/app.js'],
         'output': {
             'filename': 'main.js',
-            'path': path.resolve(__dirname, 'mock_site_dist')
+            'path': path.resolve(__dirname, 'docs')
         },
 
         'mode': 'production',
