@@ -150,20 +150,54 @@ class TaskBackendHandlerClass
         switch (method)
         {
         case 'POST':
-            break;
+            return this._handleTaskPost(data);
 
         case 'PUT':
-            break;
+            return this._handleTaskPut(data);
 
         case 'DELETE':
-            break;
+            return this._handleTaskDelete(data);
         
         default:
             throw `Invalid /tasks method ${method}`;
         }
+    }
 
-        console.log(data);
-        return null;
+    _handleTaskPut = (data) =>
+    {
+        let modifyTask = this._findTaskForId(data.id)[1];
+        for (const key in data)
+        {
+            modifyTask[key] = data[key];
+        }
+        return data;
+    }
+
+    _handleTaskPost = (data) =>
+    {
+        data['id'] = ++this.taskId;
+        this.data.push(data);
+        return {'success': true};
+    }
+
+    _handleTaskDelete = (data) =>
+    {
+        let deleteTaskIndex = this._findTaskForId(data.id)[0];
+        this.data.splice(deleteTaskIndex, 1);
+        return {'success': true};
+    }
+
+    _findTaskForId = (taskId) =>
+    {
+        for (let [index, task] of this.data.entries())
+        {
+            if (task.id === taskId)
+            {
+                return [index, task];
+            }
+        }
+
+        throw `Unknown task id ${taskId}`;
     }
 }
 
