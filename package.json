@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "package-mock": "webpack --env.mock",
-    "start-dev": "webpack --env.dev",
-    "start-dev-mock": "webpack --env.dev --env.mock"
+    "run-dev": "webpack --env.dev",
+    "run-dev-mock": "webpack --env.dev --env.mock"
   },
   "author": "",
   "license": "ISC",
